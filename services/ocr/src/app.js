@@ -4,19 +4,12 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
-// used to readd and create files
+// used to read and create files
 const fs = require('fs');
 // used to upload files to server
 const multer = require('multer');
-// this will read the images
-const { createWorker } = require('tesseract.js');
-// this will analyze the images
-let worker;
-async function initializeWorker() {
-    worker = await createWorker();
-}
-initializeWorker();
-//const worker = createWorker();
+
+const {processFile} = require('./tesseractProcessor/tesseractProcessor')
 
 // Ensure the uploads directory exists
 const uploadDir = './uploads';
@@ -52,9 +45,9 @@ app.post('/upload', (req,res) => {
         fs.readFile("./uploads/" + req.file.originalname, async (err,data) => {
             if (err) return console.log('This is your error', err);
 
-            const { data: { text } } = await worker.recognize(data, "eng");
-                console.log('OCR result:', text);
-                res.send(text);
+            const OCRText = await processFile(req.file.path, res);
+            //res.send(OCRText);
+            console.log(OCRText);
         });
     });
 });
