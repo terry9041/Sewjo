@@ -40,15 +40,13 @@ app.get('/', (req,res) => {
 });
 
 app.post('/upload', (req,res) => {
-    upload(req,res, err => {
+    upload(req,res, async err => {
         console.log(req.file);
-        fs.readFile("./uploads/" + req.file.originalname, async (err,data) => {
-            if (err) return console.log('This is your error', err);
+        if (err) return console.log('This is your error', err);
 
-            const OCRText = await processFile(req.file.path, res);
-            //res.send(OCRText);
-            console.log(OCRText);
-        });
+        const OCRText = await processFile(req.file.path, res);
+        //res.send(OCRText);
+        console.log(OCRText);
     });
 });
 
