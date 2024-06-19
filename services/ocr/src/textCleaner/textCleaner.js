@@ -1,0 +1,1 @@
+// textCleaner.js will clean text processes from tesseract and organize it

@@ -65,8 +65,9 @@ bun dev
 Tentative stack Stack:
 
 - Frontend : TS, React/Next, Tailwind
-- Backend  : Node.js, Node-teserract
-- Database : MongoDB
+- Services : Node.js, Node-teserract
+- Backend : Java Spring
+- Database : PostgreSQL
 
 ## ez clone script
 First Terminal
