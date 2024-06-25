@@ -16,7 +16,35 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// Spring Boot Starter Data JPA for JPA support
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Spring Boot Starter Validation for bean validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // H2 Database for in-memory database, useful for development
+    // Remove or replace with your actual database dependency for production
+    runtimeOnly 'com.h2database:h2'
+
+    // Spring Boot Starter Web for RESTful web services
+    // Optional: Include this if you plan to expose APIs or need Spring MVC support
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // jBCrypt for password hashing
+    implementation 'org.mindrot:jbcrypt:0.4'
+
+    // Spring Boot Starter Data JPA for JPA support
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // For redirecting
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    implementation 'io.github.cdimascio:dotenv-java:2.2.0'
+
+    implementation 'org.postgresql:postgresql:42.7.3'
+
+    implementation 'org.springframework.boot:spring-boot-starter-mustache'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
