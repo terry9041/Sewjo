@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         cb(null, file.originalname); // Save the file with its original name
     }
-})
+});
 
 // when upload is called it runs everything in storage
 // .single will store file in req.file

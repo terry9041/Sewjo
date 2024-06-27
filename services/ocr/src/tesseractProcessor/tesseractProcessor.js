@@ -2,10 +2,15 @@
 const fs = require('fs');
 // this will read the images
 const { createWorker } = require('tesseract.js');
+
+const {makeImageUpright} = require('../imageRotator/imageRotator')
 // this will analyze the images
 let worker;
 async function initializeWorker() {
-    worker = await createWorker();
+    worker = await createWorker('eng', 0, {
+        legacyCore: true, 
+        legacyLang: true
+    });
 }
 initializeWorker();
 //const worker = createWorker();
@@ -18,8 +23,19 @@ initializeWorker();
  */
 async function processFile(filePath, res) {
     try {
-        const data = fs.readFileSync(filePath);
-        const {data:{text}} = await worker.recognize(data, 'eng');
+        let file = fs.readFileSync(filePath);
+        //console.log(file);
+        const {data:{orientation_degrees}} = await worker.detect(file);
+        //console.log(orientation_degrees);
+        if (orientation_degrees != 0) {
+            try {
+                file = await makeImageUpright(filePath, orientation_degrees);
+                //console.log(file);
+            } catch (error) {
+                console.error('Error processing image: ', error);
+            }
+        }
+        const {data:{text}} = await worker.recognize(file, 'eng');
         return text;
     } catch (error) {
         console.log('Error during OCR processing: ', error);
