@@ -25,11 +25,13 @@ async function processFile(filePath, res) {
     try {
         let file = fs.readFileSync(filePath);
         //console.log(file);
-        const {data:{orientation_degrees}} = await worker.detect(file);
-        //console.log(orientation_degrees);
-        if (orientation_degrees != 0) {
+        // this is give you the orientation of the file, along with confidence score
+        // which can be used for screening images
+        const {data} = await worker.detect(file);
+        //console.log(data);
+        if (data["orientation_degrees"] != 0) {
             try {
-                file = await makeImageUpright(filePath, orientation_degrees);
+                file = await makeImageUpright(filePath, data["orientation_degrees"]);
                 //console.log(file);
             } catch (error) {
                 console.error('Error processing image: ', error);
