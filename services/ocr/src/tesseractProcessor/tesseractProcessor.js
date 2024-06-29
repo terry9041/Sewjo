@@ -29,6 +29,7 @@ async function processFile(filePath, res) {
         // which can be used for screening images
         const {data} = await worker.detect(file);
         //console.log(data);
+        // if picture is not upright, then will make upright
         if (data["orientation_degrees"] != 0) {
             try {
                 file = await makeImageUpright(filePath, data["orientation_degrees"]);
