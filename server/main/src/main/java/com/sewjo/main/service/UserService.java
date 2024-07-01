@@ -66,7 +66,8 @@ public class UserService {
         return u.get();
     }
 
-    public void update(User u) {
-        userRepo.save(u);
+    public void updateUser(User user) {
+        userRepo.save(user);
     }
+    
 }

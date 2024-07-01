@@ -5,7 +5,7 @@
   </head>
   <body>
     <h2>Edit Profile</h2>
-    <form th:action="@{/edit}" th:object="${currentUser}" method="post">
+    <form th:action="@{/edit}" th:object="${user}" method="post">
       <div>
         <label for="userName">Username:</label>
         <input type="text" id="userName" th:field="*{userName}" />
