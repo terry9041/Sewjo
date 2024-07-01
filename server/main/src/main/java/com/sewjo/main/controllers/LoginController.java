@@ -17,6 +17,8 @@ import com.sewjo.main.service.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 public class LoginController {
@@ -111,5 +113,24 @@ public class LoginController {
         session.invalidate();
         return "redirect:/";
     }
+
+    @GetMapping("/edit")
+    public String showEditProfileForm(Model model, HttpSession session) {
+        if (session.getAttribute("id") == null) {
+            return "redirect:/";
+        }
+        model.addAttribute("user", userServ.findById((Long) session.getAttribute("id")));
+        return "editProfile";
+    }
+
+    @PostMapping("/edit")
+    public String editProfile(@ModelAttribute("user") User user, HttpSession session) {
+        User currentUser = userServ.findById((Long) session.getAttribute("id"));
+        currentUser.setUserName(user.getUserName());
+        currentUser.setEmail(user.getEmail());
+        userServ.update(user);
+        return "redirect:/dashboard";
+    }
+    
 
 }

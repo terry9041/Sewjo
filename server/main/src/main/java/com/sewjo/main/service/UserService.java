@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import com.sewjo.main.models.User;
 import com.sewjo.main.models.LoginUser;
-import com.sewjo.main.repositories.*;
+import com.sewjo.main.models.User;
+import com.sewjo.main.repositories.UserRepository;
 
 @Service
 public class UserService {
@@ -64,5 +64,9 @@ public class UserService {
             return null;
         }
         return u.get();
+    }
+
+    public void update(User u) {
+        userRepo.save(u);
     }
 }
