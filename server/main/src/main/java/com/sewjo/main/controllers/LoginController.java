@@ -138,7 +138,8 @@ public class LoginController {
         return "editProfile";
         }
 
-        User user = userServ.findById((long)session.getAttribute("id"));
+        Long userId = (Long) session.getAttribute("id");
+        User user = userServ.findById(userId);
         if (user == null) {
         return "redirect:/error";
         }
@@ -146,6 +147,7 @@ public class LoginController {
         user.setUserName(updatedUser.getUserName());
         user.setEmail(updatedUser.getEmail());
         user.setPassword(updatedUser.getPassword());
+        user.setConfirm(updatedUser.getConfirm());
 
         userServ.updateUser(user);
 
