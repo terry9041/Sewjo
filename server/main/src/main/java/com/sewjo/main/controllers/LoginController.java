@@ -1,7 +1,8 @@
 package com.sewjo.main.controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,13 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.sewjo.main.models.LoginUser;
 import com.sewjo.main.models.User;
-import com.sewjo.main.service.UserService;
+import com.sewjo.main.models.LoginUser;
+import com.sewjo.main.service.*;
 
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class LoginController {
@@ -112,47 +112,4 @@ public class LoginController {
         return "redirect:/";
     }
 
-    @GetMapping("/edit")
-    public String showEditProfileForm(Model model, HttpSession session) {
-        Long userId = (Long) session.getAttribute("id");
-
-        if (userId == null) {
-            return "redirect:/login";
-        }
-
-        User user = userServ.findById(userId);
-        if (user == null) {
-            return "redirect:/error";
-        }
-
-        model.addAttribute("user", user);
-        return "editProfile";
-    }
-
-    @PostMapping("/edit")
-    public String editProfile(@Valid @ModelAttribute("user") User updatedUser,
-        BindingResult result, Model model, HttpSession session) {
-
-        if (result.hasErrors()) {
-        model.addAttribute("errors", result.getAllErrors());
-        return "editProfile";
-        }
-
-        Long userId = (Long) session.getAttribute("id");
-        User user = userServ.findById(userId);
-        if (user == null) {
-        return "redirect:/error";
-        }
-
-        user.setUserName(updatedUser.getUserName());
-        user.setEmail(updatedUser.getEmail());
-        user.setPassword(updatedUser.getPassword());
-        user.setConfirm(updatedUser.getConfirm());
-
-        userServ.updateUser(user);
-
-        return "redirect:/dashboard";
-    }
 }
-    
-
