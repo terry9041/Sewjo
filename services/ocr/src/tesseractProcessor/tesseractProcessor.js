@@ -1,9 +1,7 @@
-// used to read and create files
 const fs = require('fs');
-// this will read the images
 const { createWorker } = require('tesseract.js');
-
 const {makeImageUpright} = require('../imageRotator/imageRotator')
+const sharp = require('sharp');
 // this will analyze the images
 let worker;
 async function initializeWorker() {
@@ -16,34 +14,47 @@ initializeWorker();
 //const worker = createWorker();
 
 /**
- * This function will process the image and delete the image after
- * @param {*} filePath 
- * @param {*} res 
- * @returns text from the image
+ * Resize an image buffer using sharp.
+ * @param {Buffer} imageBuffer - The image buffer to resize.
+ * @param {Object} options - Resize options for sharp.
+ * @returns {Promise<Buffer>} Resized image buffer.
+ */
+async function resizeImage(imageBuffer, options) {
+    const resizedImageBuffer = await sharp(imageBuffer)
+        .resize(options)
+        .toBuffer();
+    
+    return resizedImageBuffer;
+}
+
+/**
+ * Process an image file, perform OCR, and delete the file afterward.
+ * @param {string} filePath - Path to the image file to process.
+ * @param {Object} res - Express response object for handling errors.
+ * @returns {Promise<string>} Text extracted from the image.
  */
 async function processFile(filePath, res) {
     try {
         let file = fs.readFileSync(filePath);
-        //console.log(file);
-        // this is give you the orientation of the file, along with confidence score
-        // which can be used for screening images
-        const {data} = await worker.detect(file);
-        //console.log(data);
-        // if picture is not upright, then will make upright
-        if (data["orientation_degrees"] != 0) {
-            try {
-                file = await makeImageUpright(filePath, data["orientation_degrees"]);
-                //console.log(file);
-            } catch (error) {
-                console.error('Error processing image: ', error);
-            }
+        
+        // Resize image if needed
+        file = await resizeImage(file, { width: 2000 }); // Adjust options as needed
+
+        // Detect orientation and process image if needed
+        const { data } = await worker.detect(file);
+        if (data["orientation_degrees"] !== 0) {
+            file = await makeImageUpright(filePath, data["orientation_degrees"]);
         }
-        const {data:{text}} = await worker.recognize(file, 'eng');
+        
+        // Perform OCR using Tesseract
+        const { data: { text } } = await worker.recognize(file, 'eng');
+        
         return text;
     } catch (error) {
-        console.log('Error during OCR processing: ', error);
+        console.error('Error during OCR processing: ', error);
         res.status(500).send('Error during OCR processing.');
     } finally {
+        // Delete the file after processing
         fs.unlink(filePath, (err) => {
             if (err) {
                 console.error('Error deleting file: ', err);
@@ -54,4 +65,4 @@ async function processFile(filePath, res) {
     }
 }
 
-module.exports = {processFile};
+module.exports = { processFile };
