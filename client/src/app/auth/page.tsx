@@ -1,12 +1,19 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
+import axios from 'axios';
 
 export default function Auth() {
   const router = useRouter();
   const [showLogin, setShowLogin] = useState(true);
+
+    useEffect(() => {
+        axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/dashboard`, { withCredentials: true })
+          .then(res => router.push("/dashboard"))
+          .catch(err => console.log(err));
+    }, [router]);
 
   const swapReg = () => {
     setShowLogin(!showLogin);

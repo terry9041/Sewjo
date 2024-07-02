@@ -8,18 +8,16 @@ import axios from 'axios';
  */
 export default function RegisterForm({ swapReg }) {
   const initFormState = {
-    firstName: '',
-    lastName: '',
+    userName: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    confirm: '',
   };
   const initValidState = {
-    firstName: null,
-    lastName: null,
+    userName: null,
     email: null,
     password: null,
-    confirmPassword: null,
+    confirm: null,
   };
   const [user, setUser] = useState(initFormState);
   const [valid, setValid] = useState(initValidState);
@@ -37,14 +35,14 @@ export default function RegisterForm({ swapReg }) {
   const passRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*.])[a-zA-Z0-9!@#$%^&*.]{8,}$/;
 
   const validate = (type, val) => {
-    if (type === "firstName" || type === "lastName") {
+    if (type === "userName") {
       val.length === 0 ? setValid({ ...valid, [type]: false }) : setValid({ ...valid, [type]: true });
     } else if (type === "email") {
       emailRegex.test(val) && val.length > 0 ? setValid({ ...valid, [type]: true }) : setValid({ ...valid, [type]: false });
     } else if (type === "password") {
       passRegex.test(val) && val.length > 0 ? setValid(valid => { return { ...valid, [type]: true }; }) : setValid(valid => { return { ...valid, [type]: false }; });
-      val === user.confirmPassword ? setValid(valid => { return { ...valid, ["confirmPassword"]: true }; }) : setValid(valid => { return { ...valid, ["confirmPassword"]: false }; });
-    } else if (type === "confirmPassword") {
+      val === user.confirm ? setValid(valid => { return { ...valid, ["confirm"]: true }; }) : setValid(valid => { return { ...valid, ["confirm"]: false }; });
+    } else if (type === "confirm") {
       val === user.password ? setValid(valid => { return { ...valid, [type]: true }; }) : setValid(valid => { return { ...valid, [type]: false }; });
     }
   };
@@ -61,7 +59,8 @@ export default function RegisterForm({ swapReg }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post("http://localhost:8000/api/user/register", user, { withCredentials: true })
+    // console.log(user);
+    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/register`, user, { withCredentials: true })
       .then(res => {
         res.data.errors ? setErrors(res.data.errors) : router.push("/dashboard");
       })
@@ -69,47 +68,29 @@ export default function RegisterForm({ swapReg }) {
   };
 
   useEffect(() => {
-    valid.firstName && valid.lastName && valid.email && valid.password && valid.confirmPassword ? setIsValid(true) : setIsValid(false);
+    valid.userName && valid.email && valid.password && valid.confirm ? setIsValid(true) : setIsValid(false);
   }, [valid, errors]);
 
   return (
     <div className="register-form max-w-md mx-auto mt-10 p-8 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6">(sked.) register.</h2>
+      <h2 className="text-2xl font-bold mb-6">Register for Sewjo</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="firstName" className="block text-gray-700 font-bold mb-2">First name</label>
+          <label htmlFor="userName" className="block text-gray-700 font-bold mb-2">Username</label>
           <input
             type="text"
-            name="firstName"
-            id="firstName"
-            value={user.firstName}
+            name="userName"
+            id="userName"
+            value={user.userName}
             onChange={handleChange}
-            autoComplete="firstName"
+            autoComplete="userName"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          {valid.firstName === false && (
+          {valid.userName === false && (
             <div className="text-red-500 text-sm mt-2">First name is required!</div>
           )}
-          {errors.firstName && valid.firstName && (
-            <div className="text-red-500 text-sm mt-2">{errors.firstName.message}</div>
-          )}
-        </div>
-        <div className="mb-4">
-          <label htmlFor="lastName" className="block text-gray-700 font-bold mb-2">Last name</label>
-          <input
-            type="text"
-            name="lastName"
-            id="lastName"
-            value={user.lastName}
-            onChange={handleChange}
-            autoComplete="lastName"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-          {valid.lastName === false && (
-            <div className="text-red-500 text-sm mt-2">Last name is required!</div>
-          )}
-          {errors.lastName && valid.lastName && (
-            <div className="text-red-500 text-sm mt-2">{errors.lastName.message}</div>
+          {errors.userName && valid.userName && (
+            <div className="text-red-500 text-sm mt-2">{errors.userName.message}</div>
           )}
         </div>
         <div className="mb-4">
@@ -164,20 +145,20 @@ export default function RegisterForm({ swapReg }) {
           )}
         </div>
         <div className="mb-4">
-          <label htmlFor="confirmPassword" className="block text-gray-700 font-bold mb-2">Confirm password</label>
+          <label htmlFor="confirm" className="block text-gray-700 font-bold mb-2">Confirm password</label>
           <input
             type={passDict[visible][0]}
-            name="confirmPassword"
-            id="confirmPassword"
-            value={user.confirmPassword}
+            name="confirm"
+            id="confirm"
+            value={user.confirm}
             onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          {valid.confirmPassword === false && (
+          {valid.confirm === false && (
             <div className="text-red-500 text-sm mt-2">The passwords must match!</div>
           )}
-          {errors.confirmPassword && valid.confirmPassword && (
-            <div className="text-red-500 text-sm mt-2">{errors.confirmPassword.message}</div>
+          {errors.confirm && valid.confirm && (
+            <div className="text-red-500 text-sm mt-2">{errors.confirm.message}</div>
           )}
         </div>
         <div className="mb-6">

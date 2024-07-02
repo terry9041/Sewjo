@@ -28,7 +28,7 @@ export default function LoginForm({ swapReg }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8000/api/user/login', user, { withCredentials: true })
+    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/login`, user, { withCredentials: true })
       .then(res => router.push('/dashboard'))
       .catch(err => {
         setValid(false);
@@ -38,7 +38,7 @@ export default function LoginForm({ swapReg }) {
 
   return (
     <div className="login-form max-w-md mx-auto mt-10 p-8 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6">(sked.) login.</h2>
+      <h2 className="text-2xl font-bold mb-6">Sewjo Login</h2>
       <form onSubmit={handleSubmit}>
         {!valid && (
           <div className="bg-red-500 text-white p-2 rounded mb-4">
