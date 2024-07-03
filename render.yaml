@@ -9,7 +9,7 @@ services:
     autoDeploy: false
     envVars:
     - key: NEXT_PUBLIC_BACKEND_URL
-      value: https://sewjo-server.onrender.com/
+      value: https://sewjo-server.onrender.com
 
   - type: web
     name: sewjo-server
@@ -19,7 +19,7 @@ services:
     rootDir: "./server/main"
     envVars:
       - key: CLIENT_URL
-        value: http://localhost:10000
+        value: https://sewjo-client.onrender.com
       - key: DATABASE_URL
         sync: false
       - key: DATABASE_USERNAME
