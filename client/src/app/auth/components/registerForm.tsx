@@ -23,7 +23,7 @@ export default function RegisterForm({ swapReg }) {
   const [valid, setValid] = useState(initValidState);
   const [isValid, setIsValid] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [errors, setErrors] = useState("");
+  const [errors, setErrors] = useState({});
   const router = useRouter();
 
   const passDict = {
@@ -59,10 +59,13 @@ export default function RegisterForm({ swapReg }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(user);
     axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/register`, user, { withCredentials: true })
       .then(res => {
-        res.data.errors ? setErrors(res.data.errors) : router.push("/dashboard");
+        if (res.data.errors) {
+          setErrors(res.data.errors);
+        } else {
+          router.push("/dashboard");
+        }
       })
       .catch(err => console.log(err));
   };
@@ -87,10 +90,10 @@ export default function RegisterForm({ swapReg }) {
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
           {valid.userName === false && (
-            <div className="text-red-500 text-sm mt-2">First name is required!</div>
+            <div className="text-red-500 text-sm mt-2">Username is required!</div>
           )}
-          {errors.userName && valid.userName && (
-            <div className="text-red-500 text-sm mt-2">{errors.userName.message}</div>
+          {(errors as any).userName && valid.userName && (
+            <div className="text-red-500 text-sm mt-2">{(errors as any).userName.message}</div>
           )}
         </div>
         <div className="mb-4">
@@ -107,15 +110,15 @@ export default function RegisterForm({ swapReg }) {
           {valid.email === false && (
             <div className="text-red-500 text-sm mt-2">A valid email is required!</div>
           )}
-          {errors.email && valid.email && (
-            <div className="text-red-500 text-sm mt-2">{errors.email.message}</div>
+          {(errors as any).email && valid.email && (
+            <div className="text-red-500 text-sm mt-2">{(errors as any).email.message}</div>
           )}
         </div>
         <div className="mb-4">
           <label htmlFor="password" className="block text-gray-700 font-bold mb-2">Password</label>
           <div className="relative">
             <input
-              type={passDict[visible][0]}
+              type={passDict[visible.toString()][0]}
               name="password"
               id="password"
               value={user.password}
@@ -128,26 +131,26 @@ export default function RegisterForm({ swapReg }) {
               onClick={showPass}
               className="absolute right-2 top-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
             >
-              {passDict[visible][1]}
+              {passDict[visible.toString()][1]}
             </button>
           </div>
           {valid.password === false ? (
             <div className="text-red-500 text-sm mt-2">
-              Passwords must be at least 8 characters long and have an uppercase letter, a lowercase letter, a number and a symbol.
+              Passwords must be at least 8 characters long and have a number and a symbol.
             </div>
           ) : (
             <div className="text-gray-500 text-sm mt-2">
-              Passwords must be at least 8 characters long and have an uppercase letter, a lowercase letter, a number and a symbol.
+              Passwords must be at least 8 characters long and have a number and a symbol.
             </div>
           )}
-          {errors.password && valid.password && (
-            <div className="text-red-500 text-sm mt-2">{errors.password.message}</div>
+          {(errors as any).password && valid.password && (
+            <div className="text-red-500 text-sm mt-2">{(errors as any).password.message}</div>
           )}
         </div>
         <div className="mb-4">
           <label htmlFor="confirm" className="block text-gray-700 font-bold mb-2">Confirm password</label>
           <input
-            type={passDict[visible][0]}
+            type={passDict[visible.toString()][0]}
             name="confirm"
             id="confirm"
             value={user.confirm}
@@ -157,8 +160,8 @@ export default function RegisterForm({ swapReg }) {
           {valid.confirm === false && (
             <div className="text-red-500 text-sm mt-2">The passwords must match!</div>
           )}
-          {errors.confirm && valid.confirm && (
-            <div className="text-red-500 text-sm mt-2">{errors.confirm.message}</div>
+          {(errors as any).confirm && valid.confirm && (
+            <div className="text-red-500 text-sm mt-2">{(errors as any).confirm.message}</div>
           )}
         </div>
         <div className="mb-6">
