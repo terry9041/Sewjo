@@ -7,6 +7,15 @@ services:
     envVars:
       - key: NEXT_PUBLIC_BACKEND_URL
         value: http://localhost:8080
+      
+  - type: web
+    name: sewjo-server
+    runtime: docker
+    plan: free
+    dockerfilePath: "./client/Dockerfile"
+    envVars:
+      - key: CLIENT_URL
+        value: http://localhost:3000
       - key: DATABASE_URL
         sync: false
       - key: DATABASE_USERNAME
@@ -17,15 +26,6 @@ services:
         sync: false
       - key: SUPABASE_PASSWORD
         sync: false
-      
-  - type: web
-    name: sewjo-server
-    runtime: docker
-    plan: free
-    dockerfilePath: "./client/Dockerfile"
-    envVars:
-      - key: CLIENT_URL
-        value: http://localhost:3000
   - type: web
     name: sewjo-ocr
     runtime: docker
