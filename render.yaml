@@ -3,7 +3,7 @@ services:
     name: sewjo-client
     runtime: docker
     plan: free
-    dockerfile: "./client/Dockerfile"
+    dockerfilePath: "./client/Dockerfile"
     envVars:
       - key: NEXT_PUBLIC_BACKEND_URL
         value: http://localhost:8080
@@ -22,7 +22,7 @@ services:
     name: sewjo-server
     runtime: docker
     plan: free
-    dockerfile: "./client/Dockerfile"
+    dockerfilePath: "./client/Dockerfile"
     envVars:
       - key: CLIENT_URL
         value: http://localhost:3000
@@ -30,5 +30,5 @@ services:
     name: sewjo-ocr
     runtime: docker
     plan: free
-    dockerfile: "./services/ocr/Dockerfile"
+    dockerfilePath: "./services/ocr/Dockerfile"
 
