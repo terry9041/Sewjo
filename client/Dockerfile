@@ -65,4 +65,4 @@ ENV NEXT_PUBLIC_BACKEND_URL=http://localhost:8080
 # Note: Don't expose ports here, Compose will handle that for us
 EXPOSE 10000
 
-CMD ["node", "server.js"]
+CMD HOSTNAME="0.0.0.0" "node server.js"
