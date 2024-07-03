@@ -12,7 +12,7 @@ services:
     name: sewjo-server
     runtime: docker
     plan: free
-    dockerfilePath: "./client/Dockerfile"
+    dockerfilePath: "./server/main/Dockerfile"
     envVars:
       - key: CLIENT_URL
         value: http://localhost:3000
