@@ -56,6 +56,7 @@ app.post('/upload', (req, res) => {
         }
 
         const OCRText = await processFile(req.file.path, res);
+        console.log('OCR Text: ', OCRText);
         res.send(OCRText);
     });
 });
