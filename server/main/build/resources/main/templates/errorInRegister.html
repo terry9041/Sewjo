@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Registration Error</title>
+  </head>
+  <body>
+    <h2>Registration Errors</h2>
+    <div th:if="${not #lists.isEmpty(errors)}">
+      <ul>
+        <li th:each="error : ${errors}" th:text="${error.defaultMessage}">
+          Error message
+        </li>
+      </ul>
+    </div>
+    <a th:href="@{/registrationPage}">Return to registration page</a>
+  </body>
+</html>
