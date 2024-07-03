@@ -15,7 +15,7 @@ services:
     rootDir: "./server/main"
     envVars:
       - key: CLIENT_URL
-        value: http://localhost:3000
+        value: http://localhost:10000
       - key: DATABASE_URL
         sync: false
       - key: DATABASE_USERNAME
