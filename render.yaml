@@ -3,6 +3,7 @@ services:
     name: sewjo-client
     runtime: node
     plan: free
+    rootDir: "./client"
     buildCommand: npm install; npm run build
     startCommand: npm run start
     autoDeploy: false
