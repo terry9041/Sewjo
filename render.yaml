@@ -9,10 +9,8 @@ services:
     autoDeploy: false
     envVars:
     - key: NEXT_PUBLIC_BACKEND_URL
-      value: http://localhost:8080
+      value: https://sewjo-server.onrender.com/
 
-      
-      
   - type: web
     name: sewjo-server
     runtime: docker
