@@ -3,6 +3,7 @@ services:
     name: sewjo-client
     runtime: docker
     plan: free
+    rootDir: "./client"
     dockerfilePath: "./client/Dockerfile"
     envVars:
       - key: NEXT_PUBLIC_BACKEND_URL
@@ -12,6 +13,7 @@ services:
     name: sewjo-server
     runtime: docker
     plan: free
+    rootDir: "./server/main"
     dockerfilePath: "./server/main/Dockerfile"
     envVars:
       - key: CLIENT_URL
@@ -30,5 +32,6 @@ services:
     name: sewjo-ocr
     runtime: docker
     plan: free
+    rootDir: "./services/ocr"
     dockerfilePath: "./services/ocr/Dockerfile"
 
