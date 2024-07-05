@@ -4,7 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const multer = require('multer');
-const { processFile } = require('./tesseractProcessor/tesseractProcessor');
+const { processFile } = require('./ocrSpaceProcessor/ocrSpaceProcessor');
 
 const app = express();
 
