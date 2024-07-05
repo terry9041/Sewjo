@@ -87,13 +87,13 @@ async function processFile(filePath, res) {
         
         // const { data: { text } } = await worker.recognize(file, {rotateAuto: true}, {imageColor: true, imageGrey: true, imageBinary: true});
 
-        const { data: { text, imageColor, imageGrey, imageBinary } } = await worker.recognize(file, {rotateAuto: true}, {imageColor: true, imageGrey: true, imageBinary: true});
+        const { data: { text} } = await worker.recognize(file, {rotateAuto: true}, {imageColor: true, imageGrey: true, imageBinary: true});
   
         console.log('Saving intermediate images: imageColor.png, imageGrey.png, imageBinary.png');
 
-        fs.writeFileSync('./uploads/imageColor.png', convertImage(imageColor));
-        fs.writeFileSync('./uploads/imageGrey.png', convertImage(imageGrey));
-        fs.writeFileSync('./uploads/imageBinary.png', convertImage(imageBinary));
+        //fs.writeFileSync('./uploads/imageColor.png', convertImage(imageColor));
+        //fs.writeFileSync('./uploads/imageGrey.png', convertImage(imageGrey));
+        //fs.writeFileSync('./uploads/imageBinary.png', convertImage(imageBinary));
         
         return text;
     } catch (error) {
