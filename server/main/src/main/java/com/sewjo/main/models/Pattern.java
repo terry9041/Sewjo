@@ -18,7 +18,7 @@ public class Pattern {
     private String name;
 
     @ElementCollection
-    private List<String> designer;
+    private List<String> brand;
 
     @NotEmpty(message = "Description is required!")
     private String description;
@@ -77,9 +77,9 @@ public class Pattern {
     public Pattern() {
     }
 
-    public Pattern(String name, List<String> designer, String description, String patternType, String format, Integer difficulty, List<String> tags, Date releaseDate, Boolean free, Boolean outOfPrint, String image, List<String> ageGroups, String bodyType, String sizeRange, List<Character> cupSizes, Double bustMin, Double bustMax, Double hipMin, Double hipMax, Boolean isImperial, List<String> supplies, List<Fabric> fabrics, User user) {
+    public Pattern(String name, List<String> brand, String description, String patternType, String format, Integer difficulty, List<String> tags, Date releaseDate, Boolean free, Boolean outOfPrint, String image, List<String> ageGroups, String bodyType, String sizeRange, List<Character> cupSizes, Double bustMin, Double bustMax, Double hipMin, Double hipMax, Boolean isImperial, List<String> supplies, List<Fabric> fabrics, User user) {
         this.name = name;
-        this.designer = designer;
+        this.brand = brand;
         this.description = description;
         this.patternType = patternType;
         this.format = format;
@@ -103,8 +103,6 @@ public class Pattern {
         this.user = user;
     }
 
-    // Getters and Setters
-
     public Long getId() {
         return id;
     }
@@ -121,12 +119,12 @@ public class Pattern {
         this.name = name;
     }
 
-    public List<String> getDesigner() {
-        return designer;
+    public List<String> getBrand() {
+        return brand;
     }
 
-    public void setDesigner(List<String> designer) {
-        this.designer = designer;
+    public void setBrand(List<String> brand) {
+        this.brand = brand;
     }
 
     public String getDescription() {
