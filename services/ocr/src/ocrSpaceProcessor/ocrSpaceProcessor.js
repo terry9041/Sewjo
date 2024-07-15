@@ -30,6 +30,22 @@ async function enhanceImage(imageBuffer) {
     return enhancedImageBuffer;
 }
 
+function parseMeasurements(parsedText, userSize) {
+    console.log(typeof(parsedText));
+}
+
+function textCleaner(string) {
+    string.replace("S", "5");
+    string.replace("O", "0");
+    string.replace("%", "½");
+    for (let i = 0; i < string.length; i++) {
+        if (!(string[i] >= "0" && string[i] <= "9") && !(string[i] >= "⅐" && string[i] <= "⅞")) {
+            string[i] = "0";
+        }
+    }
+    return string;
+}
+
 async function processFile(filePath, res) {
     try {
 
@@ -42,9 +58,10 @@ async function processFile(filePath, res) {
         // const res2 = await ocrSpace('/path/to/file.pdf', { apiKey: <apikey> });
 
         // Using your personal API key + base64 image + custom language
-        const res = await ocrSpace(enhancedImagePath, { apiKey: ocrKey, language: 'eng', OCREngine: 2 });
-        //console.log(res);
-        return res.ParsedResults;
+        const res1 = await ocrSpace(enhancedImagePath, { apiKey: ocrKey, language: 'eng', OCREngine: 2 });
+        //console.log(res1.ParsedResults[0].ParsedText);
+        parseMeasurements(res1.ParsedResults[0].ParsedText, 14);
+        return res1.ParsedResults;
     } catch (error) {
         console.error('Error during OCR processing: ', error);
         res.status(500).send('Error during OCR processing.');
