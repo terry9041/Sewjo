@@ -6,7 +6,7 @@ import axios from 'axios';
  * The registration component for the application
  * @returns the registration component
  */
-export default function RegisterForm({ swapReg }) {
+export default function RegisterForm({ swapReg })  {
   const initFormState = {
     userName: '',
     email: '',
@@ -59,15 +59,21 @@ export default function RegisterForm({ swapReg }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/register`, user, { withCredentials: true })
-      .then(res => {
-        if (res.data.errors) {
-          setErrors(res.data.errors);
-        } else {
-          router.push("/dashboard");
-        }
-      })
-      .catch(err => console.log(err));
+    try {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/register`, user, { withCredentials: true });
+      if (res.data.errors) {
+        setErrors(res.data.errors);
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      console.log(err);
+      if (err.response && err.response.data && err.response.data.errors) {
+        setErrors(err.response.data.errors);
+      } else {
+        setErrors({ server: 'An unexpected error occurred. Please try again later.' });
+      }
+    }
   };
 
   useEffect(() => {
