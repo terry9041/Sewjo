@@ -63,8 +63,8 @@ public class PatternService {
         return Optional.empty();
     }
 
-    public List<Pattern> findByDesigner(String designer, Long userId) {
-        List<Pattern> patterns = patternRepo.findByDesigner(designer);
+    public List<Pattern> findByDesigner(String brand, Long userId) {
+        List<Pattern> patterns = patternRepo.findByBrand(brand);
         patterns.removeIf(pattern -> !pattern.getUser().getId().equals(userId));
         return patterns;
     }

@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "patterns")
 public class Pattern {
@@ -66,12 +69,13 @@ public class Pattern {
     @ElementCollection
     private List<String> supplies;
 
-    @NotEmpty(message = "Fabrics are required!")
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "pattern-fabrics")
     private List<Fabric> fabrics;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference(value = "user-patterns")
     private User user;
 
     public Pattern() {

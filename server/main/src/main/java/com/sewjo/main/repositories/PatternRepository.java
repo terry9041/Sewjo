@@ -13,7 +13,7 @@ public interface PatternRepository extends CrudRepository<Pattern, Long> {
 
     Optional<Pattern> findByName(String name);
 
-    List<Pattern> findByDesigner(String designer);
+    List<Pattern> findByBrand(String brand);
 
     List<Pattern> findByPatternType(String patternType);
 

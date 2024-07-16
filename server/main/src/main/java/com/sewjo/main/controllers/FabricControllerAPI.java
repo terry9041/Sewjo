@@ -1,6 +1,7 @@
 package com.sewjo.main.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
@@ -48,19 +49,20 @@ public class FabricControllerAPI {
         return ResponseEntity.ok(fabric);
     }
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createFabric(@RequestBody @Valid Fabric fabric, BindingResult result, HttpSession session) {
         if (session.getAttribute("id") == null) {
             return ResponseEntity.status(401).body("Unauthorized");
         }
 
         Long userId = (Long) session.getAttribute("id");
-        fabric.setUser(userServ.findById(userId)); // Assume userServ is available to get the user
+        fabric.setUser(userServ.findById(userId));
 
-        Fabric savedFabric = fabricService.save(fabric, result);
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
+
+        Fabric savedFabric = fabricService.save(fabric, result);
         return ResponseEntity.ok(savedFabric);
     }
 

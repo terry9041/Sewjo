@@ -1,9 +1,12 @@
 package com.sewjo.main.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.AssertTrue;
 
@@ -19,69 +22,80 @@ public class Fabric {
     private String name;
 
     @NotNull(message = "Length is required!")
+    @Min(value = 0, message = "Length must not be negative")
     private Double length;
 
     @NotNull(message = "Is length in meters is required!")
     private Boolean lengthInMeters;
 
     @NotNull(message = "Width is required!")
+    @Min(value = 0, message = "Width must not be negative")
     private Double width;
 
     @NotNull(message = "Is width in centimeters is required!")
     private Boolean widthInCentimeters;
 
     @NotNull(message = "Remnant status is required!")
-    private Boolean remnant = false;
+    private Boolean remnant;
 
     private String image;
-
     private String composition;
-
     private String structure;
-
     private String color;
-
     private String print;
-
     private String description;
-
     private String brand;
 
+    @DecimalMin(value = "0.0", message = "Shrinkage must be between 0 and 1")
+    @DecimalMax(value = "1.0", message = "Shrinkage must be between 0 and 1")
     private Float shrinkage;
 
-    private Boolean preWashed = false;
-
+    private Boolean preWashed;
     private String careInstructions;
-
     private String location;
 
     @NotNull(message = "Stretch status is required!")
-    private Boolean stretch = false;
+    private Boolean stretch;
 
     @NotNull(message = "Sheerness is required!")
     @DecimalMin(value = "0.0", message = "Sheerness must be between 0 and 1")
     @DecimalMax(value = "1.0", message = "Sheerness must be between 0 and 1")
-    private Float sheerness = 0.0f;
+    private Float sheerness;
 
     @NotNull(message = "Drape is required!")
     @DecimalMin(value = "0.0", message = "Drape must be between 0 and 1")
     @DecimalMax(value = "1.0", message = "Drape must be between 0 and 1")
-    private Float drape = 0.5f;
+    private Float drape;
 
     @NotNull(message = "Weight is required!")
     @DecimalMin(value = "0.0", message = "Weight must be between 0 and 1")
     @DecimalMax(value = "1.0", message = "Weight must be between 0 and 1")
-    private Float weight = 0.5f;
+    private Float weight;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference("user-fabrics")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "pattern_id")
+    @JsonBackReference("pattern-fabrics")
     private Pattern pattern;
-
+    
     public Fabric() {
+    }
+
+    public Fabric(String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters, Boolean remnant, Boolean stretch, Float sheerness, Float drape, Float weight) {
+        this.name = name;
+        this.length = length;
+        this.lengthInMeters = lengthInMeters;
+        this.width = width;
+        this.widthInCentimeters = widthInCentimeters;
+        this.remnant = remnant;
+        this.stretch = stretch;
+        this.sheerness = sheerness;
+        this.drape = drape;
+        this.weight = weight;
     }
 
     public Fabric(String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters, Boolean remnant, String image, String composition, String structure, String color, String print, String description, String brand, Float shrinkage, Boolean preWashed, String careInstructions, String location, Boolean stretch, Float sheerness, Float drape, Float weight, User user, Pattern pattern) {
@@ -304,7 +318,7 @@ public class Fabric {
 
     @AssertTrue(message = "Fabric must be associated with either a user or a pattern, not both")
     private boolean isValidAssociation() {
-        return (user != null && pattern == null) || (user == null && pattern != null);
+        return (user == null && pattern == null) || (user != null && pattern == null) || (user == null && pattern != null);
     }
 
     public double convertLengthToMeters() {

@@ -6,9 +6,12 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "users")
 public class User {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,15 +35,17 @@ public class User {
     private String confirm;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("user-fabrics")
     private List<Fabric> fabrics;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("user-patterns")
+    private List<Pattern> patterns;
+
+    private String image;
 
     // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     // private List<Project> projects;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Pattern> patterns;
-
-    // Constructors, getters, and setters
 
     public User() {
     }
@@ -50,6 +55,14 @@ public class User {
         this.email = email;
         this.password = password;
         this.confirm = confirm;
+    }
+
+    public User(String userName, String email, String password, String confirm, String image) {
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.confirm = confirm;
+        this.image = image;
     }
 
     // other getters and setters
@@ -116,5 +129,13 @@ public class User {
 
     public void setPatterns(List<Pattern> patterns) {
         this.patterns = patterns;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
