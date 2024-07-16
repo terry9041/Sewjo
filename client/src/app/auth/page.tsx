@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
+import LoginForm from './components/loginForm';
+import RegisterForm from './components/registerForm';
 import axios from 'axios';
 
 export default function Auth() {

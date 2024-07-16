@@ -17,10 +17,6 @@ build/
 .vscode/
 .idea/
 
-# Ignore package lock files
-package-lock.json
-yarn.lock
-
 # Ignore Tesseract OCR data files
 *.traineddata
 

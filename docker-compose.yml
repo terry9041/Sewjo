@@ -1,0 +1,35 @@
+services:
+  sewjo-client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - my_network
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8080
+
+  sewjo-server:
+    build:
+      context: ./server/main
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - my_network
+    environment:
+      - CLIENT_URL=http://localhost:3000
+
+  sewjo-ocr:
+    build:
+      context: ./services/ocr
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    external: false

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login Error</title>
+    <!-- Add your stylesheet links here -->
+  </head>
+  <body>
+    <h1>Login Error</h1>
+    <div th:if="${errorMessage}">
+      <p th:text="${errorMessage}"></p>
+    </div>
+    <div th:if="${not #lists.isEmpty(errors)}">
+      <ul>
+        <li th:each="error : ${errors}" th:text="${error.defaultMessage}">
+          Error message
+        </li>
+      </ul>
+    </div>
+    <div>
+      <a th:href="@{/}">Return to Login</a>
+    </div>
+  </body>
+</html>

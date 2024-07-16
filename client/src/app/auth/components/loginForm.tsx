@@ -61,7 +61,7 @@ export default function LoginForm({ swapReg }) {
           <label htmlFor="password" className="block text-gray-700 font-bold mb-2">Password</label>
           <div className="relative">
             <input
-              type={passDict[visible][0]}
+              type={passDict[visible.toString()][0]}
               name="password"
               id="password"
               value={user.password}
@@ -74,7 +74,7 @@ export default function LoginForm({ swapReg }) {
               onClick={showPass}
               className="absolute right-2 top-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
             >
-              {passDict[visible][1]}
+              {passDict[visible.toString()][1]}
             </button>
           </div>
         </div>
@@ -88,7 +88,7 @@ export default function LoginForm({ swapReg }) {
         </div>
       </form>
       <p className="text-center">
-        Don't have an account? <button onClick={swapReg} className="text-blue-500 hover:text-blue-700">Register here!</button>
+        Don&apos;t have an account? <button onClick={swapReg} className="text-blue-500 hover:text-blue-700">Register here!</button>
       </p>
     </div>
   );

@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: sewjo-client
+    runtime: node
+    plan: free
+    rootDir: "./client"
+    buildCommand: npm install; npm run build
+    startCommand: npm run start
+    autoDeploy: false
+    envVars:
+    - key: NEXT_PUBLIC_BACKEND_URL
+      value: https://sewjo-server.onrender.com
+
+  - type: web
+    name: sewjo-server
+    runtime: docker
+    plan: free
+    autoDeploy: false
+    rootDir: "./server/main"
+    envVars:
+      - key: CLIENT_URL
+        value: https://sewjo-client.onrender.com
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USERNAME
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: SUPABASE_EMAIL
+        sync: false
+      - key: SUPABASE_PASSWORD
+        sync: false
+  - type: web
+    name: sewjo-ocr
+    runtime: docker
+    autoDeploy: false
+    plan: free
+    rootDir: "./services/ocr"
+
