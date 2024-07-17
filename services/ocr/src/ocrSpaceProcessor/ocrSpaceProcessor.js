@@ -57,7 +57,8 @@ function parseMeasurements(parsedText) {
         },
         lining: {
             fabric45: []
-        }
+        },
+        raw: parsedText
     };
 
     let currentSection = '';
@@ -121,27 +122,26 @@ function textCleaner(string) {
 
 async function processFile(filePath, res) {
     try {
-        // await enhanceImage(filePath);
 
-        // const ocrResult = await ocrSpace(file,
-        //     {
-        //         apiKey: ocrKey,
-        //         language: 'eng',
-        //         OCREngine: 2,
-        //         isTable: true,
-        //         detectOrientation: true,
-        //         isOverlayRequired: false
-        //     });
+        const ocrResult = await ocrSpace(filePath,
+            {
+                apiKey: ocrKey,
+                language: 'eng',
+                OCREngine: 2,
+                isTable: true,
+                detectOrientation: true,
+                isOverlayRequired: false
+            });
         
-        // if (!ocrResult || !ocrResult.ParsedResults || ocrResult.ParsedResults.length === 0) {
-        //     console.error('OCR processing failed or returned no results');
-        //     return null;
-        // }
+        if (!ocrResult || !ocrResult.ParsedResults || ocrResult.ParsedResults.length === 0) {
+            console.error('OCR processing failed or returned no results');
+            return null;
+        }
 
         // fs.writeFileSync('./uploads/ocrData.json', JSON.stringify(ocrResult));
 
-        //using dummy json
-        const ocrResult = JSON.parse(fs.readFileSync('./ocrData.json', 'utf8'));
+        // //using dummy json
+        // const ocrResult = JSON.parse(fs.readFileSync('./ocrData.json', 'utf8'));
 
         const parsedText = ocrResult.ParsedResults[0].ParsedText;
 
