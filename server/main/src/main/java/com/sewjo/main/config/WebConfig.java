@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        String clientUrl = System.getenv("CLIENT_URL");
+        String clientUrl = System.getProperty("CLIENT_URL", "http://localhost:3000");
         System.out.println("CLIENT_URL: " + clientUrl);
         if (clientUrl != null && !clientUrl.isEmpty()) {
             registry.addMapping("/api/**")
