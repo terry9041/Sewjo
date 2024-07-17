@@ -4,12 +4,6 @@ const sharp = require('sharp');
 const enhancedImagePath = './uploads/enhanced.jpg';
 const ocrKey = process.env.OCRSPACEKEY;
 
-
-/**
- * Enhance an image buffer using sharp.
- * @param {Buffer} imageBuffer - The image buffer to enhance.
- * @returns {Promise<Buffer>} Enhanced image buffer.
- */
 async function enhanceImage(imageBuffer) {
     const enhancedImageBuffer = await sharp(imageBuffer)
         .grayscale()
@@ -30,41 +24,132 @@ async function enhanceImage(imageBuffer) {
     return enhancedImageBuffer;
 }
 
-function parseMeasurements(parsedText, userSize) {
-    console.log(typeof(parsedText));
+
+
+function parseMeasurements(parsedText) {
+    if (!parsedText) {
+        console.error('No parsed text available');
+        return null;
+    }
+
+    const lines = parsedText.split('\n');
+    
+    const patternSizes = {
+        combinations: lines[0],
+        jacket: {
+            fabric45: [],
+            fabric60: [],
+            fusibleKnitInterfacing: [],
+            widthLowerEdge: [],
+            backLength: []
+        },
+        pants: {
+            fabric45: [],
+            fabric60: [],
+            fusibleKnitInterfacing: [],
+            widthEachLeg: [],
+            sideLengthFromWaist: ''
+        },
+        jacketAndPants: {
+            fabric45: [],
+            fabric60: [],
+            fusibleKnitInterfacing: []
+        },
+        lining: {
+            fabric45: []
+        }
+    };
+
+    let currentSection = '';
+
+    lines.forEach(line => {
+        if (line.includes('JACKET') && !line.includes('AND PANTS')) currentSection = 'jacket';
+        else if (line.includes('PANTS') && !line.includes('JACKET AND')) currentSection = 'pants';
+        else if (line.includes('JACKET AND PANTS')) currentSection = 'jacketAndPants';
+        else if (line.includes('LINING')) currentSection = 'lining';
+        else if (line.includes('Width, lower edge')) currentSection = 'jacketWidth';
+        else if (line.includes('Width, each leg')) currentSection = 'pantsWidth';
+        else if (line.includes('Back length from base of your neck')) currentSection = 'jacketBackLength';
+        else if (line.includes('Side length from waist')) currentSection = 'pantsSideLength';
+        else {
+            const values = line.split(/\s+/).filter(v => v.trim());
+            if (values.length >= 3) {
+                switch(currentSection) {
+                    case 'jacket':
+                        if (patternSizes.jacket.fabric45.length === 0) patternSizes.jacket.fabric45 = values;
+                        else if (patternSizes.jacket.fabric60.length === 0) patternSizes.jacket.fabric60 = values;
+                        else if (patternSizes.jacket.fusibleKnitInterfacing.length === 0) patternSizes.jacket.fusibleKnitInterfacing = values;
+                        break;
+                    case 'pants':
+                        if (patternSizes.pants.fabric45.length === 0) patternSizes.pants.fabric45 = values;
+                        else if (patternSizes.pants.fabric60.length === 0) patternSizes.pants.fabric60 = values;
+                        else if (patternSizes.pants.fusibleKnitInterfacing.length === 0) patternSizes.pants.fusibleKnitInterfacing = values;
+                        break;
+                    case 'jacketAndPants':
+                        if (patternSizes.jacketAndPants.fabric45.length === 0) patternSizes.jacketAndPants.fabric45 = values;
+                        else if (patternSizes.jacketAndPants.fabric60.length === 0) patternSizes.jacketAndPants.fabric60 = values;
+                        else if (patternSizes.jacketAndPants.fusibleKnitInterfacing.length === 0) patternSizes.jacketAndPants.fusibleKnitInterfacing = values;
+                        break;
+                    case 'lining':
+                        if (patternSizes.lining.fabric45.length === 0) patternSizes.lining.fabric45 = values;
+                        break;
+                    case 'jacketWidth':
+                        patternSizes.jacket.widthLowerEdge = values;
+                        break;
+                    case 'pantsWidth':
+                        patternSizes.pants.widthEachLeg = values;
+                        break;
+                    case 'jacketBackLength':
+                        patternSizes.jacket.backLength = values;
+                        break;
+                }
+            } else if (currentSection === 'pantsSideLength') {
+                patternSizes.pants.sideLengthFromWaist = values[0];
+            }
+        }
+    });
+
+    return patternSizes;
 }
 
 function textCleaner(string) {
-    string.replace("S", "5");
-    string.replace("O", "0");
-    string.replace("%", "½");
-    for (let i = 0; i < string.length; i++) {
-        if (!(string[i] >= "0" && string[i] <= "9") && !(string[i] >= "⅐" && string[i] <= "⅞")) {
-            string[i] = "0";
-        }
-    }
-    return string;
+    return string.replace("S", "5")
+                 .replace("O", "0")
+                 .replace("%", "½")
+                 .replace(/[^0-9⅐-⅞]/g, "0");
 }
 
 async function processFile(filePath, res) {
     try {
+        // await enhanceImage(filePath);
 
-        await enhanceImage(filePath);
+        // const ocrResult = await ocrSpace(file,
+        //     {
+        //         apiKey: ocrKey,
+        //         language: 'eng',
+        //         OCREngine: 2,
+        //         isTable: true,
+        //         detectOrientation: true,
+        //         isOverlayRequired: false
+        //     });
+        
+        // if (!ocrResult || !ocrResult.ParsedResults || ocrResult.ParsedResults.length === 0) {
+        //     console.error('OCR processing failed or returned no results');
+        //     return null;
+        // }
 
-        // Using the OCR.space default free API key (max 10reqs in 10mins) + remote file
-        // const res1 = await ocrSpace('http://dl.a9t9.com/ocrbenchmark/eng.png');
+        // fs.writeFileSync('./uploads/ocrData.json', JSON.stringify(ocrResult));
 
-        // Using your personal API key + local file
-        // const res2 = await ocrSpace('/path/to/file.pdf', { apiKey: <apikey> });
+        //using dummy json
+        const ocrResult = JSON.parse(fs.readFileSync('./ocrData.json', 'utf8'));
 
-        // Using your personal API key + base64 image + custom language
-        const res1 = await ocrSpace(enhancedImagePath, { apiKey: ocrKey, language: 'eng', OCREngine: 2 });
-        //console.log(res1.ParsedResults[0].ParsedText);
-        parseMeasurements(res1.ParsedResults[0].ParsedText, 14);
-        return res1.ParsedResults;
+        const parsedText = ocrResult.ParsedResults[0].ParsedText;
+
+        const parsedData = parseMeasurements(parsedText);
+        return parsedData;
     } catch (error) {
         console.error('Error during OCR processing: ', error);
-        res.status(500).send('Error during OCR processing.');
+        throw error; 
     } finally {
         fs.unlink(filePath, (err) => {
             if (err) {

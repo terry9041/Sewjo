@@ -2,15 +2,155 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCR Test</title>
+    <title>Pattern Measurements</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .section-header {
+            background-color: #e6e6e6;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h1>OCR Test</h1>
+    <h1>Pattern Measurements</h1>
     <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="test" />
+        <input type="file" name="test" accept="image/*" required>
         <button type="submit">Convert</button>
     </form>
+
+    <% if (locals.patternSizes) { %>
+        <table>
+            <tr>
+                <th colspan="10"><%= patternSizes.combinations %></th>
+            </tr>
+            <tr>
+                <th>Sizes</th>
+                <% ['6', '8', '10', '12', '14', '16', '18', '20', '22'].forEach(size => { %>
+                    <th><%= size %></th>
+                <% }); %>
+            </tr>
+            <tr class="section-header">
+                <td colspan="10">Jacket</td>
+            </tr>
+            <tr>
+                <% patternSizes.jacket.fabric45.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr>
+                <% patternSizes.jacket.fabric60.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr>
+                <td>Fusible Knit Interfacing 60"</td>
+                <% patternSizes.jacket.fusibleKnitInterfacing.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr class="section-header">
+                <td colspan="10">Pants</td>
+            </tr>
+            <tr>
+                <% patternSizes.pants.fabric45.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr>
+                <% patternSizes.pants.fabric60.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr>
+                <td>Fusible Knit Interfacing 60"</td>
+                <% patternSizes.pants.fusibleKnitInterfacing.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr class="section-header">
+                <td colspan="10">Jacket and Pants</td>
+            </tr>
+            <tr>
+                <% patternSizes.jacketAndPants.fabric45.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr>
+                <% patternSizes.jacketAndPants.fabric60.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr>
+                <td>Fusible Knit Interfacing 60"</td>
+                <% patternSizes.jacketAndPants.fusibleKnitInterfacing.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr class="section-header">
+                <td colspan="10">Lining (Both Jackets)</td>
+            </tr>
+            <tr>
+                <% patternSizes.lining.fabric45.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr class="section-header">
+                <td colspan="10">Width, lower edge</td>
+            </tr>
+            <tr>
+                <% patternSizes.jacket.widthLowerEdge.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr class="section-header">
+                <td colspan="10">Width, each leg</td>
+            </tr>
+            <tr>
+                <% patternSizes.pants.widthEachLeg.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr class="section-header">
+                <td colspan="10">Back length from base of your neck</td>
+            </tr>
+            <tr>
+                <% patternSizes.jacket.backLength.forEach(value => { %>
+                    <td><%= value %></td>
+                <% }); %>
+            </tr>
+            <tr class="section-header">
+                <td colspan="10">Side length from waist</td>
+            </tr>
+            <tr>
+                <td>Pants</td>
+                <td colspan="9"><%= patternSizes.pants.sideLengthFromWaist %></td>
+            </tr>
+        </table>
+    <% } %>
 </body>
 </html>
