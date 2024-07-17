@@ -6,11 +6,11 @@ const sharp = require('sharp');
 // Initialize the worker
 let worker;
 async function initializeWorker() {
-    worker = await createWorker('fractionModel', 0, {
-        langPath: '../ocr/tessdata', // Path to the directory containing fractionModel.traineddata
-        legacyCore: true, 
-        legacyLang: true
-    });
+    // worker = await createWorker('fractionModel', 0, {
+    //     langPath: '../ocr/tessdata', // Path to the directory containing fractionModel.traineddata
+    //     legacyCore: true, 
+    //     legacyLang: true
+    // });
     /*await worker.setParameters({
         tessedit_char_whitelist: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ/', // Add vulgar fractions
         preserve_interword_spaces: '1'

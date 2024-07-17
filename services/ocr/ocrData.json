@@ -1,0 +1,15 @@
+{
+    "ParsedResults": [
+        {
+            "TextOrientation": "0",
+            "FileParseExitCode": 1,
+            "ParsedText": "Combinations: A(6-8-10). D(12-14-16). FW(18-20-22)\t\r\nSIZES\t6\t8\t10\t12\t14\t16\t18\t20\t22\t\r\nJACKET\t\r\n45**/**\t3¼ 3¼ 3% 3%\t3%\t3%\t4\t4\t\r\n60**/**\t2½\t2% 212 2½ 274\t2%\t2#\t2%\t2%\t\r\nFUSIBLE KNIT INTERFACING\t\r\n60\"*\t2\t2\t2\t2\t2%\t2¼\t2%\t2%\t2%\t\r\nPANTS\t\r\n45**/**\t24 21 24 212 2/2\t2½2\t2% 2%\t2¼\t\r\n1% 2%\t\r\n60**/**\t1½\t1½2\t1%2\t1½2 1½2\t1%\t2%\t\r\nFUSIBLE KNIT INTERFACING\t\r\n60**. Ya yd.\t\r\nJACKET AND PANTS\t\r\n64\t\r\n45**/**\t5% 5% 5% 5½\t5½2\t5%2\t5%\t6%\t\r\n60**/\"*\t37|\t3% 3% 3% 4\t4\t4%\t4½2\t4½2\t\r\nFUSIBLE KNIT INTERFACING\t\r\n60**\t2\t2\t2¼ 2¼ 2¼ 2% 2% 2%\t\r\nLINING (Both Jackets) |\t\r\n45*\t2\t2%\t2% 2% 2% 2¼ 2¼ 2%\t\r\nWidth, lower edge\t\r\nJacket\t43\t44\t45\t4642 483 50½2 52½2 54½2 56½2\t\r\nWidth, each leg\t16½ 17\t\r\nPants\t13\t13½2 14\t14½ 15\t15½ 16\t\r\nBack length from base of your neck\t\r\nJacket\t34½ 3444 35\t35¼ 35½ 35% 36\t36% 36/2\t\r\nSide length from waist\t\r\nPants, 42\"\t\r\n",
+            "ErrorMessage": "",
+            "ErrorDetails": ""
+        }
+    ],
+    "OCRExitCode": 1,
+    "IsErroredOnProcessing": false,
+    "ProcessingTimeInMilliseconds": "953",
+    "SearchablePDFURL": "Searchable PDF not generated as it was not requested."
+}
