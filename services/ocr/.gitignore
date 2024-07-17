@@ -19,7 +19,3 @@ build/
 
 # Ignore Tesseract OCR data files
 *.traineddata
-
-uploads/
-
-!uploads/*.json
