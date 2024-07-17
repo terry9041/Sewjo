@@ -1,14 +1,14 @@
 services:
-  sewjo-client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    networks:
-      - my_network
-    environment:
-      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8080
+  # sewjo-client:
+  #   build:
+  #     context: ./client
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - my_network
+  #   environment:
+  #     - NEXT_PUBLIC_BACKEND_URL=http://localhost:8080
 
   sewjo-server:
     build:
@@ -19,16 +19,21 @@ services:
     networks:
       - my_network
     environment:
-      - CLIENT_URL=http://localhost:3000
+      - CLIENT_URL={CLIENT_URL}
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - SUPABASE_EMAIL=${SUPABASE_EMAIL}
+      - SUPABASE_PASSWORD=${SUPABASE_PASSWORD}
 
-  sewjo-ocr:
-    build:
-      context: ./services/ocr
-      dockerfile: Dockerfile
-    ports:
-      - "4000:4000"
-    networks:
-      - my_network
+  # sewjo-ocr:
+  #   build:
+  #     context: ./services/ocr
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "4000:4000"
+  #   networks:
+  #     - my_network
 
 networks:
   my_network:
