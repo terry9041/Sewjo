@@ -7,7 +7,7 @@ interface FabricFormData {
     width: number;
     widthInCentimeters: boolean;
     remnant: boolean;
-    image: string;
+    image: File | null;
     composition: string;
     structure: string;
     color: string;
@@ -25,18 +25,18 @@ interface FabricFormData {
 }
 
 interface FabricFormProps {
-    handleSubmit: (formData: FabricFormData) => void;
+    handleSubmit: (formData: FormData) => void;
 }
 
 export default function FabricForm({ handleSubmit }: FabricFormProps) {
     const [formData, setFormData] = useState<FabricFormData>({
         name: '',
         length: 0,
-        lengthInMeters: false,
+        lengthInMeters: true,
         width: 0,
-        widthInCentimeters: false,
+        widthInCentimeters: true,
         remnant: false,
-        image: '',
+        image: null,
         composition: '',
         structure: '',
         color: '',
@@ -62,6 +62,34 @@ export default function FabricForm({ handleSubmit }: FabricFormProps) {
         }));
     };
 
+    const handleRadioChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        if (name === 'lengthInMeters') {
+            const newLength = value === 'meters' ? formData.length * 0.9144 : formData.length / 0.9144;
+            setFormData(prevState => ({
+                ...prevState,
+                lengthInMeters: value === 'meters',
+                length: newLength
+            }));
+        } else if (name === 'widthInCentimeters') {
+            const newWidth = value === 'centimeters' ? formData.width * 2.54 : formData.width / 2.54;
+            setFormData(prevState => ({
+                ...prevState,
+                widthInCentimeters: value === 'centimeters',
+                width: newWidth
+            }));
+        }
+    };
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFormData(prevState => ({
+                ...prevState,
+                image: e.target.files[0]
+            }));
+        }
+    };
+
     const handleSliderChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prevState => ({
@@ -72,7 +100,15 @@ export default function FabricForm({ handleSubmit }: FabricFormProps) {
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        handleSubmit(formData);
+        const data = new FormData();
+        for (const key in formData) {
+            if (formData[key as keyof FabricFormData] instanceof File) {
+                data.append(key, formData[key as keyof FabricFormData] as File);
+            } else {
+                data.append(key, formData[key as keyof FabricFormData] as string);
+            }
+        }
+        handleSubmit(data);
     };
 
     return (
@@ -86,28 +122,39 @@ export default function FabricForm({ handleSubmit }: FabricFormProps) {
             <div className="mb-4">
                 <label className="block mb-2" htmlFor="length">Length</label>
                 <input type="number" id="length" name="length" value={formData.length} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
-                <span className="text-red-500 text-xs italic">*required</span>
-            </div>
-            <div className="mb-4">
-                <label className="block mb-2" htmlFor="lengthInMeters">Length in Meters</label>
-                <input type="checkbox" id="lengthInMeters" name="lengthInMeters" checked={formData.lengthInMeters} onChange={handleChange} className="mr-2" />
+                <div className="flex mt-2 space-x-2">
+                    <label className={`flex-1 text-center py-2 border rounded cursor-pointer ${formData.lengthInMeters ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'}`}>
+                        <input type="radio" name="lengthInMeters" value="meters" checked={formData.lengthInMeters} onChange={handleRadioChange} className="hidden" />
+                        <span>Meters</span>
+                    </label>
+                    <label className={`flex-1 text-center py-2 border rounded cursor-pointer ${!formData.lengthInMeters ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'}`}>
+                        <input type="radio" name="lengthInMeters" value="yards" checked={!formData.lengthInMeters} onChange={handleRadioChange} className="hidden" />
+                        <span>Yards</span>
+                    </label>
+                </div>
             </div>
             <div className="mb-4">
                 <label className="block mb-2" htmlFor="width">Width</label>
                 <input type="number" id="width" name="width" value={formData.width} onChange={handleChange} className="w-full px-3 py-2 border rounded" required />
-                <span className="text-red-500 text-xs italic">*required</span>
-            </div>
-            <div className="mb-4">
-                <label className="block mb-2" htmlFor="widthInCentimeters">Width in Centimeters</label>
-                <input type="checkbox" id="widthInCentimeters" name="widthInCentimeters" checked={formData.widthInCentimeters} onChange={handleChange} className="mr-2" />
+                <div className="flex mt-2 space-x-2">
+                    <label className={`flex-1 text-center py-2 border rounded cursor-pointer ${formData.widthInCentimeters ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'}`}>
+                        <input type="radio" name="widthInCentimeters" value="centimeters" checked={formData.widthInCentimeters} onChange={handleRadioChange} className="hidden" />
+                        <span>Centimeters</span>
+                    </label>
+                    <label className={`flex-1 text-center py-2 border rounded cursor-pointer ${!formData.widthInCentimeters ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'}`}>
+                        <input type="radio" name="widthInCentimeters" value="inches" checked={!formData.widthInCentimeters} onChange={handleRadioChange} className="hidden" />
+                        <span>Inches</span>
+                    </label>
+                </div>
             </div>
             <div className="mb-4">
                 <label className="block mb-2" htmlFor="remnant">Remnant</label>
                 <input type="checkbox" id="remnant" name="remnant" checked={formData.remnant} onChange={handleChange} className="mr-2" />
             </div>
             <div className="mb-4">
-                <label className="block mb-2" htmlFor="image">Image URL</label>
-                <input type="text" id="image" name="image" value={formData.image} onChange={handleChange} className="w-full px-3 py-2 border rounded" />
+                <label className="block mb-2" htmlFor="image">Image</label>
+                <input type="file" id="image" name="image" onChange={handleFileChange} className="w-full px-3 py-2 border rounded" />
+                <span className="text-red-500 text-xs italic">*required</span>
             </div>
             <div className="mb-4">
                 <label className="block mb-2" htmlFor="composition">Composition</label>

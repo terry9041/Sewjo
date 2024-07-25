@@ -7,12 +7,14 @@ import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 
-import com.sewjo.main.models.User;
+import com.sewjo.main.dto.UserDTO;
 import com.sewjo.main.models.LoginUser;
-import com.sewjo.main.service.*;
+import com.sewjo.main.models.User;
+import com.sewjo.main.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +34,7 @@ public class LoginControllerAPI {
         try {
             user = userServ.login(newLogin, result);
         } catch (Exception e) {
-            logger.error("Login error: {}", e.getMessage());
+            logger.error("Login error: {}", e.getMessage(), e);
             return ResponseEntity.status(500).body("An unexpected error occurred. Please try again later.");
         }
 
@@ -44,13 +46,14 @@ public class LoginControllerAPI {
         session.setAttribute("id", user.getId());
         addSameSiteCookie(response, "JSESSIONID", session.getId(), true);
 
-        return ResponseEntity.ok(user);
+        UserDTO userDTO = userServ.convertToDTO(user);
+        return ResponseEntity.ok(userDTO);
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid User newUser,
                                       BindingResult result, HttpSession session, HttpServletResponse response) {
-        logger.info("Registering new user: {}", newUser);
+        logger.info("Registering new user: {}", newUser.getEmail());
         User user = userServ.register(newUser, result);
 
         if (result.hasErrors()) {
@@ -61,9 +64,11 @@ public class LoginControllerAPI {
         session.setAttribute("id", user.getId());
         addSameSiteCookie(response, "JSESSIONID", session.getId(), true);
 
-        return ResponseEntity.ok(user);
+        UserDTO userDTO = userServ.convertToDTO(user);
+        return ResponseEntity.ok(userDTO);
     }
 
+    @Transactional
     @GetMapping("/dashboard")
     public ResponseEntity<?> dashboard(HttpSession session) {
         if (session.getAttribute("id") == null) {
@@ -71,6 +76,10 @@ public class LoginControllerAPI {
         }
 
         User user = userServ.findById((Long) session.getAttribute("id"));
+        if (user.hasImage() == false) { 
+            UserDTO userDTO = userServ.convertToDTO(user);
+            return ResponseEntity.ok(userDTO);
+        }
         return ResponseEntity.ok(user);
     }
 
@@ -99,6 +108,16 @@ public class LoginControllerAPI {
                 String.format("%s=%s; Path=/; Max-Age=%d; HttpOnly; SameSite=None; %s",
                         name, value, 7 * 24 * 60 * 60, secure ? "Secure" : ""));
     }
+
+
+    // @GetMapping("/image")
+    // public ResponseEntity<?> getImage(HttpSession session) {
+    //     if (session.getAttribute("id") == null) {
+    //         return ResponseEntity.status(401).body("Unauthorized");
+    //     }
+    //     User user = userServ.findById((Long) session.getAttribute("id"));
+    //     return ResponseEntity.ok(user.getImage());
+    // }
 
     private void clearSameSiteCookie(HttpServletResponse response, String name) {
         Cookie cookie = new Cookie(name, null);

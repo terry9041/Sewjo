@@ -38,7 +38,10 @@ public class Fabric {
     @NotNull(message = "Remnant status is required!")
     private Boolean remnant;
 
-    private String image;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    @JsonBackReference("fabric-image")
+    private Image image;
     private String composition;
     private String structure;
     private String color;
@@ -98,7 +101,7 @@ public class Fabric {
         this.weight = weight;
     }
 
-    public Fabric(String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters, Boolean remnant, String image, String composition, String structure, String color, String print, String description, String brand, Float shrinkage, Boolean preWashed, String careInstructions, String location, Boolean stretch, Float sheerness, Float drape, Float weight, User user, Pattern pattern) {
+    public Fabric(String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters, Boolean remnant, Image image, String composition, String structure, String color, String print, String description, String brand, Float shrinkage, Boolean preWashed, String careInstructions, String location, Boolean stretch, Float sheerness, Float drape, Float weight, User user, Pattern pattern) {
         this.name = name;
         this.length = length;
         this.lengthInMeters = lengthInMeters;
@@ -180,11 +183,11 @@ public class Fabric {
         this.remnant = remnant;
     }
 
-    public String getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(Image image) {
         this.image = image;
     }
 
