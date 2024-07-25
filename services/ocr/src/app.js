@@ -24,22 +24,21 @@ app.get('/', (req, res) => {
 });
 
 app.post('/upload', upload.single('test'), async (req, res) => {
-    try {
+  try {
       if (!req.file) {
-        return res.status(400).send('No file uploaded.');
+          return res.status(400).json({ error: 'No file uploaded.' });
       }
       const parsedData = await processFile(req.file.path, res);
       if (parsedData) {
-        res.render('index', { patternSizes: parsedData });
+          res.json({ success: true, data: parsedData });
       } else {
-        res.status(500).send('Failed to process the image. Please try again with a clearer image.');
+          res.status(500).json({ error: 'Failed to process the image. Please try again with a clearer image.' });
       }
-    } catch (error) {
+  } catch (error) {
       console.error('Error:', error);
-      res.status(500).send('An error occurred during processing');
-    }
-  });
-
+      res.status(500).json({ error: 'An error occurred during processing' });
+  }
+});
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
