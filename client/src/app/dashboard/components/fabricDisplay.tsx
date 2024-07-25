@@ -19,6 +19,7 @@ export default function FabricDisplay() {
     const [fabrics, setFabrics] = useState<Fabric[]>([]);
     const [showForm, setShowForm] = useState<boolean>(false);
     const [selectedFabricId, setSelectedFabricId] = useState<number | null>(null);
+    const [searchQuery, setSearchQuery] = useState<string>('');
 
     useEffect(() => {
         const fetchFabrics = async () => {
@@ -60,19 +61,31 @@ export default function FabricDisplay() {
         setSelectedFabricId(null);
     };
 
+    const filteredFabrics = fabrics.filter(fabric =>
+        fabric.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        fabric.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <section className="flex max-w-6xl mx-auto p-4">
             <div className={`flex-1 ${showForm ? 'w-1/2' : 'w-full'} transition-width duration-300 ease-in-out ${selectedFabricId ? 'pointer-events-none opacity-50' : ''}`}>
-                <div className="flex justify-end mb-4">
+                <div className="flex justify-between mb-4">
+                    <input
+                        type="text"
+                        placeholder="Search fabrics..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="border rounded py-2 px-4 w-full sm:w-1/2"
+                    />
                     <button
                         onClick={() => setShowForm(!showForm)}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-4"
                     >
                         {showForm ? 'Close Form' : 'Add Fabric'}
                     </button>
                 </div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                    {fabrics
+                    {filteredFabrics
                         .sort((a, b) => a.name.localeCompare(b.name))
                         .map((fabric) => (
                         <div
