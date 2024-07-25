@@ -10,13 +10,63 @@
             line-height: 1.6;
             margin: 0;
             padding: 20px;
+            background-color: #f4f4f4;
         }
-        h1 {
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
             color: #333;
+            text-align: center;
         }
-        form {
+        #uploadForm {
+            display: flex;
+            justify-content: center;
             margin-bottom: 20px;
         }
+        #fileInput {
+            display: none;
+        }
+        .custom-file-upload {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #canvas-container {
+            display: none;
+            margin-top: 20px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            max-width: 100%;
+        }
+        #status {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
         table {
             border-collapse: collapse;
             width: 100%;
@@ -37,124 +87,150 @@
     </style>
 </head>
 <body>
-    <h1>Pattern Measurements</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="test" accept="image/*" required>
-        <button type="submit">Convert</button>
-    </form>
+    <div class="container">
+        <h1>Pattern Measurements</h1>
+        <form id="uploadForm">
+            <label for="fileInput" class="custom-file-upload">
+                Choose File
+            </label>
+            <input type="file" id="fileInput" accept="image/*" required>
+        </form>
 
-    <% if (locals.patternSizes) { %>
-        <table>
-            <tr>
-                <th colspan="10"><%= patternSizes.combinations %></th>
-            </tr>
-            <tr>
-                <th>Sizes</th>
-                <% ['6', '8', '10', '12', '14', '16', '18', '20', '22'].forEach(size => { %>
-                    <th><%= size %></th>
-                <% }); %>
-            </tr>
-            <tr class="section-header">
-                <td colspan="10">Jacket</td>
-            </tr>
-            <tr>
-                <% patternSizes.jacket.fabric45.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr>
-                <% patternSizes.jacket.fabric60.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr>
-                <td>Fusible Knit Interfacing 60"</td>
-                <% patternSizes.jacket.fusibleKnitInterfacing.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr class="section-header">
-                <td colspan="10">Pants</td>
-            </tr>
-            <tr>
-                <% patternSizes.pants.fabric45.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr>
-                <% patternSizes.pants.fabric60.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr>
-                <td>Fusible Knit Interfacing 60"</td>
-                <% patternSizes.pants.fusibleKnitInterfacing.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr class="section-header">
-                <td colspan="10">Jacket and Pants</td>
-            </tr>
-            <tr>
-                <% patternSizes.jacketAndPants.fabric45.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr>
-                <% patternSizes.jacketAndPants.fabric60.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr>
-                <td>Fusible Knit Interfacing 60"</td>
-                <% patternSizes.jacketAndPants.fusibleKnitInterfacing.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr class="section-header">
-                <td colspan="10">Lining (Both Jackets)</td>
-            </tr>
-            <tr>
-                <% patternSizes.lining.fabric45.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr class="section-header">
-                <td colspan="10">Width, lower edge</td>
-            </tr>
-            <tr>
-                <% patternSizes.jacket.widthLowerEdge.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr class="section-header">
-                <td colspan="10">Width, each leg</td>
-            </tr>
-            <tr>
-                <% patternSizes.pants.widthEachLeg.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr class="section-header">
-                <td colspan="10">Back length from base of your neck</td>
-            </tr>
-            <tr>
-                <% patternSizes.jacket.backLength.forEach(value => { %>
-                    <td><%= value %></td>
-                <% }); %>
-            </tr>
-            <tr class="section-header">
-                <td colspan="10">Side length from waist</td>
-            </tr>
-            <tr>
-                <td>Pants</td>
-                <td colspan="9"><%= patternSizes.pants.sideLengthFromWaist %></td>
-            </tr>
-            <tr>
-                Raw data:
-                <pre><%= patternSizes.raw %></pre>
-            </tr>
-        </table>
-    <% } %>
+        <div id="canvas-container">
+            <h2>Select Area to OCR</h2>
+            <canvas id="imageCanvas"></canvas>
+            <button id="uploadButton" style="display: none;">Upload Selected Area</button>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const canvasContainer = document.getElementById('canvas-container');
+        const imageCanvas = document.getElementById('imageCanvas');
+        const ctx = imageCanvas.getContext('2d');
+        const statusDiv = document.getElementById('status');
+        const uploadButton = document.getElementById('uploadButton');
+        let img = new Image();
+        let selection = {startX: 0, startY: 0, endX: 0, endY: 0};
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    img.onload = () => {
+                        const scale = Math.min(800 / img.width, 600 / img.height);
+                        imageCanvas.width = img.width * scale;
+                        imageCanvas.height = img.height * scale;
+                        ctx.drawImage(img, 0, 0, imageCanvas.width, imageCanvas.height);
+                        canvasContainer.style.display = 'block';
+                        uploadButton.style.display = 'block';
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        let isSelecting = false;
+
+        imageCanvas.addEventListener('mousedown', (event) => {
+            isSelecting = true;
+            const rect = imageCanvas.getBoundingClientRect();
+            selection.startX = event.clientX - rect.left;
+            selection.startY = event.clientY - rect.top;
+        });
+
+        imageCanvas.addEventListener('mousemove', (event) => {
+            if (isSelecting) {
+                const rect = imageCanvas.getBoundingClientRect();
+                selection.endX = event.clientX - rect.left;
+                selection.endY = event.clientY - rect.top;
+
+                ctx.clearRect(0, 0, imageCanvas.width, imageCanvas.height);
+                ctx.drawImage(img, 0, 0, imageCanvas.width, imageCanvas.height);
+                ctx.strokeStyle = 'red';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(selection.startX, selection.startY, selection.endX - selection.startX, selection.endY - selection.startY);
+            }
+        });
+
+        imageCanvas.addEventListener('mouseup', () => {
+            isSelecting = false;
+        });
+
+        uploadButton.addEventListener('click', () => {
+            const width = Math.abs(selection.endX - selection.startX);
+            const height = Math.abs(selection.endY - selection.startY);
+            const x = Math.min(selection.startX, selection.endX);
+            const y = Math.min(selection.startY, selection.endY);
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = width;
+            tempCanvas.height = height;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(imageCanvas, x, y, width, height, 0, 0, width, height);
+
+            tempCanvas.toBlob((blob) => {
+            const formData = new FormData();
+            formData.append('test', blob, 'selected-image.png');
+
+            statusDiv.textContent = 'Uploading...';
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                if (data.success) {
+                    statusDiv.textContent = 'Upload successful!';
+                    displayPatternSizes(data.data);
+                } else {
+                    statusDiv.textContent = data.error || 'Upload failed. Please try again.';
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                statusDiv.textContent = 'Upload failed. Please try again.';
+            });
+            })
+        });
+        
+        function displayPatternSizes(patternSizes) {
+            const table = document.createElement('table');
+            
+            // Combinations row
+            const combinationsRow = table.insertRow();
+            combinationsRow.innerHTML = `<th colspan="10">${patternSizes.combinations}</th>`;
+
+
+            // Raw data
+            const rawDataRow = table.insertRow();
+            rawDataRow.innerHTML = `<td colspan="10">Raw data:<br><pre>${patternSizes.raw}</pre></td>`;
+
+            // Clear any existing table and add the new one
+            const container = document.querySelector('.container');
+            const existingTable = container.querySelector('table');
+            if (existingTable) {
+                existingTable.remove();
+            }
+            container.appendChild(table);
+        }
+
+        function addSectionHeader(table, text) {
+            const row = table.insertRow();
+            row.className = 'section-header';
+            row.innerHTML = `<td colspan="10">${text}</td>`;
+        }
+
+        function addDataRow(table, data) {
+            const row = table.insertRow();
+            row.innerHTML = data.map(value => `<td>${value}</td>`).join('');
+        }
+    </script>
 </body>
 </html>
