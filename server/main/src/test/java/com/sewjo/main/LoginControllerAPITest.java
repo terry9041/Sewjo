@@ -2,7 +2,6 @@ package com.sewjo.main;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,7 +52,7 @@ class LoginControllerAPITest {
         // Arrange: Set up the mock login user with email and password
         LoginUser loginUser = new LoginUser();
         loginUser.setEmail("test@example.com");
-        loginUser.setPassword("password");
+        loginUser.setPassword("password123!");
 
         // Set up the mock user with an ID
         User user = new User();
@@ -89,7 +88,7 @@ class LoginControllerAPITest {
         // Arrange: Set up the mock login user with email and password
         LoginUser loginUser = new LoginUser();
         loginUser.setEmail("test@example.com");
-        loginUser.setPassword("password");
+        loginUser.setPassword("password123!");
 
         // Mock the behavior of the userServ to throw a RuntimeException
         when(userServ.login(any(LoginUser.class), any(BindingResult.class)))
@@ -99,7 +98,7 @@ class LoginControllerAPITest {
         ResponseEntity<?> response = loginControllerAPI.login(loginUser, bindingResult, session, this.response);
 
         // Assert: Verify the response status and body
-        assertEquals(500, response.getStatusCodeValue());
+        assertEquals(500, response.getStatusCode().value());
         assertEquals("An unexpected error occurred. Please try again later.", response.getBody());
 
         // Verify that the userServ.login method was called exactly once
@@ -111,7 +110,7 @@ class LoginControllerAPITest {
         // Arrange: Set up the mock new user with email and password
         User newUser = new User();
         newUser.setEmail("test@example.com");
-        newUser.setPassword("password");
+        newUser.setPassword("password123!");
 
         // Set up the mock user with an ID
         User user = new User();
@@ -129,7 +128,7 @@ class LoginControllerAPITest {
         ResponseEntity<?> response = loginControllerAPI.register(newUser, bindingResult, session, this.response);
 
         // Assert: Verify the response status and body
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(userDTO, response.getBody());
 
         // Verify that the session attribute was set correctly
@@ -147,7 +146,7 @@ class LoginControllerAPITest {
         // Arrange: Set up the mock new user with email and password
         User newUser = new User();
         newUser.setEmail("test@example.com");
-        newUser.setPassword("password");
+        newUser.setPassword("password123!");
 
         // Mock the behavior of the userServ to throw a RuntimeException
         when(userServ.register(any(User.class), any(BindingResult.class)))
@@ -157,7 +156,7 @@ class LoginControllerAPITest {
         ResponseEntity<?> response = loginControllerAPI.register(newUser, bindingResult, session, this.response);
 
         // Assert: Verify the response status and body
-        assertEquals(500, response.getStatusCodeValue());
+        assertEquals(500, response.getStatusCode().value());
         assertEquals("An unexpected error occurred. Please try again later.", response.getBody());
 
         // Verify that the userServ.register method was called exactly once
@@ -185,7 +184,7 @@ class LoginControllerAPITest {
         ResponseEntity<?> response = loginControllerAPI.dashboard(session);
 
         // Assert: Verify the response status and body
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals(userDTO, response.getBody());
 
         // Verify that the session.getAttribute method was called exactly once
@@ -208,7 +207,7 @@ class LoginControllerAPITest {
         ResponseEntity<?> response = loginControllerAPI.dashboard(session);
 
         // Assert: Verify the response status and body
-        assertEquals(401, response.getStatusCodeValue());
+        assertEquals(401, response.getStatusCode().value());
         assertEquals("Unauthorized", response.getBody());
 
         // Verify that the session.getAttribute method was called exactly once
@@ -222,10 +221,10 @@ class LoginControllerAPITest {
         when(session.getAttribute("id")).thenReturn(1L);
 
         // Act: Call the logout method with the mock session and response
-        ResponseEntity<?> response = loginControllerAPI.logout(session, response);
+        ResponseEntity<?> response = loginControllerAPI.logout(session, this.response);
 
         // Assert: Verify the response status and body
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals("Logged out successfully", response.getBody());
 
         // Verify that the session.invalidate method was called exactly once
