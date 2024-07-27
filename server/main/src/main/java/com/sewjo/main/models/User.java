@@ -44,7 +44,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id", referencedColumnName = "id")
-    @JsonManagedReference("user-image")
+    // @JsonManagedReference("user-image")
     private Image image;
 
     // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

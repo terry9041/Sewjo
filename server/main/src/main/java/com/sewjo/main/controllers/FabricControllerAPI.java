@@ -63,7 +63,7 @@ public class FabricControllerAPI {
                                           @RequestParam("width") Double width,
                                           @RequestParam("widthInCentimeters") Boolean widthInCentimeters,
                                           @RequestParam("remnant") Boolean remnant,
-                                          @RequestParam("image") MultipartFile imageFile,
+                                          @RequestParam(value = "image", required = false) MultipartFile imageFile,
                                           @RequestParam("composition") String composition,
                                           @RequestParam("structure") String structure,
                                           @RequestParam("color") String color,

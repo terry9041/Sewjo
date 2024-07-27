@@ -35,7 +35,7 @@ export default function ModalLoginForm({ swapReg }) {
         // }
     }
     )
-      .then(res => router.push('/dashboard'))
+      .then(res => { router.push('/dashboard'); console.log(res); })
       .catch(err => {
         setValid(false);
         setUser(initFormState);
