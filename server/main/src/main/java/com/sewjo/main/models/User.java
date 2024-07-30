@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Table(name = "users")
 public class User {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +28,10 @@ public class User {
     @Size(min = 8, max = 128, message = "Password must be between 8 and 128 characters")
     private String password;
 
-
+    @Transient
+    @NotEmpty(message = "Confirm Password is required!")
+    @Size(min = 8, max = 128, message = "Confirm Password must be between 8 and 128 characters")
+    private String confirm;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("user-fabrics")
@@ -44,7 +46,8 @@ public class User {
     // @JsonManagedReference("user-image")
     private Image image;
 
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval =
+    // true)
     // private List<Project> projects;
 
     public User() {
@@ -54,14 +57,14 @@ public class User {
         this.userName = userName;
         this.email = email;
         this.password = password;
-        // this.confirm = confirm;
+        this.confirm = confirm;
     }
 
     public User(String userName, String email, String password, String confirm, Image image) {
         this.userName = userName;
         this.email = email;
         this.password = password;
-        // this.confirm = confirm;
+        this.confirm = confirm;
         this.image = image;
     }
 
@@ -99,13 +102,13 @@ public class User {
         this.password = password;
     }
 
-    // public String getConfirm() {
-    //     return confirm;
-    // }
+    public String getConfirm() {
+        return confirm;
+    }
 
-    // public void setConfirm(String confirm) {
-    //     this.confirm = confirm;
-    // }
+    public void setConfirm(String confirm) {
+        this.confirm = confirm;
+    }
 
     public List<Fabric> getFabrics() {
         return fabrics;
@@ -116,11 +119,11 @@ public class User {
     }
 
     // public List<Project> getProjects() {
-    //     return projects;
+    // return projects;
     // }
 
     // public void setProjects(List<Project> projects) {
-    //     this.projects = projects;
+    // this.projects = projects;
     // }
 
     public List<Pattern> getPatterns() {

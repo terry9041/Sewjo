@@ -37,7 +37,7 @@ public class UserService {
             result.rejectValue("email", "taken", "That email is already taken!");
         }
         // if (!newUser.getPassword().equals(newUser.getConfirm())) {
-        //     result.rejectValue("confirm", "matches", "Your passwords must match!");
+        // result.rejectValue("confirm", "matches", "Your passwords must match!");
         // }
         if (result.hasErrors()) {
             return null;
@@ -85,7 +85,7 @@ public class UserService {
             result.rejectValue("confirmPassword", "matches", "Passwords must match!");
             return null;
         }
-        System.out.println("about to find ther user");
+
         Optional<User> optionalUser = userRepo.findById(userId);
         System.out.println("found ther user");
         if (!optionalUser.isPresent()) {
@@ -95,6 +95,14 @@ public class UserService {
 
         User user = optionalUser.get();
 
+        System.out.println("Old password provided: " + dto.getOldPassword());
+        System.out.println("Stored hashed password: " + user.getPassword());
+        if (!BCrypt.checkpw(dto.getOldPassword(), user.getPassword())) {
+            result.rejectValue("password", "matches", "Password is incorrect!");
+            return null;
+        }
+
+        user.setConfirm(dto.getConfirmPassword());
         user.setPassword(BCrypt.hashpw(dto.getNewPassword(), BCrypt.gensalt()));
         userRepo.save(user);
 

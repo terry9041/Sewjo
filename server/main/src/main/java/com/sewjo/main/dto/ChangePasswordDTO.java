@@ -14,21 +14,24 @@ public class ChangePasswordDTO {
         return newPassword;
     }
 
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
     public String getOldPassword() {
         return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 
     public String getConfirmPassword() {
         return confirmPassword;
     }
 
-    @Override
-    public String toString() {
-        return "ChangePasswordDTO{" +
-                "oldPassword='" + oldPassword + '\'' +
-                ", newPassword='" + newPassword + '\'' +
-                ", confirmPassword='" + confirmPassword + '\'' +
-                '}';
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
-    // Getters and setters
+
 }

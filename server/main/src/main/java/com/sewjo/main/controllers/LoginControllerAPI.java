@@ -118,8 +118,7 @@ public class LoginControllerAPI {
             @RequestBody @Valid ChangePasswordDTO passwordDTO,
             BindingResult result,
             HttpSession session, HttpServletRequest request) {
-        System.out.println("changePassword method called");
-        System.out.println("Received ChangePasswordDTO: " + passwordDTO);
+
         Long userId = (Long) session.getAttribute("id");
         if (userId == null) {
 
@@ -130,7 +129,6 @@ public class LoginControllerAPI {
             result.getAllErrors().forEach(error -> logger.error("Error: {}", error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(result.getAllErrors());
         }
-
         User user = userServ.changePassword(userId, passwordDTO, result);
         UserDTO userDTO = userServ.convertToDTO(user);
         return ResponseEntity.ok(userDTO);
