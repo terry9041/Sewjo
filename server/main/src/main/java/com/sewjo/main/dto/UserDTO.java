@@ -4,6 +4,7 @@ public class UserDTO {
     private Long id;
     private String userName;
     private String email;
+    private Long imageId;
 
     public UserDTO() {
     }
@@ -12,6 +13,15 @@ public class UserDTO {
         this.id = id;
         this.userName = userName;
         this.email = email;
+        this.imageId = null;
+    }
+
+    public Long getImageId(){
+        return imageId;
+    }
+
+    public void setImageId(Long imageId){
+        this.imageId = imageId;
     }
 
     public Long getId() {

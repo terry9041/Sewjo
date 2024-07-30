@@ -76,6 +76,7 @@ public class UserService {
         userDTO.setId(user.getId());
         userDTO.setUserName(user.getUserName());
         userDTO.setEmail(user.getEmail());
+        userDTO.setImageId(null);
         // Set other fields if necessary
         return userDTO;
     }
@@ -108,4 +109,23 @@ public class UserService {
 
         return user;
     }
+
+    // public UserDTO changeProfileImage(UserDTO userDTO, MultipartFile imageFile,
+    // Long userId) throws IOException {
+    // Optional<User> optionalUser = userRepo.findById(userDTO.getId());
+    // if (!optionalUser.isPresent() || !optionalUser.get().getId().equals(userId))
+    // {
+    // throw new IllegalArgumentException("Fabric not found or unauthorized");
+    // }
+
+    // User existingUser = optionalUser.get();
+    // if (imageFile != null && !imageFile.isEmpty()) {
+    // Image image = new Image();
+    // image.setName(imageFile.getOriginalFilename());
+    // image.setData(imageFile.getBytes());
+    // existingUser.setImage(image);
+    // }
+    // userRepo.save(existingUser);
+    // return convertToDTO(existingUser);
+    // }
 }
