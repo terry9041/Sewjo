@@ -17,14 +17,8 @@ export default function AuthModal({ setShowAuthModal }: { setShowAuthModal: (sho
     return (
         <dialog
             className="fixed left-0 top-0 w-full h-full bg-black bg-opacity-50 z-50 overflow-auto backdrop-blur flex justify-center items-center"
-            open>
-            <div className="bg-white m-auto p-8 rounded-lg shadow-lg">
-                <button
-                    type="button"
-                    className="text-s mb-5 border rounded-lg px-2"
-                    onClick={closeAuthModal}>
-                    {`x`}
-                </button>
+            open onClick={closeAuthModal}>
+            <div className="bg-white m-auto p-8 rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
                 <div className="flex flex-col items-center">
                     {showLogin ? (
                         <ModalLoginForm swapReg={swapReg} />
