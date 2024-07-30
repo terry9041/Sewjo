@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import com.sewjo.main.models.User;
 import com.sewjo.main.models.LoginUser;
 import com.sewjo.main.repositories.UserRepository;
+import com.sewjo.main.dto.ChangePasswordDTO;
 import com.sewjo.main.dto.UserDTO;
 
 import org.slf4j.Logger;
@@ -35,9 +36,9 @@ public class UserService {
         if (dupe.isPresent()) {
             result.rejectValue("email", "taken", "That email is already taken!");
         }
-        if (!newUser.getPassword().equals(newUser.getConfirm())) {
-            result.rejectValue("confirm", "matches", "Your passwords must match!");
-        }
+        // if (!newUser.getPassword().equals(newUser.getConfirm())) {
+        //     result.rejectValue("confirm", "matches", "Your passwords must match!");
+        // }
         if (result.hasErrors()) {
             return null;
         }
@@ -77,5 +78,26 @@ public class UserService {
         userDTO.setEmail(user.getEmail());
         // Set other fields if necessary
         return userDTO;
+    }
+
+    public User changePassword(Long userId, ChangePasswordDTO dto, BindingResult result) {
+        if (!dto.getNewPassword().equals(dto.getConfirmPassword())) {
+            result.rejectValue("confirmPassword", "matches", "Passwords must match!");
+            return null;
+        }
+        System.out.println("about to find ther user");
+        Optional<User> optionalUser = userRepo.findById(userId);
+        System.out.println("found ther user");
+        if (!optionalUser.isPresent()) {
+            result.rejectValue("userId", "notFound", "User not found!");
+            return null;
+        }
+
+        User user = optionalUser.get();
+
+        user.setPassword(BCrypt.hashpw(dto.getNewPassword(), BCrypt.gensalt()));
+        userRepo.save(user);
+
+        return user;
     }
 }
