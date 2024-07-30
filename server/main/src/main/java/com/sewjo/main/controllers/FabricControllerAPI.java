@@ -86,7 +86,7 @@ public class FabricControllerAPI {
         Long userId = (Long) session.getAttribute("id");
 
         try {
-            FabricDTO fabric = fabricService.storeFabric(name, length, lengthInMeters, width, widthInCentimeters, remnant, imageFile,
+            FabricDTO fabric = fabricService.storeFabricUser(name, length, lengthInMeters, width, widthInCentimeters, remnant, imageFile,
                     composition, structure, color, print, description, brand, shrinkage, preWashed, careInstructions,
                     location, stretch, sheerness, drape, weight, userId);
             return ResponseEntity.status(200).body(fabric);

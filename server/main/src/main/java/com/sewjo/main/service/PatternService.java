@@ -39,6 +39,14 @@ public class PatternService {
         return null;
     }
 
+    public Pattern findByIdFull(Long id, Long userId) {
+        Optional<Pattern> pattern = patternRepo.findById(id);
+        if (pattern.isPresent() && pattern.get().getUser().getId().equals(userId)) {
+            return pattern.get();
+        }
+        return null;
+    }
+
     public PatternDTO save(PatternDTO patternDTO) {
         Pattern pattern = new Pattern();
         pattern.setName(patternDTO.getName());

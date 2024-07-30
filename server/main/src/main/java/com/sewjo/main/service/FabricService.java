@@ -136,6 +136,44 @@ public class FabricService {
         return new FabricDTO(updatedFabric);
     }
 
+    public FabricDTO updatePattern(FabricDTO fabricDto, MultipartFile imageFile, Long userId, Long patternId) throws IOException {
+        Optional<Fabric> optionalFabric = fabricRepo.findById(fabricDto.getId());
+        if (!optionalFabric.isPresent() || !optionalFabric.get().getPattern().getId().equals(patternId)) {
+            throw new IllegalArgumentException("Fabric not found or unauthorized");
+        }
+
+        Fabric existingFabric = optionalFabric.get();
+        if (imageFile != null && !imageFile.isEmpty()) {
+            Image image = new Image();
+            image.setName(imageFile.getOriginalFilename());
+            image.setData(imageFile.getBytes());
+            existingFabric.setImage(image);
+        }
+
+        existingFabric.setName(fabricDto.getName());
+        existingFabric.setLength(fabricDto.getLength());
+        existingFabric.setLengthInMeters(fabricDto.getLengthInMeters());
+        existingFabric.setWidth(fabricDto.getWidth());
+        existingFabric.setWidthInCentimeters(fabricDto.getWidthInCentimeters());
+        existingFabric.setRemnant(fabricDto.getRemnant());
+        existingFabric.setComposition(fabricDto.getComposition());
+        existingFabric.setStructure(fabricDto.getStructure());
+        existingFabric.setColor(fabricDto.getColor());
+        existingFabric.setPrint(fabricDto.getPrint());
+        existingFabric.setDescription(fabricDto.getDescription());
+        existingFabric.setBrand(fabricDto.getBrand());
+        existingFabric.setShrinkage(fabricDto.getShrinkage());
+        existingFabric.setPreWashed(fabricDto.getPreWashed());
+        existingFabric.setCareInstructions(fabricDto.getCareInstructions());
+        existingFabric.setLocation(fabricDto.getLocation());
+        existingFabric.setStretch(fabricDto.getStretch());
+        existingFabric.setSheerness(fabricDto.getSheerness());
+        existingFabric.setDrape(fabricDto.getDrape());
+        existingFabric.setWeight(fabricDto.getWeight());
+
+        Fabric updatedFabric = fabricRepo.save(existingFabric);
+        return new FabricDTO(updatedFabric);
+    }
 
     public boolean deleteById(Long id, Long userId) {
         Optional<Fabric> fabric = fabricRepo.findById(id);
@@ -146,12 +184,12 @@ public class FabricService {
         return false;
     }
 
-    public FabricDTO storeFabric(String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters,
+    public FabricDTO storeFabricUser(String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters,
                               Boolean remnant, MultipartFile imageFile, String composition, String structure, String color,
                               String print, String description, String brand, Float shrinkage, Boolean preWashed,
                               String careInstructions, String location, Boolean stretch, Float sheerness, Float drape,
-                              Float weight, Long userId) throws IOException {
-                                
+            Float weight, Long userId) throws IOException {
+
         Image image = null;
         if (imageFile != null && !imageFile.isEmpty()) {
             image = new Image();
@@ -159,7 +197,8 @@ public class FabricService {
             image.setData(imageFile.getBytes());
         }
 
-        Fabric fabric = new Fabric(name, length, lengthInMeters, width, widthInCentimeters, remnant, stretch, sheerness, drape, weight);
+        Fabric fabric = new Fabric(name, length, lengthInMeters, width, widthInCentimeters, remnant, stretch, sheerness,
+                drape, weight);
         fabric.setImage(image);
         fabric.setComposition(composition);
         fabric.setStructure(structure);
@@ -171,7 +210,42 @@ public class FabricService {
         fabric.setPreWashed(preWashed);
         fabric.setCareInstructions(careInstructions);
         fabric.setLocation(location);
+        fabric.setPattern(null);
         fabric.setUser(userService.findById(userId));
+
+        fabricRepo.save(fabric);
+
+        return new FabricDTO(fabric);
+    }
+    
+        public FabricDTO storeFabricPattern(String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters,
+                              Boolean remnant, MultipartFile imageFile, String composition, String structure, String color,
+                              String print, String description, String brand, Float shrinkage, Boolean preWashed,
+                              String careInstructions, String location, Boolean stretch, Float sheerness, Float drape,
+            Float weight, Long userId, Long patternId) throws IOException {
+
+        Image image = null;
+        if (imageFile != null && !imageFile.isEmpty()) {
+            image = new Image();
+            image.setName(imageFile.getOriginalFilename());
+            image.setData(imageFile.getBytes());
+        }
+
+        Fabric fabric = new Fabric(name, length, lengthInMeters, width, widthInCentimeters, remnant, stretch, sheerness,
+                drape, weight);
+        fabric.setImage(image);
+        fabric.setComposition(composition);
+        fabric.setStructure(structure);
+        fabric.setColor(color);
+        fabric.setPrint(print);
+        fabric.setDescription(description);
+        fabric.setBrand(brand);
+        fabric.setShrinkage(shrinkage);
+        fabric.setPreWashed(preWashed);
+        fabric.setCareInstructions(careInstructions);
+        fabric.setLocation(location);
+        fabric.setPattern(patternService.findByIdFull(patternId, userId));
+        fabric.setUser(null);
 
         fabricRepo.save(fabric);
 
