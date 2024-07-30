@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { headers } from 'next/headers';
 
 /**
  * The registration component for the application
@@ -60,7 +61,13 @@ export default function ModalRegisterForm({ swapReg })  {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/register`, user, { withCredentials: true });
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/register`, user, {
+        withCredentials: true,
+        // headers: {
+        //   'Content-Type': 'application/json',
+        // }
+      }
+      );
       if (res.data.errors) {
         setErrors(res.data.errors);
       } else {

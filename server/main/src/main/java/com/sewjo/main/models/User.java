@@ -42,7 +42,10 @@ public class User {
     @JsonManagedReference("user-patterns")
     private List<Pattern> patterns;
 
-    private String image;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    // @JsonManagedReference("user-image")
+    private Image image;
 
     // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     // private List<Project> projects;
@@ -57,7 +60,7 @@ public class User {
         this.confirm = confirm;
     }
 
-    public User(String userName, String email, String password, String confirm, String image) {
+    public User(String userName, String email, String password, String confirm, Image image) {
         this.userName = userName;
         this.email = email;
         this.password = password;
@@ -131,11 +134,15 @@ public class User {
         this.patterns = patterns;
     }
 
-    public String getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(Image image) {
         this.image = image;
+    }
+
+    public boolean hasImage() {
+        return this.image != null;
     }
 }

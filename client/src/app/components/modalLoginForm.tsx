@@ -28,11 +28,18 @@ export default function ModalLoginForm({ swapReg }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/login`, user, { withCredentials: true })
-      .then(res => router.push('/dashboard'))
+    axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/login`, user, {
+        withCredentials: true,
+        // headers: {
+        //   'Content-Type': 'application/json',
+        // }
+    }
+    )
+      .then(res => { router.push('/dashboard'); console.log(res); })
       .catch(err => {
         setValid(false);
         setUser(initFormState);
+        console.error(err);
       });
   };
 

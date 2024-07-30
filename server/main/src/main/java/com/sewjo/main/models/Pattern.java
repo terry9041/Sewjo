@@ -43,7 +43,10 @@ public class Pattern {
 
     private Boolean outOfPrint = false;
 
-    private String image;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    @JsonBackReference(value = "pattern-image")
+    private Image image;
 
     @ElementCollection
     private List<String> ageGroups;
@@ -81,7 +84,15 @@ public class Pattern {
     public Pattern() {
     }
 
-    public Pattern(String name, List<String> brand, String description, String patternType, String format, Integer difficulty, List<String> tags, Date releaseDate, Boolean free, Boolean outOfPrint, String image, List<String> ageGroups, String bodyType, String sizeRange, List<Character> cupSizes, Double bustMin, Double bustMax, Double hipMin, Double hipMax, Boolean isImperial, List<String> supplies, List<Fabric> fabrics, User user) {
+    public Pattern(String name, String description, String patternType, Boolean isImperial, User user) {
+        this.name = name;
+        this.description = description;
+        this.patternType = patternType;
+        this.isImperial = isImperial;
+        this.user = user;
+    }
+
+    public Pattern(String name, List<String> brand, String description, String patternType, String format, Integer difficulty, List<String> tags, Date releaseDate, Boolean free, Boolean outOfPrint, Image image, List<String> ageGroups, String bodyType, String sizeRange, List<Character> cupSizes, Double bustMin, Double bustMax, Double hipMin, Double hipMax, Boolean isImperial, List<String> supplies, List<Fabric> fabrics, User user) {
         this.name = name;
         this.brand = brand;
         this.description = description;
@@ -195,11 +206,11 @@ public class Pattern {
         this.outOfPrint = outOfPrint;
     }
 
-    public String getImage() {
+    public Image getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(Image image) {
         this.image = image;
     }
 

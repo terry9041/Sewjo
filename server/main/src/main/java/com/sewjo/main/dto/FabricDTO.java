@@ -1,114 +1,72 @@
-package com.sewjo.main.models;
+package com.sewjo.main.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.sewjo.main.models.Fabric;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.AssertTrue;
-
-@Entity
-@Table(name = "fabrics")
-public class Fabric {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class FabricDTO {
     private Long id;
-
-    @NotEmpty(message = "Fabric name is required!")
     private String name;
-
-    @NotNull(message = "Length is required!")
-    @Min(value = 0, message = "Length must not be negative")
     private Double length;
-
-    @NotNull(message = "Is length in meters is required!")
     private Boolean lengthInMeters;
-
-    @NotNull(message = "Width is required!")
-    @Min(value = 0, message = "Width must not be negative")
     private Double width;
-
-    @NotNull(message = "Is width in centimeters is required!")
     private Boolean widthInCentimeters;
-
-    @NotNull(message = "Remnant status is required!")
     private Boolean remnant;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "image_id", referencedColumnName = "id")
-    @JsonBackReference("fabric-image")
-    private Image image;
+    private Long imageId;
     private String composition;
     private String structure;
     private String color;
     private String print;
     private String description;
     private String brand;
-
-    @DecimalMin(value = "0.0", message = "Shrinkage must be between 0 and 1")
-    @DecimalMax(value = "1.0", message = "Shrinkage must be between 0 and 1")
     private Float shrinkage;
-
     private Boolean preWashed;
     private String careInstructions;
     private String location;
-
-    @NotNull(message = "Stretch status is required!")
     private Boolean stretch;
-
-    @NotNull(message = "Sheerness is required!")
-    @DecimalMin(value = "0.0", message = "Sheerness must be between 0 and 1")
-    @DecimalMax(value = "1.0", message = "Sheerness must be between 0 and 1")
     private Float sheerness;
-
-    @NotNull(message = "Drape is required!")
-    @DecimalMin(value = "0.0", message = "Drape must be between 0 and 1")
-    @DecimalMax(value = "1.0", message = "Drape must be between 0 and 1")
     private Float drape;
-
-    @NotNull(message = "Weight is required!")
-    @DecimalMin(value = "0.0", message = "Weight must be between 0 and 1")
-    @DecimalMax(value = "1.0", message = "Weight must be between 0 and 1")
     private Float weight;
+    private Long userId; 
+    private Long patternId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonBackReference("user-fabrics")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "pattern_id")
-    @JsonBackReference("pattern-fabrics")
-    private Pattern pattern;
+    public FabricDTO() {
+    }
     
-    public Fabric() {
+    public FabricDTO(Fabric fabric) {
+        this.id = fabric.getId();
+        this.name = fabric.getName();
+        this.length = fabric.getLength();
+        this.lengthInMeters = fabric.getLengthInMeters();
+        this.width = fabric.getWidth();
+        this.widthInCentimeters = fabric.getWidthInCentimeters();
+        this.remnant = fabric.getRemnant();
+        this.composition = fabric.getComposition();
+        this.structure = fabric.getStructure();
+        this.color = fabric.getColor();
+        this.print = fabric.getPrint();
+        this.description = fabric.getDescription();
+        this.brand = fabric.getBrand();
+        this.shrinkage = fabric.getShrinkage();
+        this.preWashed = fabric.getPreWashed();
+        this.careInstructions = fabric.getCareInstructions();
+        this.location = fabric.getLocation();
+        this.stretch = fabric.getStretch();
+        this.sheerness = fabric.getSheerness();
+        this.drape = fabric.getDrape();
+        this.weight = fabric.getWeight();
+        this.imageId = fabric.getImage() != null ? fabric.getImage().getId() : null;
+        this.userId = fabric.getUser() != null ? fabric.getUser().getId() : null;
+        this.patternId = fabric.getPattern() != null ? fabric.getPattern().getId() : null;
     }
 
-    public Fabric(String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters, Boolean remnant, Boolean stretch, Float sheerness, Float drape, Float weight) {
+    public FabricDTO(Long id, String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters, Boolean remnant, Long imageId, String composition, String structure, String color, String print, String description, String brand, Float shrinkage, Boolean preWashed, String careInstructions, String location, Boolean stretch, Float sheerness, Float drape, Float weight, Long userId, Long patternId) {
+        this.id = id;
         this.name = name;
         this.length = length;
         this.lengthInMeters = lengthInMeters;
         this.width = width;
         this.widthInCentimeters = widthInCentimeters;
         this.remnant = remnant;
-        this.stretch = stretch;
-        this.sheerness = sheerness;
-        this.drape = drape;
-        this.weight = weight;
-    }
-
-    public Fabric(String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters, Boolean remnant, Image image, String composition, String structure, String color, String print, String description, String brand, Float shrinkage, Boolean preWashed, String careInstructions, String location, Boolean stretch, Float sheerness, Float drape, Float weight, User user, Pattern pattern) {
-        this.name = name;
-        this.length = length;
-        this.lengthInMeters = lengthInMeters;
-        this.width = width;
-        this.widthInCentimeters = widthInCentimeters;
-        this.remnant = remnant;
-        this.image = image;
+        this.imageId = imageId;
         this.composition = composition;
         this.structure = structure;
         this.color = color;
@@ -123,10 +81,11 @@ public class Fabric {
         this.sheerness = sheerness;
         this.drape = drape;
         this.weight = weight;
-        this.user = user;
-        this.pattern = pattern;
+        this.userId = userId;
+        this.patternId = patternId;
     }
 
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -183,12 +142,12 @@ public class Fabric {
         this.remnant = remnant;
     }
 
-    public Image getImage() {
-        return image;
+    public Long getImageId() {
+        return imageId;
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+    public void setImageId(Long imageId) {
+        this.imageId = imageId;
     }
 
     public String getComposition() {
@@ -303,40 +262,19 @@ public class Fabric {
         this.weight = weight;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public Pattern getPattern() {
-        return pattern;
+    public Long getPatternId() {
+        return patternId;
     }
 
-    public void setPattern(Pattern pattern) {
-        this.pattern = pattern;
-    }
-
-    @AssertTrue(message = "Fabric must be associated with either a user or a pattern, not both")
-    private boolean isValidAssociation() {
-        return (user == null && pattern == null) || (user != null && pattern == null) || (user == null && pattern != null);
-    }
-
-    public double convertLengthToMeters() {
-        return lengthInMeters ? length : length * 0.9144; // 1 yard = 0.9144 meters
-    }
-
-    public double convertLengthToYards() {
-        return lengthInMeters ? length / 0.9144 : length; // 1 meter = 1.09361 yards
-    }
-
-    public double convertWidthToCentimeters() {
-        return widthInCentimeters ? width : width * 2.54; // 1 inch = 2.54 centimeters
-    }
-
-    public double convertWidthToInches() {
-        return widthInCentimeters ? width / 2.54 : width; // 1 centimeter = 0.393701 inches
+    public void setPatternId(Long patternId) {
+        this.patternId = patternId;
     }
 }

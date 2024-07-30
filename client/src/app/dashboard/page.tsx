@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../components/navbar';
 import FabricDisplay from './components/fabricDisplay';
+import PatternDisplay from './components/patternDisplay';
 
 /**
  * The dashboard screen which the user sees after logging in
@@ -62,10 +63,7 @@ export default function Dashboard() {
                     <FabricDisplay />
                 )}
                 {display === "patterns" && (
-                    <div className="text-center">
-                        <h2 className="text-2xl mb-4">Patterns</h2>
-                        <p>Patterns content goes here...</p>
-                    </div>
+                    <PatternDisplay />
                 )}
                 {display === "projects" && (
                     <div className="text-center">
