@@ -47,8 +47,9 @@ public class User {
     // @JsonManagedReference("user-image")
     private Image image;
 
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Project> projects;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("user-projects")
+    private List<Project> projects;
 
     public User() {
     }

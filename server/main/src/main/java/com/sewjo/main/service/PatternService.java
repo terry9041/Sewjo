@@ -18,7 +18,7 @@ import com.sewjo.main.models.PatternFabrics;
 import com.sewjo.main.models.SimpleFabric;
 import com.sewjo.main.repositories.PatternRepository;
 import com.sewjo.main.repositories.PatternFabricsRepository;
-import com.sewjo.main.repositories.SimpleFabricRepository;
+// import com.sewjo.main.repositories.SimpleFabricRepository;
 
 @Service
 public class PatternService {
@@ -29,8 +29,8 @@ public class PatternService {
     @Autowired
     private PatternFabricsRepository patternFabricsRepo;
 
-    @Autowired
-    private SimpleFabricRepository simpleFabricRepo;
+    // @Autowired
+    // private SimpleFabricRepository simpleFabricRepo;
 
     @Autowired
     private UserService userService;

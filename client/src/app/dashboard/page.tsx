@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Navbar from '../components/navbar';
 import FabricDisplay from './components/fabricDisplay';
 import PatternDisplay from './components/patternDisplay';
+import ProjectDisplay from './components/projectDisplay';
 
 /**
  * The dashboard screen which the user sees after logging in
@@ -66,10 +67,7 @@ export default function Dashboard() {
                     <PatternDisplay />
                 )}
                 {display === "projects" && (
-                    <div className="text-center">
-                        <h2 className="text-2xl mb-4">Projects</h2>
-                        <p>Projects content goes here...</p>
-                    </div>
+                    <ProjectDisplay />
                 )}
             </div>
         </main>
