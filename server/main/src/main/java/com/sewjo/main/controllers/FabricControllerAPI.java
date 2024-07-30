@@ -3,21 +3,24 @@ package com.sewjo.main.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
+// import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sewjo.main.dto.FabricDTO;
-import com.sewjo.main.models.Fabric;
+// import com.sewjo.main.models.Fabric;
 import com.sewjo.main.service.FabricService;
-import com.sewjo.main.service.UserService;
+// import com.sewjo.main.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
+// import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Controller for handling fabric-related API requests
+ */
 @RestController
 @RequestMapping("/api/fabric")
 public class FabricControllerAPI {
@@ -25,8 +28,8 @@ public class FabricControllerAPI {
     @Autowired
     private FabricService fabricService;
 
-    @Autowired
-    private UserService userServ;
+    // @Autowired
+    // private UserService userServ;
 
     @Transactional
     @GetMapping("/all")
@@ -86,7 +89,7 @@ public class FabricControllerAPI {
         Long userId = (Long) session.getAttribute("id");
 
         try {
-            FabricDTO fabric = fabricService.storeFabricUser(name, length, lengthInMeters, width, widthInCentimeters, remnant, imageFile,
+            FabricDTO fabric = fabricService.storeFabric(name, length, lengthInMeters, width, widthInCentimeters, remnant, imageFile,
                     composition, structure, color, print, description, brand, shrinkage, preWashed, careInstructions,
                     location, stretch, sheerness, drape, weight, userId);
             return ResponseEntity.status(200).body(fabric);

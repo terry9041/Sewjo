@@ -1,6 +1,7 @@
 package com.sewjo.main.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -13,13 +14,23 @@ import org.springframework.web.multipart.MultipartFile;
 import com.sewjo.main.dto.PatternDTO;
 import com.sewjo.main.models.Image;
 import com.sewjo.main.models.Pattern;
+import com.sewjo.main.models.PatternFabrics;
+import com.sewjo.main.models.SimpleFabric;
 import com.sewjo.main.repositories.PatternRepository;
+import com.sewjo.main.repositories.PatternFabricsRepository;
+import com.sewjo.main.repositories.SimpleFabricRepository;
 
 @Service
 public class PatternService {
 
     @Autowired
     private PatternRepository patternRepo;
+
+    @Autowired
+    private PatternFabricsRepository patternFabricsRepo;
+
+    @Autowired
+    private SimpleFabricRepository simpleFabricRepo;
 
     @Autowired
     private UserService userService;
@@ -128,7 +139,8 @@ public class PatternService {
                                    Integer difficulty, List<String> tags, Date releaseDate, Boolean free, Boolean outOfPrint,
                                    MultipartFile imageFile, List<String> ageGroups, String bodyType, String sizeRange,
                                    List<Character> cupSizes, Double bustMin, Double bustMax, Double hipMin, Double hipMax,
-                                   Boolean isImperial, List<String> supplies, Long userId) throws IOException {
+                                   Boolean isImperial, List<String> supplies, List<PatternFabrics> patternFabrics, Long userId)
+            throws IOException {
 
         Image image = null;
         if (imageFile != null && !imageFile.isEmpty()) {
@@ -159,10 +171,25 @@ public class PatternService {
         pattern.setHipMax(hipMax);
         pattern.setIsImperial(isImperial);
         pattern.setSupplies(supplies);
+        pattern.setPatternFabrics(patternFabrics);
         pattern.setUser(userService.findById(userId));
 
-        patternRepo.save(pattern);
+        pattern = patternRepo.save(pattern);
 
+        for (PatternFabrics pf : patternFabrics) {
+            pf.setPattern(pattern);
+            pf = patternFabricsRepo.save(pf); 
+            List<SimpleFabric> simpleFabrics = new ArrayList<>();
+            for (SimpleFabric sf : pf.getFabrics()) {
+                sf.setPatternFabrics(pf);
+                simpleFabrics.add(sf);
+            }
+            pf.setFabrics(simpleFabrics);
+            patternFabricsRepo.save(pf);
+        }
+
+        pattern.setPatternFabrics(patternFabrics);
+        pattern = patternRepo.save(pattern);
         return new PatternDTO(pattern);
     }
 
@@ -170,7 +197,8 @@ public class PatternService {
                                     String format, Integer difficulty, List<String> tags, Date releaseDate, Boolean free,
                                     Boolean outOfPrint, MultipartFile imageFile, List<String> ageGroups, String bodyType,
                                     String sizeRange, List<Character> cupSizes, Double bustMin, Double bustMax, Double hipMin,
-                                    Double hipMax, Boolean isImperial, List<String> supplies, Long userId) throws IOException {
+                                    Double hipMax, Boolean isImperial, List<String> supplies, List<PatternFabrics> patternFabrics,
+                                    Long userId) throws IOException {
 
         Optional<Pattern> optionalPattern = patternRepo.findById(id);
         if (!optionalPattern.isPresent()) {
@@ -207,9 +235,25 @@ public class PatternService {
         existingPattern.setHipMax(hipMax);
         existingPattern.setIsImperial(isImperial);
         existingPattern.setSupplies(supplies);
+        existingPattern.setPatternFabrics(patternFabrics);
         existingPattern.setUser(userService.findById(userId));
 
         Pattern updatedPattern = patternRepo.save(existingPattern);
+
+        for (PatternFabrics pf : patternFabrics) {
+            pf.setPattern(updatedPattern);
+            pf = patternFabricsRepo.save(pf); 
+            List<SimpleFabric> simpleFabrics = new ArrayList<>();
+            for (SimpleFabric sf : pf.getFabrics()) {
+                sf.setPatternFabrics(pf);
+                simpleFabrics.add(sf);
+            }
+            pf.setFabrics(simpleFabrics);
+            patternFabricsRepo.save(pf);
+        }
+
+        updatedPattern.setPatternFabrics(patternFabrics);
+        updatedPattern = patternRepo.save(updatedPattern);
         return new PatternDTO(updatedPattern);
     }
 }

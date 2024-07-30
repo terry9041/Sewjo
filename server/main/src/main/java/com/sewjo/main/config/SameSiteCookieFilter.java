@@ -11,9 +11,15 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Filter that adds SameSite=None; Secure to the Set-Cookie header.
+ */
 @Component
 public class SameSiteCookieFilter implements Filter {
 
+    /**
+     * Adds SameSite=None; Secure to the Set-Cookie header.
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -28,10 +34,16 @@ public class SameSiteCookieFilter implements Filter {
         }
     }
 
+    /**
+     * Initializes the filter.
+     */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
 
+    /**
+     * Destroys the filter.
+     */
     @Override
     public void destroy() {
     }

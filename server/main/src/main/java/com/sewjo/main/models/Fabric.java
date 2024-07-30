@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.AssertTrue;
+// import jakarta.validation.constraints.AssertTrue;
 
 @Entity
 @Table(name = "fabrics")
@@ -80,10 +80,10 @@ public class Fabric {
     @JsonBackReference("user-fabrics")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "pattern_id")
-    @JsonBackReference("pattern-fabrics")
-    private Pattern pattern;
+    // @ManyToOne
+    // @JoinColumn(name = "pattern_id")
+    // @JsonBackReference("pattern-fabrics")
+    // private Pattern pattern;
     
     public Fabric() {
     }
@@ -101,7 +101,7 @@ public class Fabric {
         this.weight = weight;
     }
 
-    public Fabric(String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters, Boolean remnant, Image image, String composition, String structure, String color, String print, String description, String brand, Float shrinkage, Boolean preWashed, String careInstructions, String location, Boolean stretch, Float sheerness, Float drape, Float weight, User user, Pattern pattern) {
+    public Fabric(String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters, Boolean remnant, Image image, String composition, String structure, String color, String print, String description, String brand, Float shrinkage, Boolean preWashed, String careInstructions, String location, Boolean stretch, Float sheerness, Float drape, Float weight, User user) {
         this.name = name;
         this.length = length;
         this.lengthInMeters = lengthInMeters;
@@ -124,7 +124,7 @@ public class Fabric {
         this.drape = drape;
         this.weight = weight;
         this.user = user;
-        this.pattern = pattern;
+        // this.pattern = pattern;
     }
 
     public Long getId() {
@@ -311,18 +311,18 @@ public class Fabric {
         this.user = user;
     }
 
-    public Pattern getPattern() {
-        return pattern;
-    }
+    // public Pattern getPattern() {
+    //     return pattern;
+    // }
 
-    public void setPattern(Pattern pattern) {
-        this.pattern = pattern;
-    }
+    // public void setPattern(Pattern pattern) {
+    //     this.pattern = pattern;
+    // }
 
-    @AssertTrue(message = "Fabric must be associated with either a user or a pattern, not both")
-    private boolean isValidAssociation() {
-        return (user == null && pattern == null) || (user != null && pattern == null) || (user == null && pattern != null);
-    }
+    // @AssertTrue(message = "Fabric must be associated with either a user or a pattern, not both")
+    // private boolean isValidAssociation() {
+    //     return (user == null && pattern == null) || (user != null && pattern == null) || (user == null && pattern != null);
+    // }
 
     public double convertLengthToMeters() {
         return lengthInMeters ? length : length * 0.9144; // 1 yard = 0.9144 meters

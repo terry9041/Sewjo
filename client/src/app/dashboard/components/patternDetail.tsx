@@ -3,6 +3,19 @@ import { useEffect, useState, ChangeEvent } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
 
+interface SimpleFabric {
+    length: number;
+    lengthInMeters: boolean;
+    width: number;
+    widthInCentimeters: boolean;
+    forUse: string;
+}
+
+interface PatternFabrics {
+    size: string;
+    fabrics: SimpleFabric[];
+}
+
 interface Pattern {
     id: number;
     name: string;
@@ -26,6 +39,7 @@ interface Pattern {
     hipMax: number;
     isImperial: boolean;
     supplies: string[];
+    patternFabrics: PatternFabrics[];
 }
 
 interface PatternFormData {
@@ -50,6 +64,7 @@ interface PatternFormData {
     hipMax: number;
     isImperial: boolean;
     supplies: string[];
+    patternFabrics: PatternFabrics[];
 }
 
 interface PatternDetailProps {
@@ -81,8 +96,20 @@ const PatternDetail = ({ id, onClose }: PatternDetailProps) => {
 
     const handleSaveClick = async () => {
         if (formData) {
+            const updatedFormData = { ...formData, sizeRange: calculateSizeRange(formData.patternFabrics) };
             try {
-                const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/pattern/update/${id}`, formData, {
+                const data = new FormData();
+                for (const key in updatedFormData) {
+                    if (key === 'image' && updatedFormData[key]) {
+                        data.append(key, updatedFormData[key]);
+                    } else if (Array.isArray(updatedFormData[key])) {
+                        data.append(key, JSON.stringify(updatedFormData[key]));
+                    } else {
+                        data.append(key, updatedFormData[key] !== null ? updatedFormData[key].toString() : '');
+                    }
+                }
+
+                const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/pattern/update/${id}`, data, {
                     withCredentials: true,
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -132,6 +159,65 @@ const PatternDetail = ({ id, onClose }: PatternDetailProps) => {
         setFormData((prevState) => ({ ...prevState, [name]: value }));
     };
 
+    const handlePatternFabricChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        const newPatternFabrics = [...formData.patternFabrics];
+        newPatternFabrics[index] = {
+            ...newPatternFabrics[index],
+            [name]: value
+        };
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: newPatternFabrics
+        }));
+    };
+
+    const handleSimpleFabricChange = (pfIndex: number, sfIndex: number, e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type } = e.target;
+        const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+        const newPatternFabrics = [...formData.patternFabrics];
+        newPatternFabrics[pfIndex].fabrics[sfIndex] = {
+            ...newPatternFabrics[pfIndex].fabrics[sfIndex],
+            [name]: newValue
+        };
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: newPatternFabrics
+        }));
+    };
+
+    const addPatternFabric = () => {
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: [...prevState.patternFabrics, { size: '', fabrics: [] }]
+        }));
+    };
+
+    const addSimpleFabric = (pfIndex: number) => {
+        const newPatternFabrics = [...formData.patternFabrics];
+        newPatternFabrics[pfIndex].fabrics = [...newPatternFabrics[pfIndex].fabrics, {
+            length: 0,
+            lengthInMeters: true,
+            width: 0,
+            widthInCentimeters: true,
+            forUse: ''
+        }];
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: newPatternFabrics
+        }));
+    };
+
+    const calculateSizeRange = (patternFabrics: PatternFabrics[]) => {
+        if (!patternFabrics.length) {
+            return '';
+        }
+        const sizes = patternFabrics.map(pf => pf.size);
+        const minSize = Math.min(...sizes.map(Number));
+        const maxSize = Math.max(...sizes.map(Number));
+        return `${minSize} - ${maxSize}`;
+    };
+
     if (!pattern) {
         return <div>Loading...</div>;
     }
@@ -158,7 +244,7 @@ const PatternDetail = ({ id, onClose }: PatternDetailProps) => {
                             <div><strong>Format:</strong> {pattern.format}</div>
                             <div><strong>Difficulty:</strong> {pattern.difficulty}</div>
                             <div><strong>Tags:</strong> {pattern.tags.join(', ')}</div>
-                            <div><strong>Release Date:</strong> {new Date(pattern.releaseDate).toLocaleDateString()}</div>
+                            <div><strong>Release Date:</strong> {pattern.releaseDate}</div>
                             <div><strong>Free:</strong> {pattern.free ? 'Yes' : 'No'}</div>
                             <div><strong>Out of Print:</strong> {pattern.outOfPrint ? 'Yes' : 'No'}</div>
                             <div><strong>Brand:</strong> {pattern.brand.join(', ')}</div>
@@ -172,6 +258,21 @@ const PatternDetail = ({ id, onClose }: PatternDetailProps) => {
                             <div><strong>Hip Max:</strong> {pattern.hipMax}</div>
                             <div><strong>Is Imperial:</strong> {pattern.isImperial ? 'Yes' : 'No'}</div>
                             <div><strong>Supplies:</strong> {pattern.supplies.join(', ')}</div>
+                            <div><strong>Pattern Fabrics:</strong></div>
+                            {pattern.patternFabrics.map((pf, pfIndex) => (
+                                <div key={pfIndex} className="ml-4 mb-4">
+                                    <div><strong>Size:</strong> {pf.size}</div>
+                                    {pf.fabrics.map((sf, sfIndex) => (
+                                        <div key={sfIndex} className="ml-4 mb-2">
+                                            <div><strong>Length:</strong> {sf.length}{sf.lengthInMeters ? 'm' : 'yd'}</div>
+                                            {/* <div><strong>Length in Meters:</strong> {sf.lengthInMeters ? 'Yes' : 'No'}</div> */}
+                                            <div><strong>Width:</strong> {sf.width}{sf.widthInCentimeters ? 'cm' : 'in'}</div>
+                                            {/* <div><strong>Width in Centimeters:</strong> {sf.widthInCentimeters ? 'Yes' : 'No'}</div> */}
+                                            <div><strong>For Use:</strong> {sf.forUse}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
                         </div>
                         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleEditClick}>Edit</button>
                     </>
@@ -392,6 +493,92 @@ const PatternDetail = ({ id, onClose }: PatternDetailProps) => {
                                 />
                                 <span className="text-gray-500 text-xs italic">Comma separated values</span>
                             </div>
+
+                            {formData.patternFabrics.map((pf, pfIndex) => (
+                                <div key={pfIndex} className="ml-4 mb-4">
+                                    <h4 className="text-lg font-semibold">Pattern Fabric {pfIndex + 1}</h4>
+                                    <div>
+                                        <strong>Size:</strong>
+                                        <input
+                                            type="text"
+                                            name="size"
+                                            value={pf.size}
+                                            onChange={(e) => handlePatternFabricChange(pfIndex, e)}
+                                            className="w-full border border-gray-300 rounded p-2"
+                                        />
+                                    </div>
+                                    {pf.fabrics.map((sf, sfIndex) => (
+                                        <div key={sfIndex} className="ml-4 mb-2">
+                                            <h5 className="font-semibold">Simple Fabric {sfIndex + 1}</h5>
+                                            <div>
+                                                <strong>Length:</strong>
+                                                <input
+                                                    type="number"
+                                                    name="length"
+                                                    value={sf.length}
+                                                    onChange={(e) => handleSimpleFabricChange(pfIndex, sfIndex, e)}
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <strong>Length in Meters:</strong>
+                                                <input
+                                                    type="checkbox"
+                                                    name="lengthInMeters"
+                                                    checked={sf.lengthInMeters}
+                                                    onChange={(e) => handleSimpleFabricChange(pfIndex, sfIndex, e)}
+                                                    className="ml-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <strong>Width:</strong>
+                                                <input
+                                                    type="number"
+                                                    name="width"
+                                                    value={sf.width}
+                                                    onChange={(e) => handleSimpleFabricChange(pfIndex, sfIndex, e)}
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <strong>Width in Centimeters:</strong>
+                                                <input
+                                                    type="checkbox"
+                                                    name="widthInCentimeters"
+                                                    checked={sf.widthInCentimeters}
+                                                    onChange={(e) => handleSimpleFabricChange(pfIndex, sfIndex, e)}
+                                                    className="ml-2"
+                                                />
+                                            </div>
+                                            <div>
+                                                <strong>For Use:</strong>
+                                                <input
+                                                    type="text"
+                                                    name="forUse"
+                                                    value={sf.forUse}
+                                                    onChange={(e) => handleSimpleFabricChange(pfIndex, sfIndex, e)}
+                                                    className="w-full border border-gray-300 rounded p-2"
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <button
+                                        type="button"
+                                        onClick={() => addSimpleFabric(pfIndex)}
+                                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded"
+                                    >
+                                        Add Simple Fabric
+                                    </button>
+                                </div>
+                            ))}
+
+                            <button
+                                type="button"
+                                onClick={addPatternFabric}
+                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-6"
+                            >
+                                Add Pattern Fabric
+                            </button>
                         </div>
                         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleSaveClick}>Save</button>
                         <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={handleDeleteClick}>Delete</button>

@@ -1,5 +1,8 @@
 package com.sewjo.main.dto;
 
+/**
+ * UserDTO
+ */
 public class UserDTO {
     private Long id;
     private String userName;

@@ -19,6 +19,9 @@ import com.sewjo.main.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Controller for handling login and registration requests for the API
+ */
 @RestController
 @RequestMapping("/api/user")
 public class LoginControllerAPI {

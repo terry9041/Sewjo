@@ -72,9 +72,9 @@ public class Pattern {
     @ElementCollection
     private List<String> supplies;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference(value = "pattern-fabrics")
-    private List<Fabric> fabrics;
+    @OneToMany(mappedBy = "pattern", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<PatternFabrics> patternFabrics;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -92,7 +92,11 @@ public class Pattern {
         this.user = user;
     }
 
-    public Pattern(String name, List<String> brand, String description, String patternType, String format, Integer difficulty, List<String> tags, Date releaseDate, Boolean free, Boolean outOfPrint, Image image, List<String> ageGroups, String bodyType, String sizeRange, List<Character> cupSizes, Double bustMin, Double bustMax, Double hipMin, Double hipMax, Boolean isImperial, List<String> supplies, List<Fabric> fabrics, User user) {
+    public Pattern(String name, List<String> brand, String description, String patternType, String format,
+            Integer difficulty, List<String> tags, Date releaseDate, Boolean free, Boolean outOfPrint, Image image,
+            List<String> ageGroups, String bodyType, String sizeRange, List<Character> cupSizes, Double bustMin,
+            Double bustMax, Double hipMin, Double hipMax, Boolean isImperial, List<String> supplies,
+            List<PatternFabrics> patternFabrics, User user) {
         this.name = name;
         this.brand = brand;
         this.description = description;
@@ -114,7 +118,9 @@ public class Pattern {
         this.hipMax = hipMax;
         this.isImperial = isImperial;
         this.supplies = supplies;
-        this.fabrics = fabrics;
+        // this.fabrics = fabrics;
+        this.patternFabrics = patternFabrics;
+
         this.user = user;
     }
 
@@ -294,12 +300,20 @@ public class Pattern {
         this.supplies = supplies;
     }
 
-    public List<Fabric> getFabrics() {
-        return fabrics;
+    // public List<Fabric> getFabrics() {
+    //     return fabrics;
+    // }
+
+    // public void setFabrics(List<Fabric> fabrics) {
+    //     this.fabrics = fabrics;
+    // }
+
+    public List<PatternFabrics> getPatternFabrics() {
+        return patternFabrics;
     }
 
-    public void setFabrics(List<Fabric> fabrics) {
-        this.fabrics = fabrics;
+    public void setPatternFabrics(List<PatternFabrics> patternFabrics) {
+        this.patternFabrics = patternFabrics;
     }
 
     public User getUser() {

@@ -19,7 +19,7 @@ public interface FabricRepository extends CrudRepository<Fabric, Long> {
 
     List<Fabric> findByUserId(Long userId);
 
-    List<Fabric> findByPatternIdAndPatternUserId(Long patternId, Long userId);
+    // List<Fabric> findByPatternIdAndPatternUserId(Long patternId, Long userId);
 
-    List<Fabric> findByUserIdAndPatternIsNull(Long userId);
+    // List<Fabric> findByUserIdAndPatternIsNull(Long userId);
 }

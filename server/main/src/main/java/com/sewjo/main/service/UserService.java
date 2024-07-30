@@ -12,8 +12,8 @@ import com.sewjo.main.models.LoginUser;
 import com.sewjo.main.repositories.UserRepository;
 import com.sewjo.main.dto.UserDTO;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 @Service
 public class UserService {

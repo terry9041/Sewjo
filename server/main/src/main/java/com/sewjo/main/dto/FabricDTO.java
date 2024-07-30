@@ -2,6 +2,9 @@ package com.sewjo.main.dto;
 
 import com.sewjo.main.models.Fabric;
 
+/**
+ * FabricDTO
+ */
 public class FabricDTO {
     private Long id;
     private String name;
@@ -26,7 +29,7 @@ public class FabricDTO {
     private Float drape;
     private Float weight;
     private Long userId; 
-    private Long patternId;
+    // private Long patternId;
 
     public FabricDTO() {
     }
@@ -55,10 +58,10 @@ public class FabricDTO {
         this.weight = fabric.getWeight();
         this.imageId = fabric.getImage() != null ? fabric.getImage().getId() : null;
         this.userId = fabric.getUser() != null ? fabric.getUser().getId() : null;
-        this.patternId = fabric.getPattern() != null ? fabric.getPattern().getId() : null;
+        // this.patternId = fabric.getPattern() != null ? fabric.getPattern().getId() : null;
     }
 
-    public FabricDTO(Long id, String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters, Boolean remnant, Long imageId, String composition, String structure, String color, String print, String description, String brand, Float shrinkage, Boolean preWashed, String careInstructions, String location, Boolean stretch, Float sheerness, Float drape, Float weight, Long userId, Long patternId) {
+    public FabricDTO(Long id, String name, Double length, Boolean lengthInMeters, Double width, Boolean widthInCentimeters, Boolean remnant, Long imageId, String composition, String structure, String color, String print, String description, String brand, Float shrinkage, Boolean preWashed, String careInstructions, String location, Boolean stretch, Float sheerness, Float drape, Float weight, Long userId) {
         this.id = id;
         this.name = name;
         this.length = length;
@@ -82,7 +85,7 @@ public class FabricDTO {
         this.drape = drape;
         this.weight = weight;
         this.userId = userId;
-        this.patternId = patternId;
+        // this.patternId = patternId;
     }
 
     // Getters and setters
@@ -270,11 +273,11 @@ public class FabricDTO {
         this.userId = userId;
     }
 
-    public Long getPatternId() {
-        return patternId;
-    }
+    // public Long getPatternId() {
+    //     return patternId;
+    // }
 
-    public void setPatternId(Long patternId) {
-        this.patternId = patternId;
-    }
+    // public void setPatternId(Long patternId) {
+    //     this.patternId = patternId;
+    // }
 }

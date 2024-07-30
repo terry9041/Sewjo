@@ -9,8 +9,8 @@ interface Pattern {
     name: string;
     imageId: number;
     description: string;
-    type: string;
-    size: string;
+    patternType: string;
+    sizeRange: string;
 }
 
 export default function PatternDisplay() {
@@ -113,8 +113,8 @@ export default function PatternDisplay() {
                             <div className="p-4 bg-background">
                                 <h3 className="text-lg font-bold">{pattern.name}</h3>
                                 <p className="text-sm text-muted-foreground">{pattern.description}</p>
-                                <p className="text-sm text-muted-foreground">Type: {pattern.type}</p>
-                                <p className="text-sm text-muted-foreground">Size: {pattern.size}</p>
+                                <p className="text-sm text-muted-foreground">Type: {pattern.patternType}</p>
+                                <p className="text-sm text-muted-foreground">Size: {pattern.sizeRange}</p>
                             </div>
                         </div>
                     ))}
