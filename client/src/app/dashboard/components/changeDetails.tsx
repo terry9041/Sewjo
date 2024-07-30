@@ -25,8 +25,33 @@ const ChangeDetails = () => {
     oldPassword: "",
   });
   const [successMessage, setSuccessMessage] = useState("");
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [visible, setVisible] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (successMessage !== "") {
+      const timer = setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (errors.server !== "") {
+      const timer = setTimeout(() => {
+        setErrors((prevErrors) => ({ ...prevErrors, server: "" }));
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [errors.server]);
 
   const passDict = {
     true: ["text", "Hide Password!"],
@@ -111,6 +136,13 @@ const ChangeDetails = () => {
     }
 
     try {
+      setErrors({
+        server: "",
+        confirmPassword: "",
+        newPassword: "",
+        oldPassword: "",
+      });
+
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/changePassword`,
         details,
@@ -118,19 +150,19 @@ const ChangeDetails = () => {
           withCredentials: true,
         }
       );
+      console.log(res);
+      setSuccessMessage("Password updated successfully");
+      console.log(successMessage);
+      setDetails(initFormState);
+      setIsValid(false);
 
-      if (res.data.errors) {
-        setErrors(res.data.errors);
-      } else {
-        setSuccessMessage("Password updated successfully");
-
-        router.push("/dashboard");
-      }
+      router.push("/dashboard");
     } catch (err) {
       console.error(err);
+      setSuccessMessage("");
       setErrors((prev) => ({
         ...prev,
-        server: "An unexpected error occurred. Please try again later.",
+        server: "Incorrect password",
       }));
     }
   };
@@ -145,11 +177,16 @@ const ChangeDetails = () => {
       <h2 className="text-2xl font-bold mb-6">Change Your Password</h2>
 
       {successMessage && (
-        <div className="text-green-500 text-sm mt-2">{successMessage}</div>
+        <div className="bg-green-500 text-white p-2 rounded mb-4 text-center">
+          {successMessage}
+        </div>
       )}
       {errors.server && (
-        <div className="text-red-500 text-sm mt-2">{errors.server}</div>
+        <div className="bg-red-500 text-white p-2 rounded mb-4 text-center">
+          {errors.server}
+        </div>
       )}
+      {/* <hr className="mb-4"></hr> */}
 
       <form onSubmit={handlePasswordChange}>
         <div className="mb-4">
@@ -157,7 +194,7 @@ const ChangeDetails = () => {
             htmlFor="oldPassword"
             className="block text-gray-700 font-bold mb-2"
           >
-            Old Password
+            Previous Password
           </label>
           <input
             type={passDict[visible.toString()][0]}
@@ -215,7 +252,7 @@ const ChangeDetails = () => {
             onChange={handleChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
-          {valid.confirm === false && (
+          {valid.confirmPassword === false && (
             <div className="text-red-500 text-sm mt-2">
               The passwords must match!
             </div>
@@ -223,7 +260,7 @@ const ChangeDetails = () => {
           <button
             type="button"
             onClick={showPass}
-            className="relative bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+            className=" bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 my-2 px-2 rounded focus:outline-none focus:shadow-outline"
           >
             {passDict[visible.toString()][1]}
           </button>

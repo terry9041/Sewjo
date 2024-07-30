@@ -48,12 +48,14 @@ export default function ModalLoginForm({ swapReg }) {
       <h2 className="text-2xl font-bold mb-6">Sewjo Login</h2>
       <form onSubmit={handleSubmit}>
         {!valid && (
-          <div className="bg-red-500 text-white p-2 rounded mb-4">
+          <div className="bg-red-500 text-white p-2 rounded mb-4 text-center">
             Username or password incorrect!
           </div>
         )}
         <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 font-bold mb-2">Email</label>
+          <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
+            Email
+          </label>
           <input
             type="text"
             name="email"
@@ -65,7 +67,12 @@ export default function ModalLoginForm({ swapReg }) {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="password" className="block text-gray-700 font-bold mb-2">Password</label>
+          <label
+            htmlFor="password"
+            className="block text-gray-700 font-bold mb-2"
+          >
+            Password
+          </label>
           <div className="relative">
             <input
               type={passDict[visible.toString()][0]}
@@ -95,7 +102,10 @@ export default function ModalLoginForm({ swapReg }) {
         </div>
       </form>
       <p className="text-center">
-        Don&apos;t have an account? <button onClick={swapReg} className="text-blue-500 hover:text-blue-700">Register here!</button>
+        Don&apos;t have an account?{" "}
+        <button onClick={swapReg} className="text-blue-500 hover:text-blue-700">
+          Register here!
+        </button>
       </p>
     </div>
   );
