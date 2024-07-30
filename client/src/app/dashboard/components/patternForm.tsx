@@ -1,5 +1,7 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
 
+//TODO: Integrate OCR into this form
+
 interface SimpleFabric {
     length: number;
     lengthInMeters: boolean;
