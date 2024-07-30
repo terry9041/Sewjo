@@ -1,5 +1,6 @@
 package com.sewjo.main.service;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -8,10 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import com.sewjo.main.models.User;
+import com.sewjo.main.models.Image;
 import com.sewjo.main.models.LoginUser;
 import com.sewjo.main.repositories.UserRepository;
 import com.sewjo.main.dto.ChangePasswordDTO;
 import com.sewjo.main.dto.UserDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,22 +113,22 @@ public class UserService {
         return user;
     }
 
-    // public UserDTO changeProfileImage(UserDTO userDTO, MultipartFile imageFile,
-    // Long userId) throws IOException {
-    // Optional<User> optionalUser = userRepo.findById(userDTO.getId());
-    // if (!optionalUser.isPresent() || !optionalUser.get().getId().equals(userId))
-    // {
-    // throw new IllegalArgumentException("Fabric not found or unauthorized");
-    // }
+    public UserDTO changeProfileImage(UserDTO userDTO, MultipartFile imageFile,
+            Long userId) throws IOException {
+        Optional<User> optionalUser = userRepo.findById(userDTO.getId());
+        if (!optionalUser.isPresent() || !optionalUser.get().getId().equals(userId)) {
+            throw new IllegalArgumentException("User not found or unauthorized");
+        }
 
-    // User existingUser = optionalUser.get();
-    // if (imageFile != null && !imageFile.isEmpty()) {
-    // Image image = new Image();
-    // image.setName(imageFile.getOriginalFilename());
-    // image.setData(imageFile.getBytes());
-    // existingUser.setImage(image);
-    // }
-    // userRepo.save(existingUser);
-    // return convertToDTO(existingUser);
-    // }
+        User existingUser = optionalUser.get();
+        if (imageFile != null && !imageFile.isEmpty()) {
+            Image image = new Image();
+            image.setName(imageFile.getOriginalFilename());
+            image.setData(imageFile.getBytes());
+            existingUser.setImage(image);
+            System.out.println(imageFile.getBytes());
+        }
+        userRepo.save(existingUser);
+        return convertToDTO(existingUser);
+    }
 }

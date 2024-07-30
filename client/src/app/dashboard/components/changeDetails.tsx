@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import ChangeProfileImage from "./ChangeProfileImage";
 
 const ChangeDetails = () => {
   const initFormState = {
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
+    profileImage: null,
   };
 
   const initValidState = {
@@ -91,6 +93,11 @@ const ChangeDetails = () => {
 
   const showPass = () => {
     setVisible((prev) => !prev);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setDetails((prev) => ({ ...prev, profileImage: file }));
   };
 
   const handlePasswordChange = async (e) => {
@@ -279,6 +286,7 @@ const ChangeDetails = () => {
           Change Password
         </button>
       </form>
+      <ChangeProfileImage />
     </div>
   );
 };

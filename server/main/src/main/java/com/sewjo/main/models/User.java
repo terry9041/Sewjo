@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -43,7 +44,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id", referencedColumnName = "id")
-    // @JsonManagedReference("user-image")
+    @JsonBackReference("user-image")
     private Image image;
 
     // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval =

@@ -5,12 +5,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
+import java.io.IOException;
 
 import com.sewjo.main.dto.ChangePasswordDTO;
 import com.sewjo.main.dto.UserDTO;
@@ -134,38 +137,41 @@ public class LoginControllerAPI {
         return ResponseEntity.ok(userDTO);
     }
 
-    // @GetMapping("/image")
-    // public ResponseEntity<?> getImage(HttpSession session) {
-    // if (session.getAttribute("id") == null) {
-    // return ResponseEntity.status(401).body("Unauthorized");
-    // }
-    // User user = userServ.findById((Long) session.getAttribute("id"));
-    // return ResponseEntity.ok(user.getImage());
-    // }
+    @GetMapping("/getProfileImage")
+    public ResponseEntity<?> getProfileImage(HttpSession session) {
+        if (session.getAttribute("id") == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        User user = userServ.findById((Long) session.getAttribute("id"));
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+        return ResponseEntity.ok(user.getImage());
+    }
 
-    // @PutMapping(value = "/updateProfileImage", consumes = {
-    // MediaType.MULTIPART_FORM_DATA_VALUE })
-    // public ResponseEntity<?> updateProfileImage(
-    // @RequestParam(value = "image", required = false) MultipartFile imageFile,
-    // HttpSession session) {
-    // if (session.getAttribute("id") == null) {
-    // return ResponseEntity.status(401).body("Unauthorized");
-    // }
-    // Long userId = (Long) session.getAttribute("id");
-    // UserDTO existingUser = userServ.convertToDTO(userServ.findById(userId));
-    // if (existingUser == null) {
-    // return ResponseEntity.status(404).body("User not found");
-    // }
+    @PostMapping(value = "/changeProfileImage", consumes = {
+            MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> changeProfileImage(
+            @RequestParam(value = "image", required = false) MultipartFile imageFile,
+            HttpSession session) {
+        if (session.getAttribute("id") == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        Long userId = (Long) session.getAttribute("id");
+        UserDTO existingUser = userServ.convertToDTO(userServ.findById(userId));
+        if (existingUser == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
 
-    // UserDTO updatedUser;
-    // try {
-    // updatedUser = userServ.changeProfileImage(existingUser, imageFile, userId);
-    // } catch (IOException e) {
-    // return ResponseEntity.status(500).body("Failed to update fabric image");
-    // }
+        UserDTO updatedUser;
+        try {
+            updatedUser = userServ.changeProfileImage(existingUser, imageFile, userId);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to update fabric image");
+        }
 
-    // return ResponseEntity.ok(updatedUser);
-    // }
+        return ResponseEntity.ok(updatedUser);
+    }
 
     private void clearSameSiteCookie(HttpServletResponse response, String name) {
         Cookie cookie = new Cookie(name, null);
