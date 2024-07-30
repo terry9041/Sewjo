@@ -6,3 +6,6 @@
 # Ignore editor-specific files
 .vscode/
 .idea/
+
+run.sh
+
