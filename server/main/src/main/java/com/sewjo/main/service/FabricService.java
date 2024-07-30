@@ -151,9 +151,13 @@ public class FabricService {
                               String print, String description, String brand, Float shrinkage, Boolean preWashed,
                               String careInstructions, String location, Boolean stretch, Float sheerness, Float drape,
                               Float weight, Long userId) throws IOException {
-        Image image = new Image();
-        image.setName(imageFile.getOriginalFilename());
-        image.setData(imageFile.getBytes());
+                                
+        Image image = null;
+        if (imageFile != null && !imageFile.isEmpty()) {
+            image = new Image();
+            image.setName(imageFile.getOriginalFilename());
+            image.setData(imageFile.getBytes());
+        }
 
         Fabric fabric = new Fabric(name, length, lengthInMeters, width, widthInCentimeters, remnant, stretch, sheerness, drape, weight);
         fabric.setImage(image);

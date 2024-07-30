@@ -20,11 +20,13 @@ export default function FabricDisplay() {
     const [showForm, setShowForm] = useState<boolean>(false);
     const [selectedFabricId, setSelectedFabricId] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(true);  
 
     useEffect(() => {
         const fetchFabrics = async () => {
             try {
                 const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/fabric/all`, { withCredentials: true });
+                setLoading(false);
                 setFabrics(response.data);
                 console.log('Fabrics:', response.data);
             } catch (error) {
@@ -84,6 +86,16 @@ export default function FabricDisplay() {
                         {showForm ? 'Close Form' : 'Add Fabric'}
                     </button>
                 </div>
+                                {loading && <p>Loading fabrics...</p>}
+                {!loading && filteredFabrics.length === 0 && searchQuery !== "" && (
+                    <p>No fabrics found. Try a different search query.</p>
+                )}
+                {!loading && filteredFabrics.length === 0 && searchQuery === "" && (
+                    <p>No fabrics found. Click the button above to add a new fabric.</p>
+                )}
+                {!loading && filteredFabrics.length > 0 && (
+                    <p className="text-muted-foreground mb-4">Click on a fabric to view more details.</p>
+                )}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {filteredFabrics
                         .sort((a, b) => a.name.localeCompare(b.name))

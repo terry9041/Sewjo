@@ -154,7 +154,7 @@ export default function FabricForm({ handleSubmit }: FabricFormProps) {
             <div className="mb-4">
                 <label className="block mb-2" htmlFor="image">Image</label>
                 <input type="file" id="image" name="image" onChange={handleFileChange} className="w-full px-3 py-2 border rounded" />
-                <span className="text-red-500 text-xs italic">*required</span>
+                {/* <span className="text-red-500 text-xs italic">*required</span> */}
             </div>
             <div className="mb-4">
                 <label className="block mb-2" htmlFor="composition">Composition</label>
