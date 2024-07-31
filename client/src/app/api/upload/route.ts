@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   const origin = req.headers.get('origin')
   
   // Check if the origin is allowed (you can add your own logic here)
-  const allowedOrigins = ['http://localhost:3000', 'https://your-production-domain.com']
+  const allowedOrigins = ['http://localhost:3000', 'https://sewjo-client.onrender.com']
   if (origin && allowedOrigins.includes(origin)) {
     // Set CORS headers
     const headers = new Headers({
@@ -67,7 +67,7 @@ export async function OPTIONS(req: NextRequest) {
   const origin = req.headers.get('origin')
   
   // Check if the origin is allowed (you can add your own logic here)
-  const allowedOrigins = ['http://localhost:3000', 'https://your-production-domain.com']
+  const allowedOrigins = ['http://localhost:3000', 'https://sewjo-client.onrender.com/']
   if (origin && allowedOrigins.includes(origin)) {
     // Set CORS headers for preflight request
     const headers = new Headers({
