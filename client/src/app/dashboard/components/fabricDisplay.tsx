@@ -105,7 +105,7 @@ export default function FabricDisplay() {
                             className="relative overflow-hidden rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 ease-in-out"
                             onClick={() => handleFabricClick(fabric.id)}
                         >
-                            <Image
+                            <img
                                 src={fabric.imageId != null ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${fabric.imageId}` : "/favicon.ico"}
                                 alt={fabric.name}
                                 width={500}
