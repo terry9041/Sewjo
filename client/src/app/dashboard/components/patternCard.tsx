@@ -16,7 +16,7 @@ interface PatternCardProps {
 const PatternCard: React.FC<PatternCardProps> = ({ pattern }) => {
   return (
     <div className="min-w-[200px] h-76 relative overflow-hidden rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 ease-in-out box-border">
-      <Image
+      <img
         src={
           pattern.imageId != null
             ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${pattern.imageId}`

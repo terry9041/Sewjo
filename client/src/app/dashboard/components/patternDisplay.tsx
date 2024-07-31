@@ -103,7 +103,7 @@ export default function PatternDisplay() {
                             className="relative overflow-hidden rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 ease-in-out"
                             onClick={() => handlePatternClick(pattern.id)}
                         >
-                            <Image
+                            <img
                                 src={pattern.imageId != null ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${pattern.imageId}` : "/favicon.ico"}
                                 alt={pattern.name}
                                 width={500}

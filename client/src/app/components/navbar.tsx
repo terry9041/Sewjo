@@ -62,7 +62,7 @@ export default function Navbar({
                 onClick={toggleDropdown}
               >
                 <span className="sr-only">Open user menu</span>
-                <Image
+                <img
                   className="w-8 h-8 rounded-full"
                   src={userImageSrc}
                   alt="user photo"
@@ -167,7 +167,7 @@ export default function Navbar({
                 onClick={toggleDropdown}
               >
                 <span className="sr-only">Open user menu</span>
-                <Image
+                <img
                   className="w-8 h-8 rounded-full"
                   src={userImageSrc}
                   alt="user photo"

@@ -152,7 +152,7 @@ const FabricDetail = ({ id, onClose }: FabricDetailProps) => {
                 {!isEditing ? (
                     <>
                         <h1 className="text-3xl font-bold mb-4">{fabric.name}</h1>
-                        <Image
+                        <img
                             src={fabric.imageId != null ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${fabric.imageId}` : "/favicon.ico"}
                             alt={fabric.name}
                             width={500}
@@ -192,7 +192,7 @@ const FabricDetail = ({ id, onClose }: FabricDetailProps) => {
                                 className="w-full border border-gray-300 rounded p-2"
                             />
                         </h1>
-                        <Image
+                        <img
                             src={fabric.imageId != null ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${fabric.imageId}` : "/favicon.ico"}
                             alt={fabric.name}
                             width={500}

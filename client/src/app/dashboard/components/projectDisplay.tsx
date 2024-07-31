@@ -143,7 +143,7 @@ const ProjectImage = ({ patternId }: ProjectImageProps) => {
     }, [patternId]);
 
     return (
-        <Image
+        <img
             src={imageId != null ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${imageId}` : "/favicon.ico"}
             alt="Project Pattern"
             width={500}

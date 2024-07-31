@@ -99,7 +99,7 @@ export default function ProjectForm({ handleSubmit }: ProjectFormProps) {
                             className={`p-2 border rounded ${pattern.id === selectedPatternId ? 'border-blue-500' : 'border-gray-300'}`}
                             onClick={() => selectPattern(pattern.id)}
                         >
-                            <Image
+                            <img
                                 src={pattern.imageId ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${pattern.imageId}` : "/favicon.ico"}
                                 alt={pattern.name}
                                 width={100}

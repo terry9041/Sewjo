@@ -126,7 +126,7 @@ export default function ProjectDetail({ id, onClose }: ProjectDetailProps) {
                 {!isEditing ? (
                     <>
                         <h1 className="text-3xl font-bold mb-4">{project.name}</h1>
-                        <Image
+                        <img
                             src={pattern?.imageId != null ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${pattern.imageId}` : "/favicon.ico"}
                             alt={project.name}
                             width={500}
@@ -171,7 +171,7 @@ export default function ProjectDetail({ id, onClose }: ProjectDetailProps) {
                                 className="w-full border border-gray-300 rounded p-2"
                             />
                         </h1>
-                        <Image
+                        <img
                             src={pattern?.imageId != null ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${pattern.imageId}` : "/favicon.ico"}
                             alt={project.name}
                             width={500}

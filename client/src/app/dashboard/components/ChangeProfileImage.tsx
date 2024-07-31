@@ -85,7 +85,7 @@ const ChangeProfileImage = () => {
       
       <h2 className="text-2xl font-bold my-6">Change Profile Image</h2>
 
-      <Image
+      <img
         src={
           userImageSrc != null
             ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${userImageSrc}`
