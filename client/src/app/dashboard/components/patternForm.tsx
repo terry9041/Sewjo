@@ -84,6 +84,8 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
     const [selection, setSelection] = useState({ startX: 0, startY: 0, endX: 0, endY: 0 });
     const [isSelecting, setIsSelecting] = useState(false);
     const [image, setImage] = useState<HTMLImageElement | null>(null);
+    const [width, setWidth] = useState<number>(0);
+    const [height, setHeight] = useState<number>(0);
     
     const drawSelection = (ctx: CanvasRenderingContext2D, selection: { startX: number, startY: number, endX: number, endY: number }) => {
         const canvas = canvasRef.current;
@@ -103,7 +105,11 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
             reader.onload = (event) => {
                 const img = new Image();
                 img.onload = () => {
+                    // console.log('Image loaded:', img);
+                    // console.log('Image dimensions:', img.width, img.height);
                     setImage(img); // Store the image in state
+                    setWidth(img.width);
+                    setHeight(img.height);
                     const canvas = canvasRef.current;
                     if (canvas) {
                         const ctx = canvas.getContext('2d');
@@ -300,8 +306,8 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        width={800}
-        height={600}
+        width={width}
+        height={height}
         />
         <button type="button" onClick={handleOcrUpload} className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Process OCR
