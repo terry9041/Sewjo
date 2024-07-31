@@ -81,12 +81,10 @@ const ChangeProfileImage = () => {
   };
 
   return (
-    <div className="change-profile-image-form max-w-md mx-auto mt-10 p-8 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6">Change Profile Image</h2>
-      <label className="block text-gray-700 font-bold mb-2">
-        Current Profile Image
-      </label>
-      <h2>${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${userImageSrc}</h2>
+    <div className="change-profile-image-form max-w-md  bg-white  flex flex-col">
+      
+      <h2 className="text-2xl font-bold my-6">Change Profile Image</h2>
+
       <Image
         src={
           userImageSrc != null
@@ -94,9 +92,9 @@ const ChangeProfileImage = () => {
             : "/favicon.ico"
         }
         alt={"user profile image"}
-        width={32}
-        height={32}
-      />
+        width={200}
+        height={200}
+        className="self-center rounded-xl"/>
       {successMessage && (
         <div className="bg-green-500 text-white p-2 rounded mb-4 text-center">
           {successMessage}
@@ -112,9 +110,9 @@ const ChangeProfileImage = () => {
         <div className="mb-4">
           <label
             htmlFor="profileImage"
-            className="block text-gray-700 font-bold mb-2"
+            className="block text-gray-700 font-bold mt-4 mb-2"
           >
-            Profile Image
+            Upload a new profile image below
           </label>
           <input
             type="file"
@@ -128,7 +126,7 @@ const ChangeProfileImage = () => {
         <div className="flex items-center justify-between">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
             Update Profile Image
           </button>

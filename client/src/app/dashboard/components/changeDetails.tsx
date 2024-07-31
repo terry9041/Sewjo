@@ -286,6 +286,7 @@ const ChangeDetails = () => {
           Change Password
         </button>
       </form>
+      <hr className = ""></hr>
       <ChangeProfileImage />
     </div>
   );
