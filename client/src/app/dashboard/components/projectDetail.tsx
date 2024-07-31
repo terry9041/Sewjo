@@ -80,7 +80,7 @@ export default function ProjectDetail({ id, onClose }: ProjectDetailProps) {
                 const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/project/update/${id}`, formData, {
                     withCredentials: true,
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'multipart/form-data',
                     },
                 });
                 setProject(response.data);
