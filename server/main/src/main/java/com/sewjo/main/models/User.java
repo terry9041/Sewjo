@@ -6,12 +6,12 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "users")
 public class User {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +44,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id", referencedColumnName = "id")
-    // @JsonManagedReference("user-image")
+    @JsonBackReference("user-image")
     private Image image;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -120,11 +120,11 @@ public class User {
     }
 
     // public List<Project> getProjects() {
-    //     return projects;
+    // return projects;
     // }
 
     // public void setProjects(List<Project> projects) {
-    //     this.projects = projects;
+    // this.projects = projects;
     // }
 
     public List<Pattern> getPatterns() {
