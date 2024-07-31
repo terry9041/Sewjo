@@ -1,10 +1,8 @@
-HELP.md
-.gradle
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Allow only specific files
+/build/
+!build/libs/*.jar
 
-### STS ###
+# STS specific
 .apt_generated
 .classpath
 .factorypath
@@ -16,8 +14,8 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-### IntelliJ IDEA ###
-.idea
+# IntelliJ IDEA specific
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -25,13 +23,19 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-### NetBeans ###
+# NetBeans specific
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
+# VS Code specific
 .vscode/
 .env
+
+# Gradle specific
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/

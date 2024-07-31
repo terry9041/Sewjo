@@ -9,7 +9,11 @@ import org.springframework.validation.BindingResult;
 
 import com.sewjo.main.models.User;
 import com.sewjo.main.models.LoginUser;
-import com.sewjo.main.repositories.*;
+import com.sewjo.main.repositories.UserRepository;
+import com.sewjo.main.dto.UserDTO;
+
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 
 @Service
 public class UserService {
@@ -41,7 +45,6 @@ public class UserService {
         userRepo.save(newUser);
 
         return newUser;
-
     }
 
     public User login(LoginUser newLoginObject, BindingResult result) {
@@ -64,5 +67,15 @@ public class UserService {
             return null;
         }
         return u.get();
+    }
+
+    // Method to convert User entity to UserDTO
+    public UserDTO convertToDTO(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUserName(user.getUserName());
+        userDTO.setEmail(user.getEmail());
+        // Set other fields if necessary
+        return userDTO;
     }
 }

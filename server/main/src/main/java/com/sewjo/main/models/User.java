@@ -1,18 +1,17 @@
 package com.sewjo.main.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "users")
 public class User {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +34,23 @@ public class User {
     @Size(min = 8, max = 128, message = "Confirm Password must be between 8 and 128 characters")
     private String confirm;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("user-fabrics")
+    private List<Fabric> fabrics;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("user-patterns")
+    private List<Pattern> patterns;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    // @JsonManagedReference("user-image")
+    private Image image;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("user-projects")
+    private List<Project> projects;
+
     public User() {
     }
 
@@ -44,6 +60,16 @@ public class User {
         this.password = password;
         this.confirm = confirm;
     }
+
+    public User(String userName, String email, String password, String confirm, Image image) {
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.confirm = confirm;
+        this.image = image;
+    }
+
+    // other getters and setters
 
     public Long getId() {
         return id;
@@ -85,4 +111,39 @@ public class User {
         this.confirm = confirm;
     }
 
+    public List<Fabric> getFabrics() {
+        return fabrics;
+    }
+
+    public void setFabrics(List<Fabric> fabrics) {
+        this.fabrics = fabrics;
+    }
+
+    // public List<Project> getProjects() {
+    //     return projects;
+    // }
+
+    // public void setProjects(List<Project> projects) {
+    //     this.projects = projects;
+    // }
+
+    public List<Pattern> getPatterns() {
+        return patterns;
+    }
+
+    public void setPatterns(List<Pattern> patterns) {
+        this.patterns = patterns;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public boolean hasImage() {
+        return this.image != null;
+    }
 }

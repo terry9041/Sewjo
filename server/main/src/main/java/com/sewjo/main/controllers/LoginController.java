@@ -18,6 +18,9 @@ import com.sewjo.main.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Controller for handling login and registration requests for HTML (DEPRECATED)
+ */
 @Controller
 public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);

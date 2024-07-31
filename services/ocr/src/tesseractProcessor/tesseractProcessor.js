@@ -6,14 +6,15 @@ const sharp = require('sharp');
 // Initialize the worker
 let worker;
 async function initializeWorker() {
-    worker = await createWorker('eng+fra', 0, {
-        legacyCore: true, 
-        legacyLang: true
-    });
-    await worker.setParameters({
-        tessedit_char_whitelist: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-,()',
+    // worker = await createWorker('fractionModel', 0, {
+    //     langPath: '../ocr/tessdata', // Path to the directory containing fractionModel.traineddata
+    //     legacyCore: true, 
+    //     legacyLang: true
+    // });
+    /*await worker.setParameters({
+        tessedit_char_whitelist: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ/', // Add vulgar fractions
         preserve_interword_spaces: '1'
-    });
+    });*/
 }
 initializeWorker();
 
@@ -87,13 +88,13 @@ async function processFile(filePath, res) {
         
         // const { data: { text } } = await worker.recognize(file, {rotateAuto: true}, {imageColor: true, imageGrey: true, imageBinary: true});
 
-        const { data: { text, imageColor, imageGrey, imageBinary } } = await worker.recognize(file, {rotateAuto: true}, {imageColor: true, imageGrey: true, imageBinary: true});
+        const { data: { text} } = await worker.recognize(file, {rotateAuto: true}, {imageColor: true, imageGrey: true, imageBinary: true});
   
         console.log('Saving intermediate images: imageColor.png, imageGrey.png, imageBinary.png');
 
-        fs.writeFileSync('./uploads/imageColor.png', convertImage(imageColor));
-        fs.writeFileSync('./uploads/imageGrey.png', convertImage(imageGrey));
-        fs.writeFileSync('./uploads/imageBinary.png', convertImage(imageBinary));
+        //fs.writeFileSync('./uploads/imageColor.png', convertImage(imageColor));
+        //fs.writeFileSync('./uploads/imageGrey.png', convertImage(imageGrey));
+        //fs.writeFileSync('./uploads/imageBinary.png', convertImage(imageBinary));
         
         return text;
     } catch (error) {
