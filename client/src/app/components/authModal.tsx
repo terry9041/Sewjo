@@ -22,8 +22,9 @@ export default function AuthModal({
     <dialog
       className="fixed left-0 top-0 w-full h-full  bg-black bg-opacity-50 z-50 overflow-auto backdrop-blur flex justify-center items-center"
       open
+      onClick={closeAuthModal}
     >
-      <div className="bg-white m-auto p-8 rounded-lg shadow-lg w-[27%] h-fit flex flex-col gap-8">
+      <div className="bg-white m-auto p-8 rounded-lg shadow-lg w-[27%] h-fit flex flex-col gap-8" onClick={(e) => e.stopPropagation()} >
         <button
           type="button"
           className="text-s  rounded-lg px-2 self-end"

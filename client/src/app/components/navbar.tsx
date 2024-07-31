@@ -38,11 +38,8 @@ export default function Navbar({
           </Link>
           {!isLoggedIn && (
             <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-              <button
-                className="text-sm font-medium text-gray-900 dark:text-white bg-green-500 px-3 py-1 rounded-md hover:bg-green-600 transition-colors duration-300 ease-in-out"
-                onClick={() => displayHandler("auth")}
-              >
-                Login
+              <button className="text-sm font-medium text-gray-900 dark:text-white bg-blue-500 px-3 py-1 rounded-md hover:bg-blue-600 transition-colors duration-300 ease-in-out" onClick={() => displayHandler("auth")}>
+                  Login
               </button>
             </div>
           )}
