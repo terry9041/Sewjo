@@ -3,6 +3,10 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { headers } from "next/headers";
 
+import Image from 'next/image';
+import openEyeIcon from '../icons/open_eye.png';
+import closedEyeIcon from '../icons/closed_eye.png';
+
 /**
  * The registration component for the application
  * @returns the registration component
@@ -28,8 +32,8 @@ export default function ModalRegisterForm({ swapReg }) {
   const router = useRouter();
 
   const passDict = {
-    true: ["text", "Hide Password!"],
-    false: ["password", "Show Password!"],
+    true: ['text', 'Hide Password!', openEyeIcon],
+    false: ['password', 'Show Password!', closedEyeIcon]
   };
 
   const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]+)?$/;
@@ -191,9 +195,9 @@ export default function ModalRegisterForm({ swapReg }) {
             <button
               type="button"
               onClick={showPass}
-              className="2xl:absolute 2xl:right-2 2xl:top-[10%] bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+              className="absolute right-2 top-2 bg-white-300 py-1 px-2"
             >
-              {passDict[visible.toString()][1]}
+              <Image src={passDict[visible.toString()][2]} alt={passDict[visible.toString()][1]} width={15} height={15} />
             </button>
           </div>
           {valid.password === false ? (
