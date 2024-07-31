@@ -4,7 +4,11 @@ import com.sewjo.main.models.Pattern;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * Data transfer object for Pattern entity.
+ */
 public class PatternDTO {
     private Long id;
     private String name;
@@ -29,6 +33,7 @@ public class PatternDTO {
     private Boolean isImperial;
     private List<String> supplies;
     private Long userId;
+    private List<PatternFabricsDTO> patternFabrics;
 
     public PatternDTO() {
     }
@@ -57,6 +62,9 @@ public class PatternDTO {
         this.isImperial = pattern.getIsImperial();
         this.supplies = pattern.getSupplies();
         this.userId = pattern.getUser() != null ? pattern.getUser().getId() : null;
+        this.patternFabrics = pattern.getPatternFabrics().stream()
+                .map(PatternFabricsDTO::new)
+                .collect(Collectors.toList());
     }
 
     // Getters and setters
@@ -242,5 +250,13 @@ public class PatternDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public List<PatternFabricsDTO> getPatternFabrics() {
+        return patternFabrics;
+    }
+
+    public void setPatternFabrics(List<PatternFabricsDTO> patternFabrics) {
+        this.patternFabrics = patternFabrics;
     }
 }

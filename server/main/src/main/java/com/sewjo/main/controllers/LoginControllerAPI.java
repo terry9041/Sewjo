@@ -3,22 +3,32 @@ package com.sewjo.main.controllers;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
+import java.io.IOException;
 
+import com.sewjo.main.dto.ChangePasswordDTO;
 import com.sewjo.main.dto.UserDTO;
 import com.sewjo.main.models.LoginUser;
 import com.sewjo.main.models.User;
 import com.sewjo.main.service.UserService;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Controller for handling login and registration requests for the API
+ */
 @RestController
 @RequestMapping("/api/user")
 public class LoginControllerAPI {
@@ -27,9 +37,10 @@ public class LoginControllerAPI {
     @Autowired
     private UserService userServ;
 
+    @Transactional
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginUser newLogin,
-                                   BindingResult result, HttpSession session, HttpServletResponse response) {
+            BindingResult result, HttpSession session, HttpServletResponse response) {
         User user;
         try {
             user = userServ.login(newLogin, result);
@@ -50,9 +61,10 @@ public class LoginControllerAPI {
         return ResponseEntity.ok(userDTO);
     }
 
+    @Transactional
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid User newUser,
-                                      BindingResult result, HttpSession session, HttpServletResponse response) {
+            BindingResult result, HttpSession session, HttpServletResponse response) {
         logger.info("Registering new user: {}", newUser.getEmail());
         User user = userServ.register(newUser, result);
 
@@ -76,11 +88,9 @@ public class LoginControllerAPI {
         }
 
         User user = userServ.findById((Long) session.getAttribute("id"));
-        if (user.hasImage() == false) { 
-            UserDTO userDTO = userServ.convertToDTO(user);
-            return ResponseEntity.ok(userDTO);
-        }
-        return ResponseEntity.ok(user);
+        UserDTO userDTO = userServ.convertToDTO(user);
+        return ResponseEntity.ok(userDTO);
+        // return ResponseEntity.ok(user);
     }
 
     @PostMapping("/logout")
@@ -109,15 +119,62 @@ public class LoginControllerAPI {
                         name, value, 7 * 24 * 60 * 60, secure ? "Secure" : ""));
     }
 
+    @PostMapping("/changePassword")
+    public ResponseEntity<?> changePassword(
+            @RequestBody @Valid ChangePasswordDTO passwordDTO,
+            BindingResult result,
+            HttpSession session, HttpServletRequest request) {
 
-    // @GetMapping("/image")
-    // public ResponseEntity<?> getImage(HttpSession session) {
-    //     if (session.getAttribute("id") == null) {
-    //         return ResponseEntity.status(401).body("Unauthorized");
-    //     }
-    //     User user = userServ.findById((Long) session.getAttribute("id"));
-    //     return ResponseEntity.ok(user.getImage());
-    // }
+        Long userId = (Long) session.getAttribute("id");
+        if (userId == null) {
+
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+        if (result.hasErrors()) {
+            result.getAllErrors().forEach(error -> logger.error("Error: {}", error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+        User user = userServ.changePassword(userId, passwordDTO, result);
+        UserDTO userDTO = userServ.convertToDTO(user);
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @GetMapping("/getProfileImage")
+    public ResponseEntity<?> getProfileImage(HttpSession session) {
+        if (session.getAttribute("id") == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        User user = userServ.findById((Long) session.getAttribute("id"));
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+        return ResponseEntity.ok(user.getImage());
+    }
+
+    @PostMapping(value = "/changeProfileImage", consumes = {
+            MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> changeProfileImage(
+            @RequestParam(value = "image", required = false) MultipartFile imageFile,
+            HttpSession session) {
+        if (session.getAttribute("id") == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        Long userId = (Long) session.getAttribute("id");
+        UserDTO existingUser = userServ.convertToDTO(userServ.findById(userId));
+        if (existingUser == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+
+        UserDTO updatedUser;
+        try {
+            updatedUser = userServ.changeProfileImage(existingUser, imageFile, userId);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to update fabric image");
+        }
+
+        return ResponseEntity.ok(updatedUser);
+    }
 
     private void clearSameSiteCookie(HttpServletResponse response, String name) {
         Cookie cookie = new Cookie(name, null);

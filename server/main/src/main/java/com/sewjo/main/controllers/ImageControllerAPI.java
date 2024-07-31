@@ -13,6 +13,9 @@ import java.util.Optional;
 import com.sewjo.main.models.Image;
 import com.sewjo.main.service.ImageService;
 
+/**
+ * Controller for handling image-related API requests
+ */
 @RestController
 @RequestMapping("/api/images")
 public class ImageControllerAPI {

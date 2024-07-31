@@ -1,5 +1,20 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
 
+//TODO: Integrate OCR into this form
+
+interface SimpleFabric {
+    length: number;
+    lengthInMeters: boolean;
+    width: number;
+    widthInCentimeters: boolean;
+    forUse: string;
+}
+
+interface PatternFabrics {
+    size: string;
+    fabrics: SimpleFabric[];
+}
+
 interface PatternFormData {
     name: string;
     brand: string[];
@@ -14,7 +29,6 @@ interface PatternFormData {
     image: File | null;
     ageGroups: string[];
     bodyType: string;
-    sizeRange: string;
     cupSizes: string[];
     bustMin: number;
     bustMax: number;
@@ -22,6 +36,8 @@ interface PatternFormData {
     hipMax: number;
     isImperial: boolean;
     supplies: string[];
+    patternFabrics: PatternFabrics[];
+    sizeRange: string;
 }
 
 interface PatternFormProps {
@@ -43,7 +59,6 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
         image: null,
         ageGroups: [],
         bodyType: '',
-        sizeRange: '',
         cupSizes: [],
         bustMin: 0,
         bustMax: 0,
@@ -51,6 +66,8 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
         hipMax: 0,
         isImperial: true,
         supplies: [],
+        patternFabrics: [],
+        sizeRange: ''
     });
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -79,18 +96,98 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
         }));
     };
 
+    const handlePatternFabricChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        const newPatternFabrics = [...formData.patternFabrics];
+        newPatternFabrics[index] = {
+            ...newPatternFabrics[index],
+            [name]: value
+        };
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: newPatternFabrics
+        }));
+    };
+
+    const handleSimpleFabricChange = (pfIndex: number, sfIndex: number, e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type } = e.target;
+        const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+        const newPatternFabrics = [...formData.patternFabrics];
+        newPatternFabrics[pfIndex].fabrics[sfIndex] = {
+            ...newPatternFabrics[pfIndex].fabrics[sfIndex],
+            [name]: newValue
+        };
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: newPatternFabrics
+        }));
+    };
+
+    const addPatternFabric = () => {
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: [...prevState.patternFabrics, { size: '', fabrics: [] }]
+        }));
+    };
+
+    const removePatternFabric = (pfIndex: number) => {
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: prevState.patternFabrics.filter((_, index) => index !== pfIndex)
+        }));
+    };
+
+    const addSimpleFabric = (pfIndex: number) => {
+        const newPatternFabrics = [...formData.patternFabrics];
+        newPatternFabrics[pfIndex].fabrics = [...newPatternFabrics[pfIndex].fabrics, {
+            length: 0,
+            lengthInMeters: true,
+            width: 0,
+            widthInCentimeters: true,
+            forUse: ''
+        }];
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: newPatternFabrics
+        }));
+    };
+
+    const removeSimpleFabric = (pfIndex: number, sfIndex: number) => {
+        const newPatternFabrics = [...formData.patternFabrics];
+        newPatternFabrics[pfIndex].fabrics = newPatternFabrics[pfIndex].fabrics.filter((_, index) => index !== sfIndex);
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: newPatternFabrics
+        }));
+    };
+
+    const calculateSizeRange = (patternFabrics: PatternFabrics[]) => {
+        if (!patternFabrics.length) {
+            return '';
+        }
+        const sizes = patternFabrics.map(pf => pf.size);
+        const minSize = Math.min(...sizes.map(Number));
+        const maxSize = Math.max(...sizes.map(Number));
+        return `${minSize} - ${maxSize}`;
+    };
+
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const data = new FormData();
-        for (const key in formData) {
-            if (key === 'image' && formData[key as keyof PatternFormData] instanceof File) {
-                data.append(key, formData[key as keyof PatternFormData] as File);
-            } else {
-                data.append(key, formData[key as keyof PatternFormData] as string);
+        if (formData) {
+            const updatedFormData = { ...formData, sizeRange: calculateSizeRange(formData.patternFabrics) };
+            const data = new FormData();
+            for (const key in updatedFormData) {
+                if (key === 'image' && updatedFormData[key]) {
+                    data.append(key, updatedFormData[key]);
+                } else if (Array.isArray(updatedFormData[key])) {
+                    data.append(key, JSON.stringify(updatedFormData[key]));
+                } else {
+                    data.append(key, updatedFormData[key] !== null ? updatedFormData[key].toString() : '');
+                }
             }
+            handleSubmit(data);
         }
-        handleSubmit(data);
-    };
+    }
 
     return (
         <form onSubmit={onSubmit} className="max-w-xl mx-auto p-8 bg-white shadow-lg rounded-lg">
@@ -154,10 +251,6 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
                 <input type="text" id="bodyType" name="bodyType" value={formData.bodyType} onChange={handleChange} className="w-full px-3 py-2 border rounded" />
             </div>
             <div className="mb-4">
-                <label className="block mb-2" htmlFor="sizeRange">Size Range</label>
-                <input type="text" id="sizeRange" name="sizeRange" value={formData.sizeRange} onChange={handleChange} className="w-full px-3 py-2 border rounded" />
-            </div>
-            <div className="mb-4">
                 <label className="block mb-2" htmlFor="cupSizes">Cup Sizes</label>
                 <input type="text" id="cupSizes" name="cupSizes" value={formData.cupSizes.join(',')} onChange={handleMultiChange} className="w-full px-3 py-2 border rounded" />
                 <span className="text-gray-500 text-xs italic">Comma separated values</span>
@@ -187,9 +280,112 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
                 <input type="text" id="supplies" name="supplies" value={formData.supplies.join(',')} onChange={handleMultiChange} className="w-full px-3 py-2 border rounded" />
                 <span className="text-gray-500 text-xs italic">Comma separated values</span>
             </div>
-            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Create Pattern
-            </button>
+
+            {formData.patternFabrics.map((pf, pfIndex) => (
+                <div key={pfIndex} className="mb-6">
+                    <h3 className="text-xl mb-2">Pattern Fabric {pfIndex + 1}</h3>
+                    <div className="mb-4">
+                        <label className="block mb-2" htmlFor={`patternFabrics-${pfIndex}-size`}>Size</label>
+                        <input
+                            type="text"
+                            id={`patternFabrics-${pfIndex}-size`}
+                            name="size"
+                            value={pf.size}
+                            onChange={(e) => handlePatternFabricChange(pfIndex, e)}
+                            className="w-full px-3 py-2 border rounded"
+                        />
+                    </div>
+                    {pf.fabrics.map((sf, sfIndex) => (
+                        <div key={sfIndex} className="mb-4">
+                            <h4 className="text-lg mb-2">Simple Fabric {sfIndex + 1}</h4>
+                            <div className="mb-2">
+                                <label className="block mb-2" htmlFor={`simpleFabric-${pfIndex}-${sfIndex}-length`}>Length</label>
+                                <input
+                                    type="number"
+                                    id={`simpleFabric-${pfIndex}-${sfIndex}-length`}
+                                    name="length"
+                                    value={sf.length}
+                                    onChange={(e) => handleSimpleFabricChange(pfIndex, sfIndex, e)}
+                                    className="w-full px-3 py-2 border rounded"
+                                />
+                            </div>
+                            <div className="mb-2">
+                                <label className="block mb-2" htmlFor={`simpleFabric-${pfIndex}-${sfIndex}-lengthInMeters`}>Length in Meters</label>
+                                <input
+                                    type="checkbox"
+                                    id={`simpleFabric-${pfIndex}-${sfIndex}-lengthInMeters`}
+                                    name="lengthInMeters"
+                                    checked={sf.lengthInMeters}
+                                    onChange={(e) => handleSimpleFabricChange(pfIndex, sfIndex, e)}
+                                    className="mr-2"
+                                />
+                            </div>
+                            <div className="mb-2">
+                                <label className="block mb-2" htmlFor={`simpleFabric-${pfIndex}-${sfIndex}-width`}>Width</label>
+                                <input
+                                    type="number"
+                                    id={`simpleFabric-${pfIndex}-${sfIndex}-width`}
+                                    name="width"
+                                    value={sf.width}
+                                    onChange={(e) => handleSimpleFabricChange(pfIndex, sfIndex, e)}
+                                    className="w-full px-3 py-2 border rounded"
+                                />
+                            </div>
+                            <div className="mb-2">
+                                <label className="block mb-2" htmlFor={`simpleFabric-${pfIndex}-${sfIndex}-widthInCentimeters`}>Width in Centimeters</label>
+                                <input
+                                    type="checkbox"
+                                    id={`simpleFabric-${pfIndex}-${sfIndex}-widthInCentimeters`}
+                                    name="widthInCentimeters"
+                                    checked={sf.widthInCentimeters}
+                                    onChange={(e) => handleSimpleFabricChange(pfIndex, sfIndex, e)}
+                                    className="mr-2"
+                                />
+                            </div>
+                            <div className="mb-2">
+                                <label className="block mb-2" htmlFor={`simpleFabric-${pfIndex}-${sfIndex}-forUse`}>For Use</label>
+                                <input
+                                    type="text"
+                                    id={`simpleFabric-${pfIndex}-${sfIndex}-forUse`}
+                                    name="forUse"
+                                    value={sf.forUse}
+                                    onChange={(e) => handleSimpleFabricChange(pfIndex, sfIndex, e)}
+                                    className="w-full px-3 py-2 border rounded"
+                                />
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => removeSimpleFabric(pfIndex, sfIndex)}
+                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
+                            >
+                                Remove Simple Fabric
+                            </button>
+                        </div>
+                    ))}
+                    <button type="button" onClick={() => addSimpleFabric(pfIndex)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded">
+                        Add Simple Fabric
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => removePatternFabric(pfIndex)}
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded ml-2"
+                    >
+                        Remove Pattern Fabric
+                    </button>
+                </div>
+            ))}
+
+            <div>
+                <button type="button" onClick={addPatternFabric} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-6">
+                    Add Pattern Fabric
+                </button>
+            </div>
+
+            <div>
+                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Create Pattern
+                </button>
+            </div>
         </form>
     );
 }
