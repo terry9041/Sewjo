@@ -25,7 +25,7 @@ export default function Navbar({
     displayHandler(buttonName);
   };
 
-  const userImageSrc = user?.image ? user.image : "/favicon.ico";
+  const userImageSrc = user?.imageId ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${user.imageId}` : "/favicon.ico";
 
   return (
     <nav className="bg-white border-gray-200 dark:bg-slate-950 fixed top-0 left-0 right-0 z-50">

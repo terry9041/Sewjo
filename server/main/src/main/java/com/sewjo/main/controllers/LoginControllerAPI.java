@@ -34,6 +34,7 @@ public class LoginControllerAPI {
     @Autowired
     private UserService userServ;
 
+    @Transactional
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginUser newLogin,
             BindingResult result, HttpSession session, HttpServletResponse response) {
@@ -57,6 +58,7 @@ public class LoginControllerAPI {
         return ResponseEntity.ok(userDTO);
     }
 
+    @Transactional
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid User newUser,
             BindingResult result, HttpSession session, HttpServletResponse response) {
@@ -83,11 +85,9 @@ public class LoginControllerAPI {
         }
 
         User user = userServ.findById((Long) session.getAttribute("id"));
-        if (user.hasImage() == false) {
-            UserDTO userDTO = userServ.convertToDTO(user);
-            return ResponseEntity.ok(userDTO);
-        }
-        return ResponseEntity.ok(user);
+        UserDTO userDTO = userServ.convertToDTO(user);
+        return ResponseEntity.ok(userDTO);
+        // return ResponseEntity.ok(user);
     }
 
     @PostMapping("/logout")

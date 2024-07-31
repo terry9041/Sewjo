@@ -32,7 +32,7 @@ const ChangeProfileImage = () => {
           }
         );
         console.log(response.data); // Handle the response data (e.g., set state)
-        setUserImageSrc(response.data || "/favicon.ico"); // Set userImageSrc based on response
+        setUserImageSrc(response.data.id || "/favicon.ico"); // Set userImageSrc based on response
       } catch (error) {
         console.error("Error fetching profile image:", error);
         setUserImageSrc("/favicon.ico"); // Set default image on error
@@ -57,7 +57,7 @@ const ChangeProfileImage = () => {
     }
 
     const formData = new FormData();
-    formData.append("profileImage", profileImage);
+    formData.append("image", profileImage);
 
     try {
       const res = await axios.post(
@@ -73,7 +73,8 @@ const ChangeProfileImage = () => {
 
       setSuccessMessage("Profile image updated successfully");
       setProfileImage(null);
-      router.push("/dashboard");
+      // router.push("/dashboard");
+      window.location.reload();
     } catch (err) {
       setErrors("Failed to upload profile image. Please try again.");
     }

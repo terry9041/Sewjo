@@ -79,7 +79,7 @@ public class UserService {
         userDTO.setId(user.getId());
         userDTO.setUserName(user.getUserName());
         userDTO.setEmail(user.getEmail());
-        userDTO.setImageId(null);
+        userDTO.setImageId(user.getImage() != null ? user.getImage().getId() : null);
         // Set other fields if necessary
         return userDTO;
     }
@@ -128,6 +128,7 @@ public class UserService {
             existingUser.setImage(image);
             System.out.println(imageFile.getBytes());
         }
+        existingUser.setConfirm(existingUser.getPassword());
         userRepo.save(existingUser);
         return convertToDTO(existingUser);
     }

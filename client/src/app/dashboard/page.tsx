@@ -35,7 +35,11 @@ export default function Dashboard() {
       .get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/dashboard`, {
         withCredentials: true,
       })
-      .then((res) => setUser(res.data))
+      // .then((res) => setUser(res.data))
+      .then((res) => {
+        setUser(res.data);
+        console.log("User:", res.data);
+      })
       .catch((err) => router.push("/auth"));
   }, [router]);
 
