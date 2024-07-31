@@ -7,6 +7,7 @@ import FabricDisplay from './components/fabricDisplay';
 import PatternDisplay from './components/patternDisplay';
 import ProjectDisplay from './components/projectDisplay';
 import FabricCard from "./components/fabricCard";
+import PatternCard from './components/patternCard';
 import ChangeDetails from "./components/changeDetails";
 
 /**
@@ -23,13 +24,23 @@ interface Fabric {
   width: number;
   widthInCentimeters: boolean;
 }
+interface Pattern {
+    id: number;
+    name: string;
+    imageId: number;
+    description: string;
+    patternType: string;
+    sizeRange: string;
+}
 
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [fabrics, setFabrics] = useState<Fabric[]>([]);
+  const [patterns, setPatterns] = useState<Pattern[]>([]);
   const [display, setDisplay] = useState("dashboard");
   const [fabricsLoading, setFabricsLoading] = useState(true);
+  const [patternsLoading, setPatternsLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -62,7 +73,26 @@ export default function Dashboard() {
     fetchFabrics();
   }, []);
 
+  useEffect(() => {
+    const fetchPatterns = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/pattern/all`,
+          { withCredentials: true }
+        );
+        setPatterns(response.data);
+        setPatternsLoading(false);
+        console.log("Patterns:", response.data);
+      } catch (error) {
+        console.error("Error fetching patterns:", error);
+      }
+    };
+    fetchPatterns();
+  }, []);
+
   const filteredFabrics = fabrics;
+
+  const filteredPatterns = patterns;
 
   const handleLogoutClick = () => {
     axios
@@ -144,21 +174,21 @@ export default function Dashboard() {
               Patterns
             </div>
             <div className="flex gap-6 pb-9 overflow-x-scroll w-full">
-              {fabricsLoading ? (
+              {patternsLoading ? (
                 <div className="w-full h-[100px] items-center justify-center flex">
                   <div className="">Loading patterns...</div>
                 </div>
-              ) : filteredFabrics.length === 0 ? (
+              ) : filteredPatterns.length === 0 ? (
                 <div className="w-full h-[100px] items-center justify-center flex">
                   <div className="">
                     Oops! No patterns in your collection yet.
                   </div>
                 </div>
               ) : (
-                filteredFabrics
+                filteredPatterns
                   .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((fabric) => (
-                    <FabricCard key={fabric.id} fabric={fabric} />
+                  .map((pattern) => (
+                    <PatternCard key={pattern.id} pattern={pattern} />
                   ))
               )}
             </div>

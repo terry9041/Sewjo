@@ -94,7 +94,6 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
             ...prevState,
             [name]: value.split(',')
         }));
-        console.log('formData:', formData.cupSizes);
     };
 
     const handlePatternFabricChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
@@ -131,6 +130,13 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
         }));
     };
 
+    const removePatternFabric = (pfIndex: number) => {
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: prevState.patternFabrics.filter((_, index) => index !== pfIndex)
+        }));
+    };
+
     const addSimpleFabric = (pfIndex: number) => {
         const newPatternFabrics = [...formData.patternFabrics];
         newPatternFabrics[pfIndex].fabrics = [...newPatternFabrics[pfIndex].fabrics, {
@@ -140,6 +146,15 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
             widthInCentimeters: true,
             forUse: ''
         }];
+        setFormData(prevState => ({
+            ...prevState,
+            patternFabrics: newPatternFabrics
+        }));
+    };
+
+    const removeSimpleFabric = (pfIndex: number, sfIndex: number) => {
+        const newPatternFabrics = [...formData.patternFabrics];
+        newPatternFabrics[pfIndex].fabrics = newPatternFabrics[pfIndex].fabrics.filter((_, index) => index !== sfIndex);
         setFormData(prevState => ({
             ...prevState,
             patternFabrics: newPatternFabrics
@@ -159,9 +174,7 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (formData) {
-            // console.log('formData:', formData);
             const updatedFormData = { ...formData, sizeRange: calculateSizeRange(formData.patternFabrics) };
-            // console.log('updatedFormData:', updatedFormData);
             const data = new FormData();
             for (const key in updatedFormData) {
                 if (key === 'image' && updatedFormData[key]) {
@@ -172,11 +185,9 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
                     data.append(key, updatedFormData[key] !== null ? updatedFormData[key].toString() : '');
                 }
             }
-            // console.log('data:', data);
             handleSubmit(data);
         }
     }
-
 
     return (
         <form onSubmit={onSubmit} className="max-w-xl mx-auto p-8 bg-white shadow-lg rounded-lg">
@@ -342,23 +353,37 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
                                     className="w-full px-3 py-2 border rounded"
                                 />
                             </div>
+                            <button
+                                type="button"
+                                onClick={() => removeSimpleFabric(pfIndex, sfIndex)}
+                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
+                            >
+                                Remove Simple Fabric
+                            </button>
                         </div>
                     ))}
                     <button type="button" onClick={() => addSimpleFabric(pfIndex)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded">
                         Add Simple Fabric
                     </button>
+                    <button
+                        type="button"
+                        onClick={() => removePatternFabric(pfIndex)}
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded ml-2"
+                    >
+                        Remove Pattern Fabric
+                    </button>
                 </div>
             ))}
 
             <div>
-            <button type="button" onClick={addPatternFabric} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-6">
-                Add Pattern Fabric
+                <button type="button" onClick={addPatternFabric} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-6">
+                    Add Pattern Fabric
                 </button>
             </div>
-            
+
             <div>
-            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Create Pattern
+                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Create Pattern
                 </button>
             </div>
         </form>
