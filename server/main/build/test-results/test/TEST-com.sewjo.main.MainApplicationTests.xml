@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.sewjo.main.MainApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-07-30T23:34:04" hostname="big-machine-4.local" time="1.154">
+<testsuite name="com.sewjo.main.MainApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-07-31T02:11:39" hostname="big-machine-4.local" time="0.997">
   <properties/>
-  <testcase name="contextLoads()" classname="com.sewjo.main.MainApplicationTests" time="1.154"/>
-  <system-out><![CDATA[  .   ____          _            __ _ _
+  <testcase name="contextLoads()" classname="com.sewjo.main.MainApplicationTests" time="0.997"/>
+  <system-out><![CDATA[
+  .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
 ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
  \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
   '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
 
- :: Spring Boot ::                (v3.3.0)
+ :: Spring Boot ::                (v3.3.2)
 
-2024-07-30T16:34:04.242-07:00  INFO 54815 --- [main] [    Test worker] com.sewjo.main.MainApplicationTests      : Starting MainApplicationTests using Java 17.0.8.1 with PID 54815 (started by jonathanung in /Users/jonathanung/Documents/202402SFU/CMPT 276/Project/sewjo/server/main)
-2024-07-30T16:34:04.251-07:00  INFO 54815 --- [main] [    Test worker] com.sewjo.main.MainApplicationTests      : No active profile set, falling back to 1 default profile: "default"
-2024-07-30T16:34:04.307-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
-2024-07-30T16:34:04.321-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.boot.autoconfigure.internalCachingMetadataReaderFactory'
-2024-07-30T16:34:04.578-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.boot.test.mock.mockito.MockitoPostProcessor'
-2024-07-30T16:34:04.600-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerProcessor'
-2024-07-30T16:34:04.604-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerFactory'
-2024-07-30T16:34:04.607-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.boot.test.mock.mockito.MockitoPostProcessor$SpyPostProcessor'
-2024-07-30T16:34:04.609-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
-2024-07-30T16:34:04.615-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
-2024-07-30T16:34:04.620-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.annotation.internalPersistenceAnnotationProcessor'
-2024-07-30T16:34:04.624-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'testConfiguration'
-2024-07-30T16:34:04.660-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.c.support.DefaultLifecycleProcessor  : Starting beans in phase -2147483647
-2024-07-30T16:34:04.661-07:00 DEBUG 54815 --- [main] [    Test worker] o.s.c.support.DefaultLifecycleProcessor  : Successfully started bean 'springBootLoggingLifecycle'
-2024-07-30T16:34:04.689-07:00  INFO 54815 --- [main] [    Test worker] com.sewjo.main.MainApplicationTests      : Started MainApplicationTests in 0.948 seconds (process running for 2.634)
+2024-07-30T19:11:38.834-07:00  INFO 5201 --- [main] [    Test worker] com.sewjo.main.MainApplicationTests      : Starting MainApplicationTests using Java 17.0.8.1 with PID 5201 (started by jonathanung in /Users/jonathanung/Documents/202402SFU/CMPT 276/Project/sewjo/server/main)
+2024-07-30T19:11:38.845-07:00  INFO 5201 --- [main] [    Test worker] com.sewjo.main.MainApplicationTests      : No active profile set, falling back to 1 default profile: "default"
+2024-07-30T19:11:38.904-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+2024-07-30T19:11:38.926-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.boot.autoconfigure.internalCachingMetadataReaderFactory'
+2024-07-30T19:11:39.188-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.boot.test.mock.mockito.MockitoPostProcessor'
+2024-07-30T19:11:39.208-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerProcessor'
+2024-07-30T19:11:39.211-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerFactory'
+2024-07-30T19:11:39.215-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.boot.test.mock.mockito.MockitoPostProcessor$SpyPostProcessor'
+2024-07-30T19:11:39.217-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+2024-07-30T19:11:39.219-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+2024-07-30T19:11:39.222-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'org.springframework.context.annotation.internalPersistenceAnnotationProcessor'
+2024-07-30T19:11:39.232-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.b.f.s.DefaultListableBeanFactory     : Creating shared instance of singleton bean 'testConfiguration'
+2024-07-30T19:11:39.272-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.c.support.DefaultLifecycleProcessor  : Starting beans in phase -2147483647
+2024-07-30T19:11:39.273-07:00 DEBUG 5201 --- [main] [    Test worker] o.s.c.support.DefaultLifecycleProcessor  : Successfully started bean 'springBootLoggingLifecycle'
+2024-07-30T19:11:39.296-07:00  INFO 5201 --- [main] [    Test worker] com.sewjo.main.MainApplicationTests      : Started MainApplicationTests in 1.021 seconds (process running for 2.477)
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
