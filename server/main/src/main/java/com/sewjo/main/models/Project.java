@@ -30,7 +30,7 @@ public class Project {
     @NotNull
     private Pattern pattern;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     @JsonManagedReference("project-readyFabrics")
     private List<SimpleFabric> readyFabrics;
 

@@ -39,6 +39,11 @@ public class SimpleFabric {
     @JoinColumn(name = "pattern_fabrics_id")
     @JsonBackReference
     private PatternFabrics patternFabrics;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    @JsonBackReference("project-readyFabrics")
+    private Project project;
     
     public SimpleFabric() {
     }
@@ -113,5 +118,13 @@ public class SimpleFabric {
 
     public void setPatternFabrics(PatternFabrics patternFabrics) {
         this.patternFabrics = patternFabrics;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

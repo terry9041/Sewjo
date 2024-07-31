@@ -142,7 +142,7 @@ export default function PatternForm({ handleSubmit }: PatternFormProps) {
                         const formData = new FormData();
                         formData.append('image', blob, `${type}-image.png`);
                         formData.append('type', type);
-                        
+                        console.log('formData:', formData);
                         try {
                             const response = await fetch('/api/upload', {
                                 method: 'POST',
