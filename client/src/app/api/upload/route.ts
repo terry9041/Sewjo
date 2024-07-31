@@ -4,23 +4,27 @@ import fs from 'fs'
 import path from 'path'
 
 export async function POST(req: NextRequest) {
+  // Handle CORS
   const origin = req.headers.get('origin')
   
-  const allowedOrigins = ['http://localhost:3000']
+  // Check if the origin is allowed (you can add your own logic here)
+  const allowedOrigins = ['http://localhost:3000', 'https://your-production-domain.com']
   if (origin && allowedOrigins.includes(origin)) {
+    // Set CORS headers
     const headers = new Headers({
       'Access-Control-Allow-Origin': origin,
       'Access-Control-Allow-Methods': 'POST',
       'Access-Control-Allow-Headers': 'Content-Type',
     })
 
+    // Handle preflight request
     if (req.method === 'OPTIONS') {
       return new NextResponse(null, { status: 204, headers })
     }
 
     try {
       const formData = await req.formData()
-      const file = formData.get('image') as File | null
+      const file = formData.get('test') as File | null
 
       if (!file) {
         return NextResponse.json({ error: 'No file uploaded' }, { status: 400, headers })
@@ -44,9 +48,7 @@ export async function POST(req: NextRequest) {
       }
 
       const parsedText = ocrResult.ParsedResults[0].ParsedText
-
-      // Clean up data
-      // TODO WORK WITH PARSED FOR NOW
+      // Process parsedText as needed
 
       fs.unlinkSync(filename)
 
@@ -56,6 +58,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'An error occurred during processing' }, { status: 500, headers })
     }
   } else {
+    // Origin not allowed
     return NextResponse.json({ error: 'Origin not allowed' }, { status: 403 })
   }
 }
@@ -63,8 +66,10 @@ export async function POST(req: NextRequest) {
 export async function OPTIONS(req: NextRequest) {
   const origin = req.headers.get('origin')
   
-  const allowedOrigins = ['http://localhost:3000']
+  // Check if the origin is allowed (you can add your own logic here)
+  const allowedOrigins = ['http://localhost:3000', 'https://your-production-domain.com']
   if (origin && allowedOrigins.includes(origin)) {
+    // Set CORS headers for preflight request
     const headers = new Headers({
       'Access-Control-Allow-Origin': origin,
       'Access-Control-Allow-Methods': 'POST',
@@ -73,6 +78,7 @@ export async function OPTIONS(req: NextRequest) {
 
     return new NextResponse(null, { status: 204, headers })
   } else {
+    // Origin not allowed
     return NextResponse.json({ error: 'Origin not allowed' }, { status: 403 })
   }
 }
