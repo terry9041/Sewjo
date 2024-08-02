@@ -27,7 +27,7 @@ public class PatternFabrics {
     private String size;
 
     @OneToMany(mappedBy = "patternFabrics", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @NotEmpty(message = "Fabrics are required!")
+    // @NotEmpty(message = "Fabrics are required!")
     @JsonManagedReference
     private List<SimpleFabric> fabrics;
 

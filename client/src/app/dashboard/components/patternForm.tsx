@@ -123,6 +123,10 @@ export default function PatternForm({
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        image: e.target.files[0],
+      }));
       const file = e.target.files[0];
       const reader = new FileReader();
       reader.onload = (event) => {
