@@ -1,13 +1,13 @@
 "use client";
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Navbar from '../components/navbar';
-import FabricDisplay from './components/fabricDisplay';
-import PatternDisplay from './components/patternDisplay';
-import ProjectDisplay from './components/projectDisplay';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Navbar from "../components/navbar";
+import FabricDisplay from "./components/fabricDisplay";
+import PatternDisplay from "./components/patternDisplay";
+import ProjectDisplay from "./components/projectDisplay";
 import FabricCard from "./components/fabricCard";
-import PatternCard from './components/patternCard';
+import PatternCard from "./components/patternCard";
 import ChangeDetails from "./components/changeDetails";
 
 /**
@@ -25,12 +25,12 @@ interface Fabric {
   widthInCentimeters: boolean;
 }
 interface Pattern {
-    id: number;
-    name: string;
-    imageId: number;
-    description: string;
-    patternType: string;
-    sizeRange: string;
+  id: number;
+  name: string;
+  imageId: number;
+  description: string;
+  patternType: string;
+  sizeRange: string;
 }
 
 export default function Dashboard() {
@@ -125,7 +125,7 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="main-container min-h-screen bg-gray-100 pt-16 p-4">
+    <main className="main-container min-h-screen bg-gray-100 pt-16 p-4 overflow-y-scroll">
       {" "}
       {/* Added pt-16 to offset the content */}
       <Navbar
@@ -194,15 +194,9 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-                {display === "fabrics" && (
-                    <FabricDisplay />
-                )}
-                {display === "patterns" && (
-                    <PatternDisplay />
-                )}
-                {display === "projects" && (
-                    <ProjectDisplay />
-                )}
+        {display === "fabrics" && <FabricDisplay />}
+        {display === "patterns" && <PatternDisplay />}
+        {display === "projects" && <ProjectDisplay />}
         {display === "changeDetails" && <ChangeDetails />}
       </div>
     </main>
