@@ -17,7 +17,7 @@ interface FabricCardProps {
 
 const FabricCard: React.FC<FabricCardProps> = ({ fabric }) => {
   return (
-    <div className="min-w-[200px] h-76 relative overflow-hidden rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 ease-in-out box-border">
+    <div className="relative z-[1000] min-w-[200px] h-76 relative overflow-hidden rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 ease-in-out box-border">
       <img
         src={
           fabric.imageId != null
@@ -27,7 +27,7 @@ const FabricCard: React.FC<FabricCardProps> = ({ fabric }) => {
         alt={fabric.name}
         width={500}
         height={500}
-        className="object-cover w-[200px] aspect-square"
+        className="object-cover w-[200px] aspect-square z-[1000]"
       />
       <div className="p-4 bg-background">
         <h3 className="text-lg font-bold">{fabric.name}</h3>
