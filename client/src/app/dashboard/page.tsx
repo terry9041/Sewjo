@@ -119,6 +119,8 @@ export default function Dashboard() {
       setDisplay("fabrics");
     } else if (route === "changeDetails") {
       setDisplay("changeDetails");
+    } else if (route === "dashboard") {
+      setDisplay("dashboard");
     } else {
       router.push(`/${route}`);
     }
@@ -150,7 +152,7 @@ export default function Dashboard() {
               Fabrics
             </div>
 
-            <div className="flex gap-6 pb-9 overflow-x-scroll w-full">
+            <div className="flex gap-6 pb-9 overflow-x-auto w-full">
               {fabricsLoading ? (
                 <div className="w-full h-[100px] items-center justify-center flex">
                   <div className="">Loading fabrics...</div>
@@ -173,7 +175,7 @@ export default function Dashboard() {
             <div className="text-2xl text-left font-semibold mx-30 w-full py-9">
               Patterns
             </div>
-            <div className="flex gap-6 pb-9 overflow-x-scroll w-full">
+            <div className="flex gap-6 pb-9 overflow-x-auto w-full">
               {patternsLoading ? (
                 <div className="w-full h-[100px] items-center justify-center flex">
                   <div className="">Loading patterns...</div>
