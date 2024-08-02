@@ -24,10 +24,13 @@ export default function AuthModal({
       open
       onClick={closeAuthModal}
     >
-      <div className="bg-white m-auto p-8 rounded-lg shadow-lg w-[27%] h-fit flex flex-col gap-8" onClick={(e) => e.stopPropagation()} >
+      <div
+        className="relative bg-white m-auto p-8 rounded-lg shadow-lg w-[27%] h-fit flex flex-col gap-8 min-w-[300px]"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           type="button"
-          className="text-s  rounded-lg px-2 self-end"
+          className="absolute top-9 right-9"
           onClick={closeAuthModal}
         >
           <svg

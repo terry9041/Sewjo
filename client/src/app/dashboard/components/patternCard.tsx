@@ -1,12 +1,12 @@
 import Image from "next/image";
 
 interface Pattern {
-    id: number;
-    name: string;
-    imageId: number;
-    description: string;
-    patternType: string;
-    sizeRange: string;
+  id: number;
+  name: string;
+  imageId: number;
+  description: string;
+  patternType: string;
+  sizeRange: string;
 }
 
 interface PatternCardProps {
@@ -15,7 +15,7 @@ interface PatternCardProps {
 
 const PatternCard: React.FC<PatternCardProps> = ({ pattern }) => {
   return (
-    <div className="min-w-[200px] h-76 relative overflow-hidden rounded-lg shadow-lg group hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 ease-in-out box-border">
+    <div className="relaitve z-[1000] hover:shadow-xl hover:-translate-y-2 min-w-[200px] h-76 relative overflow-hidden rounded-lg shadow-lg group  transition-transform duration-300 ease-in-out box-border">
       <img
         src={
           pattern.imageId != null
@@ -25,13 +25,17 @@ const PatternCard: React.FC<PatternCardProps> = ({ pattern }) => {
         alt={pattern.name}
         width={500}
         height={500}
-        className="object-cover w-full aspect-square"
+        className="object-cover w-[200px] aspect-square z-[1000]"
       />
       <div className="p-4 bg-background">
         <h3 className="text-lg font-bold">{pattern.name}</h3>
-            <p className="text-sm text-muted-foreground">{pattern.description}</p>
-            <p className="text-sm text-muted-foreground">Type: {pattern.patternType}</p>
-            <p className="text-sm text-muted-foreground">Size: {pattern.sizeRange}</p>
+        <p className="text-sm text-muted-foreground">{pattern.description}</p>
+        <p className="text-sm text-muted-foreground">
+          Type: {pattern.patternType}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Size: {pattern.sizeRange}
+        </p>
       </div>
     </div>
   );

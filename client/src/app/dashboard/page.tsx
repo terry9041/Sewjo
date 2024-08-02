@@ -1,13 +1,13 @@
 "use client";
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Navbar from '../components/navbar';
-import FabricDisplay from './components/fabricDisplay';
-import PatternDisplay from './components/patternDisplay';
-import ProjectDisplay from './components/projectDisplay';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Navbar from "../components/navbar";
+import FabricDisplay from "./components/fabricDisplay";
+import PatternDisplay from "./components/patternDisplay";
+import ProjectDisplay from "./components/projectDisplay";
 import FabricCard from "./components/fabricCard";
-import PatternCard from './components/patternCard';
+import PatternCard from "./components/patternCard";
 import ChangeDetails from "./components/changeDetails";
 
 /**
@@ -25,12 +25,12 @@ interface Fabric {
   widthInCentimeters: boolean;
 }
 interface Pattern {
-    id: number;
-    name: string;
-    imageId: number;
-    description: string;
-    patternType: string;
-    sizeRange: string;
+  id: number;
+  name: string;
+  imageId: number;
+  description: string;
+  patternType: string;
+  sizeRange: string;
 }
 
 export default function Dashboard() {
@@ -41,6 +41,7 @@ export default function Dashboard() {
   const [display, setDisplay] = useState("dashboard");
   const [fabricsLoading, setFabricsLoading] = useState(true);
   const [patternsLoading, setPatternsLoading] = useState(true);
+  const [updateDashboard, setUpdateDashboard] = useState(false);
 
   useEffect(() => {
     axios
@@ -119,13 +120,19 @@ export default function Dashboard() {
       setDisplay("fabrics");
     } else if (route === "changeDetails") {
       setDisplay("changeDetails");
+    } else if (route === "dashboard") {
+      setDisplay("dashboard");
+      
+      setUpdateDashboard((prev) => !prev); // Toggle the state to trigger re-render
     } else {
       router.push(`/${route}`);
     }
   };
 
+  
+
   return (
-    <main className="main-container min-h-screen bg-gray-100 pt-16 p-4">
+    <main className="main-container min-h-screen bg-gray-100 pt-16 p-4 overflow-y-scroll">
       {" "}
       {/* Added pt-16 to offset the content */}
       <Navbar
@@ -136,7 +143,7 @@ export default function Dashboard() {
       />
       <div className="mt-8">
         {display === "dashboard" && (
-          <div className="text-center px-7 flex flex-col w-[60%] content-center items-center mx-auto">
+          <div className="text-center px-7 flex flex-col w-full md:w-[80%] max-w-[1000px] content-center items-center mx-auto">
             {/* <h2 className="text-2xl mb-4">
               Welcome back to sewjo, {user?.userName}!
             </h2>
@@ -146,11 +153,11 @@ export default function Dashboard() {
             >
               Click here to logout
             </button> */}
-            <div className="text-2xl text-left font-semibold mx-30 w-full py-9">
+            <div className="relative text-2xl text-left font-semibold mx-30 w-full my-9 z-10">
               Fabrics
             </div>
 
-            <div className="flex gap-6 pb-9 overflow-x-scroll w-full">
+            <div className="flex gap-6 pb-9 overflow-x-auto w-full z-50">
               {fabricsLoading ? (
                 <div className="w-full h-[100px] items-center justify-center flex">
                   <div className="">Loading fabrics...</div>
@@ -170,10 +177,10 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div className="text-2xl text-left font-semibold mx-30 w-full py-9">
+            <div className="relative text-2xl text-left font-semibold mx-30 w-full my-9 z-10">
               Patterns
             </div>
-            <div className="flex gap-6 pb-9 overflow-x-scroll w-full">
+            <div className="flex gap-6 pb-9 overflow-x-auto w-full z-50">
               {patternsLoading ? (
                 <div className="w-full h-[100px] items-center justify-center flex">
                   <div className="">Loading patterns...</div>
@@ -194,15 +201,9 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-                {display === "fabrics" && (
-                    <FabricDisplay />
-                )}
-                {display === "patterns" && (
-                    <PatternDisplay />
-                )}
-                {display === "projects" && (
-                    <ProjectDisplay />
-                )}
+        {display === "fabrics" && <FabricDisplay />}
+        {display === "patterns" && <PatternDisplay />}
+        {display === "projects" && <ProjectDisplay />}
         {display === "changeDetails" && <ChangeDetails />}
       </div>
     </main>

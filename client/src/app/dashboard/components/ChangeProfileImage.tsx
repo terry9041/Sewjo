@@ -81,11 +81,10 @@ const ChangeProfileImage = () => {
   };
 
   return (
-    <div className="change-profile-image-form max-w-md  bg-white  flex flex-col">
-      
+    <div className="change-profile-image-form max-w-md  bg-white  flex flex-col mt-3">
       <h2 className="text-2xl font-bold my-6">Change Profile Image</h2>
 
-      <img
+      {/* <img
         src={
           userImageSrc != null
             ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/images/${userImageSrc}`
@@ -94,7 +93,15 @@ const ChangeProfileImage = () => {
         alt={"user profile image"}
         width={200}
         height={200}
-        className="self-center rounded-xl"/>
+        className="self-center rounded-xl"
+      /> */}
+      <img
+        className="self-center rounded-xl my-4"
+        src={userImageSrc}
+        alt="user photo"
+        width={200}
+        height={200}
+      />
       {successMessage && (
         <div className="bg-green-500 text-white p-2 rounded mb-4 text-center">
           {successMessage}
