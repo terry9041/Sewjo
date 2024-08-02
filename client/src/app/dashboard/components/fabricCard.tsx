@@ -27,7 +27,7 @@ const FabricCard: React.FC<FabricCardProps> = ({ fabric }) => {
         alt={fabric.name}
         width={500}
         height={500}
-        className="object-cover w-full aspect-square"
+        className="object-cover w-[200px] aspect-square"
       />
       <div className="p-4 bg-background">
         <h3 className="text-lg font-bold">{fabric.name}</h3>
