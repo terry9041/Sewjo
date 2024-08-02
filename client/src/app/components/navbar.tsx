@@ -33,6 +33,7 @@ export default function Navbar({
 
   const handleButtonClick = (buttonName: string) => {
     setSelectedButton(buttonName);
+    setIsMenuOpen(false);
     displayHandler(buttonName);
   };
 
@@ -264,7 +265,7 @@ export default function Navbar({
               </div>
             )}
             {isLoggedIn && (
-              <div className="flex flex-row items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+              <div className="relative flex flex-row items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
                 <button
                   type="button"
                   className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
@@ -283,7 +284,7 @@ export default function Navbar({
                 </button>
                 {isUserDropdownOpen && (
                   <div
-                    className="absolute translate-y-[100px] right-0 mt-2 w-48 z-50 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-lg dark:bg-gray-700 dark:divide-gray-600"
+                    className="absolute  translate-y-[100px] right-0 mt-2 w-48 z-50 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-lg dark:bg-gray-700 dark:divide-gray-600"
                     id="user-dropdown"
                   >
                     <div className="px-4 py-3">
