@@ -141,7 +141,14 @@ const FabricDetail = ({ id, onClose }: FabricDetailProps) => {
     };
 
     if (!fabric) {
-        return <div>Loading...</div>;
+        return (
+          <div className="fixed inset-0 flex items-center justify-center z-[101]">
+            <div className="bg-white p-4 rounded shadow-lg max-w-3xl w-full h-4/5 overflow-y-auto relative text-center">
+              {" "}
+              Loading...{" "}
+            </div>
+          </div>
+        );
     }
 
     return (
