@@ -3,7 +3,7 @@ const nextConfig = {
     images: {
         domains: ['localhost'],
     },
-    reactStrictMode: true
+    reactStrictMode: false
 };
 
 export default nextConfig;
