@@ -81,7 +81,7 @@ export default function ProjectDisplay() {
   return (
     <section className="flex max-w-6xl mx-auto p-4">
       <div
-        className={`flex-1 ${showForm ? "w-1/2" : "w-full"} transition-width duration-300 ease-in-out ${selectedProjectId ? "pointer-events-none opacity-50" : ""}`}
+        className={`flex-1 w-full transition-width duration-300 ease-in-out ${selectedProjectId ? "pointer-events-none opacity-50" : ""}`}
       >
         <div className="flex justify-between mb-4">
           <input
@@ -131,13 +131,11 @@ export default function ProjectDisplay() {
         </div>
       </div>
       {showForm && (
-        <div className="flex-1 w-1/2 transition-width duration-300 ease-in-out">
-          <ProjectForm
-            handleSubmit={handleSubmit}
-            setShowForm={setShowForm}
-            isOpen={showForm}
-          />
-        </div>
+        <ProjectForm
+          handleSubmit={handleSubmit}
+          setShowForm={setShowForm}
+          isOpen={showForm}
+        />
       )}
       {selectedProjectId && (
         <ProjectDetail id={selectedProjectId} onClose={handleCloseModal} />
