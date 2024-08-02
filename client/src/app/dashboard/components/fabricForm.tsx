@@ -133,7 +133,7 @@ export default function FabricForm({
     position: "absolute",
     backgroundColor: "#FFF",
     zIndex: 1000, // zIndex should be a number
-    width: "40%",
+    width: "45%",
     minWidth: "326px",
     borderRadius: ".5em",
     top: "20px",
