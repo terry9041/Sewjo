@@ -43,7 +43,7 @@ export default function Navbar({
 
   return (
     // empty canvas for the navbar
-    <nav className="bg-white border-gray-200 dark:bg-slate-950 fixed top-0 left-0 right-0 z-50">
+    <nav className="bg-white border-gray-200 dark:bg-slate-950 fixed top-0 left-0 right-0 z-[100]">
       {/* navbar at root path, sewjo login when not logged in, sewjo dashboard login when logged in */}
       {!showFullNav && (
         <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
@@ -238,7 +238,7 @@ export default function Navbar({
                 </button>
               </div> */}
             {isMenuOpen && (
-              <div className="absolute translate-y-[48px] right-0 mt-2 w-36 bg-white rounded-md shadow-lg z-50">
+              <div className="absolute translate-y-[48px] right-0 mt-2 w-36 bg-white rounded-md shadow-lg z-[100]">
                 <div className="py-1">
                   <button
                     className={`w-full text-left px-4 py-2 ${selectedButton === "patterns" ? "bg-blue-500 text-white" : "bg-white text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"}`}
@@ -284,18 +284,18 @@ export default function Navbar({
                 </button>
                 {isUserDropdownOpen && (
                   <div
-                    className="absolute  translate-y-[100px] right-0 mt-2 w-48 z-50 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-lg dark:bg-gray-700 dark:divide-gray-600"
+                    className="absolute min-[1420px]:translate-x-[80px] translate-y-[110px] right-0 mt-2 w-48 z-50 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-lg dark:bg-gray-700 dark:divide-gray-600"
                     id="user-dropdown"
                   >
-                    <div className="px-4 py-3">
-                      <span className="block text-sm text-gray-900 dark:text-white">
-                        {user?.userName}
+                    <div className="px-4 py-3 flex flex-col gap-2 ">
+                      <span className="block text-sm text-gray-900 dark:text-white text-center ">
+                        Hi, {user?.userName}!
                       </span>
-                      <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
+                      <span className="block text-sm text-gray-500 truncate dark:text-gray-400 text-center">
                         {user?.email}
                       </span>
                       <button
-                        className="block text-sm text-blue-500 mt-2"
+                        className="block text-sm text-blue-500 my-2 "
                         onClick={() => {
                           handleButtonClick("changeDetails");
                           toggleUserDropdown();
@@ -304,7 +304,10 @@ export default function Navbar({
                         Edit User
                       </button>
                     </div>
-                    <ul className="py-2" aria-labelledby="user-menu-button">
+                    <ul
+                      className="py-2 text-center"
+                      aria-labelledby="user-menu-button"
+                    >
                       <li>
                         <a
                           href="/logout"
