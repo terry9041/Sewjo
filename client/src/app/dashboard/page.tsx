@@ -138,7 +138,7 @@ export default function Dashboard() {
       />
       <div className="mt-8">
         {display === "dashboard" && (
-          <div className="text-center px-7 flex flex-col w-[60%] content-center items-center mx-auto">
+          <div className="text-center px-7 flex flex-col w-full md:w-[80%] max-w-[1000px] content-center items-center mx-auto">
             {/* <h2 className="text-2xl mb-4">
               Welcome back to sewjo, {user?.userName}!
             </h2>
