@@ -190,7 +190,7 @@ public class PatternControllerAPI {
         return ResponseEntity.ok("Pattern deleted successfully");
     }
 
-    private Date parseDate(String date) throws ParseException {
+    public Date parseDate(String date) throws ParseException {
         if (date == null || date.isEmpty()) {
             return null;
         }
