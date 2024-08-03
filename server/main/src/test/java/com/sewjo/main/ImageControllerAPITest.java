@@ -1,120 +1,83 @@
-// package com.sewjo.main;
+package com.sewjo.main;
 
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.springframework.http.HttpHeaders;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.multipart.MultipartFile;
+import com.sewjo.main.controllers.ImageControllerAPI;
+import com.sewjo.main.models.Image;
+import com.sewjo.main.service.ImageService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
-// import com.sewjo.main.controllers.ImageControllerAPI;
-// import com.sewjo.main.models.Image;
-// import com.sewjo.main.service.ImageService;
+import java.io.IOException;
+import java.util.Optional;
 
-// import java.io.IOException;
-// import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
-// import static org.junit.jupiter.api.Assertions.*;
-// import static org.mockito.Mockito.*;
-// import static org.mockito.MockitoAnnotations.openMocks;
+class ImageControllerAPITest {
 
-// class ImageControllerAPITest {
+    @Mock
+    private ImageService imageService;
 
-//     @InjectMocks
-//     private ImageControllerAPI imageControllerAPI;
+    @InjectMocks
+    private ImageControllerAPI imageControllerAPI;
 
-//     @Mock
-//     private ImageService imageService;
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
-//     @Mock
-//     private MultipartFile file;
+    @Test
+void testUploadImage_Success() throws IOException {
+    MultipartFile file = new MockMultipartFile("file", new byte[0]);
+    Image image = new Image();
+    image.setId(1L);
+    when(imageService.storeImage(any(MultipartFile.class))).thenReturn(image);
 
-//     @BeforeEach
-//     void setUp() {
-//         // Initialize the mocks
-//         openMocks(this);
-//     }
+    ResponseEntity<String> response = imageControllerAPI.uploadImage(file);
+    assertEquals(HttpStatus.OK.value(), response.getStatusCode().value()); // Use value() method for comparison
+    assertEquals("Image uploaded successfully: 1", response.getBody());
+}
 
-//     @Test
-//     void testUploadImage_Success() throws IOException {
-//         // Arrange: Set up the mock image with an ID
-//         Image image = new Image();
-//         image.setId(1L);
+@Test
+void testUploadImage_Failure() throws IOException {
+    MultipartFile file = new MockMultipartFile("file", new byte[0]);
+    when(imageService.storeImage(any(MultipartFile.class))).thenThrow(new IOException());
 
-//         // Mock the behavior of the imageService to return the mock image
-//         when(imageService.storeImage(file)).thenReturn(image);
+    ResponseEntity<String> response = imageControllerAPI.uploadImage(file);
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatusCode().value()); // Use value() method for comparison
+    assertEquals("Failed to upload image", response.getBody());
+}
 
-//         // Act: Call the uploadImage method with the mock file
-//         ResponseEntity<String> response = imageControllerAPI.uploadImage(file);
+@Test
+void testGetImage_Success() {
+    Image image = new Image();
+    image.setName("test.png");
+    image.setData(new byte[0]);
+    when(imageService.getImage(anyLong())).thenReturn(Optional.of(image));
 
-//         // Assert: Verify the response status and body
-//         assertEquals(HttpStatus.OK, response.getStatusCode());
-//         assertEquals("Image uploaded successfully: 1", response.getBody());
+    ResponseEntity<byte[]> response = imageControllerAPI.getImage(1L);
+    assertEquals(HttpStatus.OK.value(), response.getStatusCode().value()); // Use value() method for comparison
+    assertEquals("attachment; filename=\"test.png\"", response.getHeaders().getFirst("Content-Disposition"));
+    assertArrayEquals(image.getData(), response.getBody()); // Use assertArrayEquals for byte array comparison
+}
 
-//         // Verify that the imageService.storeImage method was called exactly once
-//         verify(imageService, times(1)).storeImage(file);
-//     }
+@Test
+void testGetImage_NotFound() {
+    when(imageService.getImage(anyLong())).thenReturn(Optional.empty());
 
-//     @Test
-//     void testUploadImage_Failure() throws IOException {
-//         // Arrange: Mock the behavior of the imageService to throw an IOException
-//         when(imageService.storeImage(file)).thenThrow(new IOException());
+    ResponseEntity<byte[]> response = imageControllerAPI.getImage(1L);
+    assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode().value()); // Use value() method for comparison
+    assertNull(response.getBody()); // Use assertNull to explicitly check for null
+}
 
-//         // Act: Call the uploadImage method with the mock file
-//         ResponseEntity<String> response = imageControllerAPI.uploadImage(file);
-
-//         // Assert: Verify the response status and body
-//         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-//         assertEquals("Failed to upload image", response.getBody());
-
-//         // Verify that the imageService.storeImage method was called exactly once
-//         verify(imageService, times(1)).storeImage(file);
-//     }
-
-//     @Test
-//     void testGetImage_Found() {
-//         // Arrange: Set up the mock image with an ID, name, and data
-//         Long imageId = 1L;
-//         Image image = new Image();
-//         image.setId(imageId);
-//         image.setName("test.png");
-//         image.setData(new byte[0]);
-
-//         // Mock the behavior of the imageService to return an Optional containing the
-//         // mock image
-//         when(imageService.getImage(imageId)).thenReturn(Optional.of(image));
-
-//         // Act: Call the getImage method with the mock image ID
-//         ResponseEntity<byte[]> response = imageControllerAPI.getImage(imageId);
-
-//         // Assert: Verify the response status, body, and headers
-//         assertEquals(HttpStatus.OK, response.getStatusCode());
-//         assertEquals(image.getData(), response.getBody());
-//         assertEquals("attachment; filename=\"test.png\"",
-//                 response.getHeaders().getFirst(HttpHeaders.CONTENT_DISPOSITION));
-
-//         // Verify that the imageService.getImage method was called exactly once with the
-//         // correct ID
-//         verify(imageService, times(1)).getImage(imageId);
-//     }
-
-//     @Test
-//     void testGetImage_NotFound() {
-//         // Arrange: Mock the behavior of the imageService to return an empty Optional
-//         Long imageId = 1L;
-//         when(imageService.getImage(imageId)).thenReturn(Optional.empty());
-
-//         // Act: Call the getImage method with the mock image ID
-//         ResponseEntity<byte[]> response = imageControllerAPI.getImage(imageId);
-
-//         // Assert: Verify the response status and body
-//         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-//         assertNull(response.getBody());
-
-//         // Verify that the imageService.getImage method was called exactly once with the
-//         // correct ID
-//         verify(imageService, times(1)).getImage(imageId);
-//     }
-// }
+}
