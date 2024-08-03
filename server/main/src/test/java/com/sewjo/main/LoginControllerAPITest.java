@@ -1,236 +1,233 @@
-// package com.sewjo.main;
+package com.sewjo.main;
 
-// import jakarta.servlet.http.HttpSession;
-// import jakarta.servlet.http.HttpServletResponse;
+import com.sewjo.main.controllers.LoginControllerAPI;
+import com.sewjo.main.dto.ChangePasswordDTO;
+import com.sewjo.main.service.UserService;
+import com.sewjo.main.dto.UserDTO;
+import com.sewjo.main.models.LoginUser;
+import com.sewjo.main.models.User;
 
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.slf4j.Logger;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.validation.BindingResult;
+import com.sewjo.main.controllers.ImageControllerAPI;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
-// import com.sewjo.main.controllers.LoginControllerAPI;
-// import com.sewjo.main.dto.UserDTO;
-// import com.sewjo.main.models.LoginUser;
-// import com.sewjo.main.models.User;
-// import com.sewjo.main.service.UserService;
+import java.io.IOException;
 
-// import static org.junit.jupiter.api.Assertions.*;
-// import static org.mockito.Mockito.*;
-// import static org.mockito.MockitoAnnotations.openMocks;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
-// class LoginControllerAPITest {
+class LoginControllerAPITest {
 
-//     @InjectMocks
-//     private LoginControllerAPI loginControllerAPI;
+    @Mock
+    private UserService userService;
 
-//     @Mock
-//     private UserService userServ;
+    @Mock
+    private BindingResult bindingResult;
 
-//     @Mock
-//     private HttpSession session;
 
-//     @Mock
-//     private HttpServletResponse response;
 
-//     @Mock
-//     private BindingResult bindingResult;
+    @Mock
+    private HttpSession session;
 
-//     @Mock
-//     private Logger logger;
+    @Mock
+    private HttpServletResponse response;
 
-//     @BeforeEach
-//     void setUp() {
-//         // Initialize the mocks
-//         openMocks(this);
-//     }
+    @Mock
+    private HttpServletRequest request;
 
-//     @Test
-//     void testLogin_Success() {
-//         // Arrange: Set up the mock login user with email and password
-//         LoginUser loginUser = new LoginUser();
-//         loginUser.setEmail("test@example.com");
-//         loginUser.setPassword("password123!");
+    @InjectMocks
+    private LoginControllerAPI loginControllerAPI;
 
-//         // Set up the mock user with an ID
-//         User user = new User();
-//         user.setId(1L);
+    @InjectMocks
+    private ImageControllerAPI imageControllerAPI;
 
-//         // Set up the mock user DTO with an ID
-//         UserDTO userDTO = new UserDTO();
-//         userDTO.setId(1L);
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
 
-//         // Mock the behavior of the userServ to return the mock user and user DTO
-//         when(userServ.login(any(LoginUser.class), any(BindingResult.class))).thenReturn(user);
-//         when(userServ.convertToDTO(any(User.class))).thenReturn(userDTO);
+        // Mock session behavior
+        when(session.getAttribute("id")).thenReturn(1L); // Simulate a logged-in user with ID 1
+    }
 
-//         // Act: Call the login method with the mock login user
-//         ResponseEntity<?> response = loginControllerAPI.login(loginUser, bindingResult, session, this.response);
+    @Test
+    void testLogin_Success() {
+        LoginUser loginUser = new LoginUser();
+        User user = new User();
+        UserDTO userDTO = new UserDTO();
+        when(userService.login(any(LoginUser.class), any(BindingResult.class))).thenReturn(user);
+        when(userService.convertToDTO(any(User.class))).thenReturn(userDTO);
 
-//         // Assert: Verify the response status and body
-//         assertEquals(200, response.getStatusCode().value());
-//         assertEquals(userDTO, response.getBody());
+        ResponseEntity<?> response = loginControllerAPI.login(loginUser, bindingResult, session, this.response);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(userDTO, response.getBody());
+    }
 
-//         // Verify that the session attribute was set correctly
-//         verify(session).setAttribute("id", 1L);
+    @Test
+    void testLogin_Failure() {
+        when(bindingResult.hasErrors()).thenReturn(true);
 
-//         // Verify that the userServ.login method was called exactly once
-//         verify(userServ, times(1)).login(any(LoginUser.class), any(BindingResult.class));
+        ResponseEntity<?> response = loginControllerAPI.login(new LoginUser(), bindingResult, session, this.response);
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals(bindingResult.getAllErrors(), response.getBody());
+    }
 
-//         // Verify that the userServ.convertToDTO method was called exactly once
-//         verify(userServ, times(1)).convertToDTO(any(User.class));
-//     }
+    @Test
+    void testRegister_Success() {
+        User newUser = new User();
+        User user = new User();
+        UserDTO userDTO = new UserDTO();
+        when(userService.register(any(User.class), any(BindingResult.class))).thenReturn(user);
+        when(userService.convertToDTO(any(User.class))).thenReturn(userDTO);
 
-//     @Test
-//     void testLogin_Failure() {
-//         // Arrange: Set up the mock login user with email and password
-//         LoginUser loginUser = new LoginUser();
-//         loginUser.setEmail("test@example.com");
-//         loginUser.setPassword("password123!");
+        ResponseEntity<?> response = loginControllerAPI.register(newUser, bindingResult, session, this.response);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(userDTO, response.getBody());
+    }
 
-//         // Mock the behavior of the userServ to throw a RuntimeException
-//         when(userServ.login(any(LoginUser.class), any(BindingResult.class)))
-//                 .thenThrow(new RuntimeException("Login failed"));
+    @Test
+    void testRegister_Failure() {
+        when(bindingResult.hasErrors()).thenReturn(true);
 
-//         // Act: Call the login method with the mock login user
-//         ResponseEntity<?> response = loginControllerAPI.login(loginUser, bindingResult, session, this.response);
+        ResponseEntity<?> response = loginControllerAPI.register(new User(), bindingResult, session, this.response);
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals(bindingResult.getAllErrors(), response.getBody());
+    }
 
-//         // Assert: Verify the response status and body
-//         assertEquals(500, response.getStatusCode().value());
-//         assertEquals("An unexpected error occurred. Please try again later.", response.getBody());
+    @Test
+    void testDashboard_Unauthorized() {
+        when(session.getAttribute("id")).thenReturn(null);
 
-//         // Verify that the userServ.login method was called exactly once
-//         verify(userServ, times(1)).login(any(LoginUser.class), any(BindingResult.class));
-//     }
+        ResponseEntity<?> response = loginControllerAPI.dashboard(session);
+        assertEquals(401, response.getStatusCode().value());
+        assertEquals("Unauthorized", response.getBody());
+    }
 
-//     @Test
-//     void testRegister_Success() {
-//         // Arrange: Set up the mock new user with email and password
-//         User newUser = new User();
-//         newUser.setEmail("test@example.com");
-//         newUser.setPassword("password123!");
+    @Test
+    void testDashboard_Success() {
+        User user = new User();
+        UserDTO userDTO = new UserDTO();
+        when(session.getAttribute("id")).thenReturn(1L);
+        when(userService.findById(anyLong())).thenReturn(user);
+        when(userService.convertToDTO(any(User.class))).thenReturn(userDTO);
 
-//         // Set up the mock user with an ID
-//         User user = new User();
-//         user.setId(1L);
+        ResponseEntity<?> response = loginControllerAPI.dashboard(session);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(userDTO, response.getBody());
+    }
 
-//         // Set up the mock user DTO with an ID
-//         UserDTO userDTO = new UserDTO();
-//         userDTO.setId(1L);
+    @Test
+    void testLogout_Success() {
+        when(session.getAttribute("id")).thenReturn(1L);
+        HttpServletResponse httpResponse = mock(HttpServletResponse.class);
+    
+        ResponseEntity<?> response = loginControllerAPI.logout(session, httpResponse);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("Logged out successfully", response.getBody());
+    }
 
-//         // Mock the behavior of the userServ to return the mock user and user DTO
-//         when(userServ.register(any(User.class), any(BindingResult.class))).thenReturn(user);
-//         when(userServ.convertToDTO(any(User.class))).thenReturn(userDTO);
+    @Test
+    void testLogout_NoSession() {
+        // Call the logout method with a null session
+        ResponseEntity<?> responseEntity = loginControllerAPI.logout(null, response);
 
-//         // Act: Call the register method with the mock new user
-//         ResponseEntity<?> response = loginControllerAPI.register(newUser, bindingResult, session, this.response);
+        // Verify the response
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("No session found", responseEntity.getBody());
+    }
 
-//         // Assert: Verify the response status and body
-//         assertEquals(200, response.getStatusCode().value());
-//         assertEquals(userDTO, response.getBody());
+    @Test
+    void testChangePassword_Unauthorized() {
+        when(session.getAttribute("id")).thenReturn(null);
 
-//         // Verify that the session attribute was set correctly
-//         verify(session).setAttribute("id", 1L);
+        ResponseEntity<?> response = loginControllerAPI.changePassword(new ChangePasswordDTO(), bindingResult, session,
+                request);
+        assertEquals(401, response.getStatusCode().value());
+        assertEquals("Unauthorized", response.getBody());
+    }
 
-//         // Verify that the userServ.register method was called exactly once
-//         verify(userServ, times(1)).register(any(User.class), any(BindingResult.class));
+    @Test
+    void testChangePassword_Success() {
+        ChangePasswordDTO passwordDTO = new ChangePasswordDTO();
+        User user = new User();
+        UserDTO userDTO = new UserDTO();
+        when(session.getAttribute("id")).thenReturn(1L);
+        when(userService.changePassword(anyLong(), any(ChangePasswordDTO.class), any(BindingResult.class)))
+                .thenReturn(user);
+        when(userService.convertToDTO(any(User.class))).thenReturn(userDTO);
 
-//         // Verify that the userServ.convertToDTO method was called exactly once
-//         verify(userServ, times(1)).convertToDTO(any(User.class));
-//     }
+        ResponseEntity<?> response = loginControllerAPI.changePassword(passwordDTO, bindingResult, session, request);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(userDTO, response.getBody());
+    }
 
-//     @Test
-//     void testRegister_Failure() {
-//         // Arrange: Set up the mock new user with email and password
-//         User newUser = new User();
-//         newUser.setEmail("test@example.com");
-//         newUser.setPassword("password123!");
+    @Test
+    void testGetProfileImage_Unauthorized() {
+        when(session.getAttribute("id")).thenReturn(null);
 
-//         // Mock the behavior of the userServ to throw a RuntimeException
-//         when(userServ.register(any(User.class), any(BindingResult.class)))
-//                 .thenThrow(new RuntimeException("Register failed"));
+        ResponseEntity<?> response = loginControllerAPI.getProfileImage(session);
+        assertEquals(401, response.getStatusCode().value());
+        assertEquals("Unauthorized", response.getBody());
+    }
 
-//         // Act: Call the register method with the mock new user
-//         ResponseEntity<?> response = loginControllerAPI.register(newUser, bindingResult, session, this.response);
+    @Test
+    void testGetProfileImage_Success() {
+        User user = new User();
+        when(session.getAttribute("id")).thenReturn(1L);
+        when(userService.findById(anyLong())).thenReturn(user);
 
-//         // Assert: Verify the response status and body
-//         assertEquals(500, response.getStatusCode().value());
-//         assertEquals("An unexpected error occurred. Please try again later.", response.getBody());
+        ResponseEntity<?> response = loginControllerAPI.getProfileImage(session);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(user.getImage(), response.getBody());
+    }
 
-//         // Verify that the userServ.register method was called exactly once
-//         verify(userServ, times(1)).register(any(User.class), any(BindingResult.class));
-//     }
+    @Test
+    void testChangeProfileImage_Unauthorized() {
+        when(session.getAttribute("id")).thenReturn(null);
 
-//     @Test
-//     void testDashboard_Authorized() {
-//         // Arrange: Set up the mock user ID and user
-//         Long userId = 1L;
-//         User user = new User();
-//         user.setId(userId);
+        ResponseEntity<?> response = loginControllerAPI.changeProfileImage(null, session);
+        assertEquals(401, response.getStatusCode().value());
+        assertEquals("Unauthorized", response.getBody());
+    }
 
-//         // Set up the mock user DTO
-//         UserDTO userDTO = new UserDTO();
-//         userDTO.setId(userId);
+    @Test
+    void testChangeProfileImage_Success() throws IOException {
+        // Create a MockMultipartFile for the image
+        MultipartFile imageFile = new MockMultipartFile("image", "test.png", "image/png", new byte[0]);
 
-//         // Mock the behavior of the session and userServ to return the mock user and
-//         // user DTO
-//         when(session.getAttribute("id")).thenReturn(userId);
-//         when(userServ.findById(userId)).thenReturn(user);
-//         when(userServ.convertToDTO(user)).thenReturn(userDTO);
+        // Create a mock UserDTO for the existing user
+        UserDTO existingUser = new UserDTO();
+        UserDTO updatedUser = new UserDTO();
 
-//         // Act: Call the dashboard method with the mock session
-//         ResponseEntity<?> response = loginControllerAPI.dashboard(session);
+        // Mock the service methods
+        when(userService.convertToDTO(any())).thenReturn(existingUser);
+        when(userService.changeProfileImage(any(), any(), anyLong())).thenReturn(updatedUser);
 
-//         // Assert: Verify the response status and body
-//         assertEquals(200, response.getStatusCode().value());
-//         assertEquals(userDTO, response.getBody());
+        // Ensure the session contains the user ID
+        session.setAttribute("id", 1L);
 
-//         // Verify that the session.getAttribute method was called exactly once
-//         verify(session, times(1)).getAttribute("id");
+        // Call the controller method
+        ResponseEntity<?> response = loginControllerAPI.changeProfileImage(imageFile, session);
 
-//         // Verify that the userServ.findById method was called exactly once
-//         verify(userServ, times(1)).findById(userId);
+        // Print the response for debugging
+        System.out.println("Response status: " + response.getStatusCode());
+        System.out.println("Response body: " + response.getBody());
 
-//         // Verify that the userServ.convertToDTO method was called exactly once
-//         verify(userServ, times(1)).convertToDTO(user);
-//     }
+        // Verify the response
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(updatedUser, response.getBody());
+    }
 
-//     @Test
-//     void testDashboard_Unauthorized() {
-//         // Arrange: Mock the behavior of the session to return null for the "id"
-//         // attribute
-//         when(session.getAttribute("id")).thenReturn(null);
-
-//         // Act: Call the dashboard method with the mock session
-//         ResponseEntity<?> response = loginControllerAPI.dashboard(session);
-
-//         // Assert: Verify the response status and body
-//         assertEquals(401, response.getStatusCode().value());
-//         assertEquals("Unauthorized", response.getBody());
-
-//         // Verify that the session.getAttribute method was called exactly once
-//         verify(session, times(1)).getAttribute("id");
-//     }
-
-//     @Test
-//     void testLogout() {
-//         // Arrange: Mock the behavior of the session to return a mock user ID for the
-//         // "id" attribute
-//         when(session.getAttribute("id")).thenReturn(1L);
-
-//         // Act: Call the logout method with the mock session and response
-//         ResponseEntity<?> response = loginControllerAPI.logout(session, this.response);
-
-//         // Assert: Verify the response status and body
-//         assertEquals(200, response.getStatusCode().value());
-//         assertEquals("Logged out successfully", response.getBody());
-
-//         // Verify that the session.invalidate method was called exactly once
-//         verify(session, times(1)).invalidate();
-
-//         // Verify that the session.getAttribute method was called exactly once
-//         verify(session, times(1)).getAttribute("id");
-//     }
-// }
+}
