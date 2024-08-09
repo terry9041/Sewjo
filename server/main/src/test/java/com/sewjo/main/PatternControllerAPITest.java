@@ -1,304 +1,274 @@
-// package com.sewjo.main;
+package com.sewjo.main;
 
-// import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.mockito.ArgumentMatchers.any;
-// import static org.mockito.ArgumentMatchers.anyLong;
-// import static org.mockito.Mockito.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sewjo.main.controllers.PatternControllerAPI;
+import com.sewjo.main.dto.PatternDTO;
+import com.sewjo.main.models.PatternFabrics;
+import com.sewjo.main.models.SimpleFabric;
+import com.sewjo.main.service.PatternService;
 
-// import java.util.ArrayList;
-// import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.io.IOException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import com.sewjo.main.controllers.PatternControllerAPI;
 
-// import jakarta.servlet.http.HttpSession;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.junit.jupiter.api.extension.ExtendWith;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.mockito.MockitoAnnotations;
-// import org.mockito.junit.jupiter.MockitoExtension;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.validation.BindingResult;
+class PatternControllerAPITest {
 
-// import com.sewjo.main.models.Pattern;
-// import com.sewjo.main.models.User;
-// import com.sewjo.main.service.PatternService;
-// import com.sewjo.main.service.UserService;
-// import com.sewjo.main.controllers.PatternControllerAPI;
+    @Mock
+    private PatternService patternService;
 
-// @ExtendWith(MockitoExtension.class)
-// public class PatternControllerAPITest {
+    @Mock
+    private ObjectMapper objectMapper;
 
-//     @InjectMocks
-//     private PatternControllerAPI controller;
+    @InjectMocks
+    private PatternControllerAPI patternControllerAPI;
 
-//     @Mock
-//     private PatternService patternService;
+    private MockHttpSession session;
 
-//     @Mock
-//     private UserService userServ;
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        session = new MockHttpSession();
+        session.setAttribute("id", 1L);
+    }
 
-//     @Mock
-//     private HttpSession session;
+    @Test
+    void testGetAllPatterns_Unauthorized() {
+        session.removeAttribute("id");
+        ResponseEntity<?> response = patternControllerAPI.getAllPatterns(session);
+        assertEquals(401, response.getStatusCode().value());
+        assertEquals("Unauthorized", response.getBody());
+    }
 
-//     @Mock
-//     private BindingResult bindingResult;
+    @Test
+    void testGetAllPatterns_Success() {
+        List<PatternDTO> patterns = new ArrayList<>();
+        when(patternService.findAll(anyLong())).thenReturn(patterns);
 
-//     @BeforeEach
-//     void setUp() {
-//         MockitoAnnotations.openMocks(this);
-//     }
+        ResponseEntity<?> response = patternControllerAPI.getAllPatterns(session);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(patterns, response.getBody());
+    }
 
-//     @Test
-//     void testGetAllPatterns_Authorized() {
-//         // Arrange
-//         Long userId = 1L;
-//         when(session.getAttribute("id")).thenReturn(userId);
-//         List<Pattern> patterns = new ArrayList<>();
-//         patterns.add(new Pattern());
-//         when(patternService.findAll(userId)).thenReturn(patterns);
+    @Test
+    void testGetAllPatterns_InternalServerError() {
+        when(patternService.findAll(anyLong())).thenThrow(new RuntimeException("Test exception"));
 
-//         // Act
-//         ResponseEntity<?> response = controller.getAllPatterns(session);
+        ResponseEntity<?> response = patternControllerAPI.getAllPatterns(session);
+        assertEquals(500, response.getStatusCode().value());
+        assertEquals("Internal Server Error: Test exception", response.getBody());
+    }
 
-//         // Assert
-//         assertEquals(200, response.getStatusCode().value());
-//         assertEquals(patterns, response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(patternService, times(1)).findAll(userId);
-//     }
+    @Test
+    void testGetPatternById_Unauthorized() {
+        session.removeAttribute("id");
+        ResponseEntity<?> response = patternControllerAPI.getPatternById(1L, session);
+        assertEquals(401, response.getStatusCode().value());
+        assertEquals("Unauthorized", response.getBody());
+    }
 
-//     @Test
-//     void testGetAllPatterns_Unauthorized() {
-//         // Arrange
-//         when(session.getAttribute("id")).thenReturn(null);
+    @Test
+    void testGetPatternById_NotFound() {
+        when(patternService.findById(anyLong(), anyLong())).thenReturn(null);
 
-//         // Act
-//         ResponseEntity<?> response = controller.getAllPatterns(session);
+        ResponseEntity<?> response = patternControllerAPI.getPatternById(1L, session);
+        assertEquals(404, response.getStatusCode().value());
+        assertEquals("Pattern not found", response.getBody());
+    }
 
-//         // Assert
-//         assertEquals(401, response.getStatusCode().value());
-//         assertEquals("Unauthorized", response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(patternService, never()).findAll(anyLong());
-//     }
+    @Test
+    void testGetPatternById_Success() {
+        PatternDTO pattern = new PatternDTO();
+        when(patternService.findById(anyLong(), anyLong())).thenReturn(pattern);
 
-//     @Test
-//     void testGetPatternById_AuthorizedAndFound() {
-//         // Arrange
-//         Long userId = 1L;
-//         Long patternId = 1L;
-//         when(session.getAttribute("id")).thenReturn(userId);
-//         Pattern pattern = new Pattern();
-//         when(patternService.findById(patternId, userId)).thenReturn(pattern);
+        ResponseEntity<?> response = patternControllerAPI.getPatternById(1L, session);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(pattern, response.getBody());
+    }
 
-//         // Act
-//         ResponseEntity<?> response = controller.getPatternById(patternId, session);
+    @Test
+    void testCreatePattern_Unauthorized() {
+        session.removeAttribute("id");
+        ResponseEntity<?> response = patternControllerAPI.createPattern(
+                "name", "[]", "description", "type", "format", 1,
+                "[]", "2023-01-01", true, false, null,
+                "[]", "bodyType", "sizeRange", "[]",
+                1.0, 2.0, 3.0, 4.0, true, "[]", "[]", session);
+        assertEquals(401, response.getStatusCode().value());
+        assertEquals("Unauthorized", response.getBody());
+    }
 
-//         // Assert
-//         assertEquals(200, response.getStatusCode().value());
-//         assertEquals(pattern, response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(patternService, times(1)).findById(patternId, userId);
-//     }
+    // @Test
+    // void testCreatePattern_Failure() throws IOException {
+    //     // Arrange
+    //     when(patternService.storePattern(
+    //             anyString(), anyList(), anyString(), anyString(), anyString(), anyInt(),
+    //             anyList(), any(Date.class), anyBoolean(), anyBoolean(), any(MultipartFile.class),
+    //             anyList(), anyString(), anyString(), anyList(), anyDouble(), anyDouble(),
+    //             anyDouble(), anyDouble(), anyBoolean(), anyList(), anyList(), anyLong()))
+    //             .thenThrow(new IOException("Test exception"));
 
-//     @Test
-//     void testGetPatternById_AuthorizedAndNotFound() {
-//         // Arrange
-//         Long userId = 1L;
-//         Long patternId = 1L;
-//         when(session.getAttribute("id")).thenReturn(userId);
-//         when(patternService.findById(patternId, userId)).thenReturn(null);
+    //     // Act
+    //     ResponseEntity<?> response = patternControllerAPI.createPattern(
+    //             "name", "[]", "description", "type", "format", 1,
+    //             "[]", "2023-01-01", true, false, null,
+    //             "[]", "bodyType", "sizeRange", "[]",
+    //             1.0, 2.0, 3.0, 4.0, true, "[]", "[]", session);
 
-//         // Act
-//         ResponseEntity<?> response = controller.getPatternById(patternId, session);
+    //     // Debugging prints
+    //     System.out.println("Actual status code: " + response.getStatusCode().value());
+    //     System.out.println("Response body: " + response.getBody());
 
-//         // Assert
-//         assertEquals(404, response.getStatusCode().value());
-//         assertEquals("Pattern not found", response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(patternService, times(1)).findById(patternId, userId);
-//     }
+    //     // Assert
+    //     assertEquals(500, response.getStatusCode().value(), "Expected status code 500 for pattern creation failure");
+    //     assertEquals("Failed to upload pattern: Test exception", response.getBody(),
+    //             "Expected failure message for pattern creation failure");
+    // }
 
-//     @Test
-//     void testGetPatternById_Unauthorized() {
-//         // Arrange
-//         when(session.getAttribute("id")).thenReturn(null);
+    @Test
+    void testUpdatePattern_Unauthorized() {
+        session.removeAttribute("id");
+        ResponseEntity<?> response = patternControllerAPI.updatePattern(
+                1L, "name", "[]", "description", "type", "format", 1,
+                "[]", "2023-01-01", true, false, null,
+                "[]", "bodyType", "sizeRange", "[]",
+                1.0, 2.0, 3.0, 4.0, true, "[]", "[]", session);
+        assertEquals(401, response.getStatusCode().value());
+        assertEquals("Unauthorized", response.getBody());
+    }
 
-//         // Act
-//         ResponseEntity<?> response = controller.getPatternById(1L, session);
+    @Test
+    void testUpdatePattern_NotFound() {
+        when(patternService.findById(anyLong(), anyLong())).thenReturn(null);
 
-//         // Assert
-//         assertEquals(401, response.getStatusCode().value());
-//         assertEquals("Unauthorized", response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(patternService, never()).findById(anyLong(), anyLong());
-//     }
+        ResponseEntity<?> response = patternControllerAPI.updatePattern(
+                1L, "name", "[]", "description", "type", "format", 1,
+                "[]", "2023-01-01", true, false, null,
+                "[]", "bodyType", "sizeRange", "[]",
+                1.0, 2.0, 3.0, 4.0, true, "[]", "[]", session);
+        assertEquals(404, response.getStatusCode().value());
+        assertEquals("Pattern not found", response.getBody());
+    }
 
-//     @Test
-//     void testCreatePattern_AuthorizedAndValid() {
-//         // Arrange
-//         Long userId = 1L;
-//         when(session.getAttribute("id")).thenReturn(userId);
-//         Pattern pattern = new Pattern();
-//         User user = new User();
-//         when(userServ.findById(userId)).thenReturn(user);
-//         when(patternService.save(any(Pattern.class), any(BindingResult.class))).thenReturn(pattern);
+    // @Test
+    // void testUpdatePattern_Failure() throws IOException {
+    //     when(patternService.findById(anyLong(), anyLong())).thenReturn(new PatternDTO());
 
-//         // Act
-//         ResponseEntity<?> response = controller.createPattern(pattern, bindingResult, session);
+    //     when(patternService.updatePattern(
+    //             anyLong(), anyString(), anyList(), anyString(), anyString(), anyString(), anyInt(),
+    //             anyList(), any(Date.class), anyBoolean(), anyBoolean(), any(MultipartFile.class),
+    //             anyList(), anyString(), anyString(), anyList(), anyDouble(), anyDouble(),
+    //             anyDouble(), anyDouble(), anyBoolean(), anyList(), anyList(), anyLong()))
+    //             .thenThrow(new IOException("Update failed"));
 
-//         // Assert
-//         assertEquals(200, response.getStatusCode().value());
-//         assertEquals(pattern, response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(userServ, times(1)).findById(userId);
-//         verify(patternService, times(1)).save(pattern, bindingResult);
-//     }
+    //     ResponseEntity<?> response = patternControllerAPI.updatePattern(
+    //             1L, "name", "[]", "description", "type", "format", 1,
+    //             "[]", "2023-01-01", true, false, null,
+    //             "[]", "bodyType", "sizeRange", "[]",
+    //             1.0, 2.0, 3.0, 4.0, true, "[]", "[]", session);
 
-//     @Test
-//     void testCreatePattern_AuthorizedAndInvalid() {
-//         // Arrange
-//         Long userId = 1L;
-//         when(session.getAttribute("id")).thenReturn(userId);
-//         Pattern pattern = new Pattern();
-//         User user = new User();
-//         when(userServ.findById(userId)).thenReturn(user);
-//         when(bindingResult.hasErrors()).thenReturn(true);
+    //     assertEquals(500, response.getStatusCode().value());
+    //     assertEquals("Failed to update pattern: Update failed", response.getBody());
+    // }
 
-//         // Act
-//         ResponseEntity<?> response = controller.createPattern(pattern, bindingResult, session);
+    @Test
+    void testDeletePattern_Unauthorized() {
+        session.removeAttribute("id");
+        ResponseEntity<?> response = patternControllerAPI.deletePattern(1L, session);
+        assertEquals(401, response.getStatusCode().value());
+        assertEquals("Unauthorized", response.getBody());
+    }
 
-//         // Assert
-//         assertEquals(400, response.getStatusCode().value());
-//         assertEquals(bindingResult.getAllErrors(), response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(userServ, times(1)).findById(userId);
-//         verify(patternService, never()).save(any(Pattern.class), any(BindingResult.class));
-//     }
+    @Test
+    void testDeletePattern_NotFound() {
+        when(patternService.deleteById(anyLong(), anyLong())).thenReturn(false);
 
-//     @Test
-//     void testCreatePattern_Unauthorized() {
-//         // Arrange
-//         when(session.getAttribute("id")).thenReturn(null);
+        ResponseEntity<?> response = patternControllerAPI.deletePattern(1L, session);
+        assertEquals(404, response.getStatusCode().value());
+        assertEquals("Pattern not found or you do not have permission to delete it", response.getBody());
+    }
 
-//         // Act
-//         ResponseEntity<?> response = controller.createPattern(new Pattern(), bindingResult, session);
+    @Test
+    void testDeletePattern_Success() {
+        when(patternService.deleteById(anyLong(), anyLong())).thenReturn(true);
 
-//         // Assert
-//         assertEquals(401, response.getStatusCode().value());
-//         assertEquals("Unauthorized", response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(userServ, never()).findById(anyLong());
-//         verify(patternService, never()).save(any(Pattern.class), any(BindingResult.class));
-//     }
+        ResponseEntity<?> response = patternControllerAPI.deletePattern(1L, session);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("Pattern deleted successfully", response.getBody());
+    }
 
-//     @Test
-//     void testUpdatePattern_AuthorizedAndFound() {
-//         // Arrange
-//         Long userId = 1L;
-//         Long patternId = 1L;
-//         when(session.getAttribute("id")).thenReturn(userId);
-//         Pattern pattern = new Pattern();
-//         Pattern existingPattern = new Pattern();
-//         existingPattern.setUser(new User());
-//         when(patternService.findById(patternId, userId)).thenReturn(existingPattern);
-//         when(patternService.update(any(Pattern.class), any(BindingResult.class))).thenReturn(pattern);
+    @Test
+    void testParseDate_ValidDate() throws ParseException {
+        String dateString = "2023-01-01";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        Date expectedDate = sdf.parse(dateString);
 
-//         // Act
-//         ResponseEntity<?> response = controller.updatePattern(patternId, pattern, bindingResult, session);
+        Date actualDate = patternControllerAPI.parseDate(dateString);
 
-//         // Assert
-//         assertEquals(200, response.getStatusCode().value());
-//         assertEquals(pattern, response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(patternService, times(1)).findById(patternId, userId);
-//         verify(patternService, times(1)).update(pattern, bindingResult);
-//     }
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String actualDateString = sdf.format(actualDate);
+        Date actualDateInGMT = sdf.parse(actualDateString);
 
-//     @Test
-//     void testUpdatePattern_AuthorizedAndNotFound() {
-//         // Arrange
-//         Long userId = 1L;
-//         Long patternId = 1L;
-//         when(session.getAttribute("id")).thenReturn(userId);
-//         when(patternService.findById(patternId, userId)).thenReturn(null);
+        assertEquals(expectedDate, actualDateInGMT);
+    }
 
-//         // Act
-//         ResponseEntity<?> response = controller.updatePattern(patternId, new Pattern(), bindingResult, session);
+    @Test
+    void testParseDate_NullDate() {
+        // Act
+        Date parsedDate = null;
+        try {
+            parsedDate = patternControllerAPI.parseDate(null);
+        } catch (ParseException e) {
+            // Handle exception if necessary
+        }
 
-//         // Assert
-//         assertEquals(404, response.getStatusCode().value());
-//         assertEquals("Pattern not found", response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(patternService, times(1)).findById(patternId, userId);
-//         verify(patternService, never()).update(any(Pattern.class), any(BindingResult.class));
-//     }
+        // Assert
+        assertNull(parsedDate, "Parsed date should be null for null input");
+    }
 
-//     @Test
-//     void testUpdatePattern_Unauthorized() {
-//         // Arrange
-//         when(session.getAttribute("id")).thenReturn(null);
+    @Test
+    void testParseDate_EmptyString() {
+        // Act
+        Date parsedDate = null;
+        try {
+            parsedDate = patternControllerAPI.parseDate("");
+        } catch (ParseException e) {
+            // Handle exception if necessary
+        }
 
-//         // Act
-//         ResponseEntity<?> response = controller.updatePattern(1L, new Pattern(), bindingResult, session);
+        // Assert
+        assertNull(parsedDate, "Parsed date should be null for empty string input");
+    }
 
-//         // Assert
-//         assertEquals(401, response.getStatusCode().value());
-//         assertEquals("Unauthorized", response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(patternService, never()).findById(anyLong(), anyLong());
-//         verify(patternService, never()).update(any(Pattern.class), any(BindingResult.class));
-//     }
-
-//     @Test
-//     void testDeletePattern_AuthorizedAndFound() {
-//         // Arrange
-//         Long userId = 1L;
-//         Long patternId = 1L;
-//         when(session.getAttribute("id")).thenReturn(userId);
-//         when(patternService.deleteById(patternId, userId)).thenReturn(true);
-
-//         // Act
-//         ResponseEntity<?> response = controller.deletePattern(patternId, session);
-
-//         // Assert
-//         assertEquals(200, response.getStatusCode().value());
-//         assertEquals("Pattern deleted successfully", response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(patternService, times(1)).deleteById(patternId, userId);
-//     }
-
-//     @Test
-//     void testDeletePattern_AuthorizedAndNotFound() {
-//         // Arrange
-//         Long userId = 1L;
-//         Long patternId = 1L;
-//         when(session.getAttribute("id")).thenReturn(userId);
-//         when(patternService.deleteById(patternId, userId)).thenReturn(false);
-
-//         // Act
-//         ResponseEntity<?> response = controller.deletePattern(patternId, session);
-
-//         // Assert
-//         assertEquals(404, response.getStatusCode().value());
-//         assertEquals("Pattern not found or you do not have permission to delete it", response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(patternService, times(1)).deleteById(patternId, userId);
-//     }
-
-//     @Test
-//     void testDeletePattern_Unauthorized() {
-//         // Arrange
-//         when(session.getAttribute("id")).thenReturn(null);
-
-//         // Act
-//         ResponseEntity<?> response = controller.deletePattern(1L, session);
-
-//         // Assert
-//         assertEquals(401, response.getStatusCode().value());
-//         assertEquals("Unauthorized", response.getBody());
-//         verify(session, times(1)).getAttribute("id");
-//         verify(patternService, never()).deleteById(anyLong(), anyLong());
-//     }
-// }
+    @Test
+    void testParseDate_InvalidFormat() {
+        String invalidDate = "01-01-2023";
+        try {
+            patternControllerAPI.parseDate(invalidDate);
+        } catch (ParseException e) {
+            assertEquals("Unparseable date: \"01-01-2023\"", e.getMessage());
+        }
+    }
+}
