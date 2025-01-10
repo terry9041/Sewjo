@@ -77,7 +77,7 @@ cd ./sewjo/client
 npm i
 cd ../server
 npm i
-cd ./src
+cd ./src 
 node app
 ```
 
